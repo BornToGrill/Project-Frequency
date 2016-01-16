@@ -3,15 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
-
 public class Board : MonoBehaviour {
 	public GameObject TilePrefab;
 	public int BoardDimensions;
-	private GameObject[,] _tiles;
+	public GameObject[,] _tiles;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		_tiles = new GameObject[BoardDimensions, BoardDimensions];
 		for (int y = 0; y < _tiles.GetLength (0); y++)
 			for (int x = 0; x < _tiles.GetLength (1); x++)
@@ -27,13 +25,15 @@ public class Board : MonoBehaviour {
 	void GetSurroundingTiles() {
 		for (int y = 0; y < _tiles.GetLength (0); y++)
 			for (int x = 0; x < _tiles.GetLength (1); x++) {
-				Tile tile = _tiles [y, x].GetComponent<Tile> ();
+				Node tile = _tiles [y, x].GetComponent<Node> ();
 				if (x > 0)
-					tile.Left = _tiles [y, x - 1].GetComponent<Tile> ();
+					tile.Left = _tiles [y, x - 1].GetComponent<Node> ();
 				if (x < BoardDimensions-1)
-					tile.Right = _tiles [y, x + 1].GetComponent<Tile> ();
+					tile.Right = _tiles [y, x + 1].GetComponent<Node> ();
 				if (y > 0)
-					tile.Up = _tiles [y - 1, x].GetComponent<Tile> ();
+					tile.Up = _tiles [y - 1, x].GetComponent<Node> ();
+				if (y < BoardDimensions-1)
+					tile.Down = _tiles [y + 1, x].GetComponent<Node> ();
 			}
 	}
 
