@@ -68,8 +68,6 @@ public class AStarPathfinding : MonoBehaviour {
 		for (int x = 0; x < array.GetLength (0); x++)
 			for (int y = 0; y < array.GetLength (1); y++) {
 				_nodes [x, y] = array [x, y].GetComponent<Node> ();
-				_nodes [x, y].X = x;
-				_nodes [x, y].Y = y;
 			}
 	}
 }

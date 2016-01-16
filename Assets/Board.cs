@@ -11,9 +11,9 @@ public class Board : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		_tiles = new GameObject[BoardDimensions, BoardDimensions];
-		for (int y = 0; y < _tiles.GetLength (0); y++)
-			for (int x = 0; x < _tiles.GetLength (1); x++)
-				_tiles [y, x] = CreateTile (y, x);
+		for (int x = 0; x < _tiles.GetLength (0); x++)
+			for (int y = 0; y < _tiles.GetLength (1); y++)
+				_tiles [x, y] = CreateTile (x, y);
 		GetSurroundingTiles();
 	}
 	
@@ -23,17 +23,17 @@ public class Board : MonoBehaviour {
 	}
 
 	void GetSurroundingTiles() {
-		for (int y = 0; y < _tiles.GetLength (0); y++)
-			for (int x = 0; x < _tiles.GetLength (1); x++) {
-				Node tile = _tiles [y, x].GetComponent<Node> ();
+		for (int x = 0; x < _tiles.GetLength (0); x++)
+			for (int y = 0; y < _tiles.GetLength (1); y++) {
+				Node tile = _tiles [x, y].GetComponent<Node> ();
 				if (x > 0)
-					tile.Left = _tiles [y, x - 1].GetComponent<Node> ();
+					tile.Left = _tiles [x -1 , y].GetComponent<Node> ();
 				if (x < BoardDimensions-1)
-					tile.Right = _tiles [y, x + 1].GetComponent<Node> ();
+					tile.Right = _tiles [x + 1, y].GetComponent<Node> ();
 				if (y > 0)
-					tile.Up = _tiles [y - 1, x].GetComponent<Node> ();
+					tile.Up = _tiles [x, y - 1].GetComponent<Node> ();
 				if (y < BoardDimensions-1)
-					tile.Down = _tiles [y + 1, x].GetComponent<Node> ();
+					tile.Down = _tiles [x, y + 1].GetComponent<Node> ();
 			}
 	}
 
@@ -62,6 +62,9 @@ public class Board : MonoBehaviour {
 		go.transform.parent = transform;
 		Tile tile = go.GetComponent<Tile> ();
 		tile.Environment = GetEnvironment (posX, posY);
+		Node node = go.GetComponent<Node> ();
+		node.X = posX;
+		node.Y = posY;
 		return go;
 	}
 }
