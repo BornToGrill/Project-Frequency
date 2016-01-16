@@ -60,7 +60,7 @@ public class Board : MonoBehaviour {
 	GameObject CreateTile(int posX, int posY) {
 		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
 		go.transform.parent = transform;
-		Tile tile = go.GetComponent<Tile> ();
+		TileController tile = go.GetComponent<TileController> ();
 		tile.Environment = GetEnvironment (posX, posY);
 		Node node = go.GetComponent<Node> ();
 		node.X = posX;

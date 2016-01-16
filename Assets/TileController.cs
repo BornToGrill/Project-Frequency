@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
 
-public class Tile : MonoBehaviour {
+public class TileController : MonoBehaviour {
 	private Environment _environment;
 	public Environment Environment {
 		get {return _environment;}

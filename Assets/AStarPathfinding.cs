@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class AStarPathfinding : MonoBehaviour {
+public class AStarPathfinding {
 	private List<Node> OpenList, ClosedList;
 	private Node[,] _nodes;
 	private Node EndLocation;
@@ -12,9 +12,9 @@ public class AStarPathfinding : MonoBehaviour {
 		ClosedList = new List<Node> ();
 	}
 
-	public void FindPath(Vector2 start, Vector2 end) {
-		EndLocation = _nodes[(int)end.x, (int)end.y];
-		PathFinder(_nodes[(int)start.x, (int)start.y]);
+	public void FindPath(Node start, Node end) {
+		EndLocation = _nodes[(int)end.X, (int)end.Y];
+		PathFinder(_nodes[(int)start.X, (int)start.Y]);
 		PrintPath (EndLocation);
 	}
 
