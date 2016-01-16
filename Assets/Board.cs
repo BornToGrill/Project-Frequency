@@ -65,6 +65,9 @@ public class Board : MonoBehaviour {
 		Node node = go.GetComponent<Node> ();
 		node.X = posX;
 		node.Y = posY;
+
+		go.AddComponent<Hover> ();
+
 		return go;
 	}
 }
