@@ -2,33 +2,45 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class AStarPathfinding {
-	private List<Node> OpenList, ClosedList;
-	private Node[,] _nodes;
-	private Node EndLocation;
-
-	void Start () {
-		OpenList = new List<Node> ();
-		ClosedList = new List<Node> ();
+public static class AStarPathfinding {
+	static private List<Node> OpenList = new List<Node> ();
+	static private List<Node> ClosedList = new List<Node> ();
+	static private Node _endLocation;
+	static private Node _startLocation;
+	static public Node EndLocation {
+		get { return _endLocation;}
+		set { _endLocation = value;
+			FindPath(StartLocation, _endLocation);
+		}
+	}
+	static public Node StartLocation {
+		get { return _startLocation; }
+		set { _startLocation = value;
+			FindPath(_startLocation, EndLocation);
+		}
 	}
 
-	public void FindPath(Node start, Node end) {
-		EndLocation = _nodes[(int)end.X, (int)end.Y];
-		PathFinder(_nodes[(int)start.X, (int)start.Y]);
+	static public void FindPath(Node start, Node end) {
+		if (start == null || end == null) {
+			Debug.Log ("one is null");
+			return;
+		}
+		if (start == end)
+			return;
+		PathFinder(start);
 		PrintPath (EndLocation);
 	}
 
-	void PrintPath(Node node) {
+	static void PrintPath(Node node) {
 		Debug.Log (node.X.ToString() + " : " + node.Y.ToString());
 		if (node.Parent == null)
 			return;
 		PrintPath (node.Parent);
 	}
 
-	void PathFinder(Node node) {
+	static void PathFinder(Node node) {
 		if (EndLocation.Parent != null)
 			return;
-
 		OpenList.Remove (node);
 		ClosedList.Add (node);
 		UpdateSurroundingNodes (node);
@@ -44,7 +56,7 @@ public class AStarPathfinding {
 		PathFinder (bestF);
 	}
 
-	void UpdateSurroundingNodes(Node node){
+	static void UpdateSurroundingNodes(Node node){
 		if (node.Left != null && !ClosedList.Contains (node.Left)) {
 			OpenList.Add (node.Left);
 			node.Left.UpdateNode (node, EndLocation);
@@ -61,13 +73,5 @@ public class AStarPathfinding {
 			OpenList.Add (node.Down);
 			node.Down.UpdateNode (node, EndLocation);
 		}
-	}
-
-	public void ConvertMultiArray(GameObject[,] array){
-		_nodes = new Node[array.GetLength (0), array.GetLength (1)];
-		for (int x = 0; x < array.GetLength (0); x++)
-			for (int y = 0; y < array.GetLength (1); y++) {
-				_nodes [x, y] = array [x, y].GetComponent<Node> ();
-			}
 	}
 }
