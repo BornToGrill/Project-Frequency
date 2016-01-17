@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
-	private Environment _environment;
+public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
 
-	public Tile Left;
-	public Tile Right;
-	public Tile Up;
-	public Tile Down;
+public class TileController : MonoBehaviour {
+	private Environment _environment;
 	public Environment Environment {
 		get {return _environment;}
 		set {
@@ -35,4 +32,6 @@ public class Tile : MonoBehaviour {
 			}
 		}
 	}
+
+
 }
