@@ -35,7 +35,7 @@ public class HoverScript : MonoBehaviour {
     {
         if (isStart)
         {
-            SceneManager.LoadScene("MainScene"); 
+            SceneManager.LoadScene("MainGame"); 
         }
         if (isSettings)
         {
