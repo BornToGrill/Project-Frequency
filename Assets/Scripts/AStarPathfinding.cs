@@ -3,24 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public static class AStarPathfinding {
-	static private List<Node> OpenList = new List<Node> ();
-	static private List<Node> ClosedList = new List<Node> ();
-	static private Node _endLocation;
-	static private Node _startLocation;
-	static public Node EndLocation {
+
+	private static List<Node> OpenList = new List<Node> ();
+	private static List<Node> ClosedList = new List<Node> ();
+	private static Node _endLocation;
+	private static Node _startLocation;
+
+	public static Node EndLocation {
 		get { return _endLocation;}
 		set { _endLocation = value;
 			FindPath(StartLocation, _endLocation);
 		}
 	}
-	static public Node StartLocation {
+	public static Node StartLocation {
 		get { return _startLocation; }
 		set { _startLocation = value;
 			FindPath(_startLocation, EndLocation);
 		}
 	}
 
-	static public void FindPath(Node start, Node end) {
+	public static void FindPath(Node start, Node end) {
 		if (start == null || end == null) {
 			Debug.Log ("one is null");
 			return;
@@ -28,14 +30,17 @@ public static class AStarPathfinding {
 		if (start == end)
 			return;
 		PathFinder(start);
-		PrintPath (EndLocation);
+		//PrintPath (EndLocation);
+	    int pathLength = GetPathLength(EndLocation);
+        Debug.Log("Distance to node : " + pathLength.ToString());
 	}
 
-	static void PrintPath(Node node) {
-		Debug.Log (node.X.ToString() + " : " + node.Y.ToString());
+	static int GetPathLength(Node node) {
+		//Debug.Log (node.X.ToString() + " : " + node.Y.ToString());
 		if (node.Parent == null)
-			return;
-		PrintPath (node.Parent);
+			return 0;
+	    return 1 + GetPathLength(node.Parent);
+	    //PrintPath (node.Parent);
 	}
 
 	static void PathFinder(Node node) {
