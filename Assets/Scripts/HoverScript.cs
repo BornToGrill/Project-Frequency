@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class HoverScript : MonoBehaviour {
+	public bool isStart;
+	public bool isExit;
 
-    // Use this for initialization
+	// Use this for initialization
     void Start()
     {
         //renderer.material.color = Color.black;
@@ -15,7 +18,7 @@ public class HoverScript : MonoBehaviour {
     {
         //renderer.material.color = Color.red;
         TextMesh tm = gameObject.GetComponent<TextMesh>();
-        tm.color = Color.red;
+        tm.color = Color.green;
     }
 
     void OnMouseExit()
@@ -25,23 +28,11 @@ public class HoverScript : MonoBehaviour {
         tm.color = Color.white;
     }
 
-    public bool isStart;
-    public bool isQuit;
-
     void OnMouseUp()
     {
         if (isStart)
-        {
-            Application.LoadLevel();
-        }
-        if (isQuit)
-        {
+			SceneManager.LoadScene("MainGame");
+        if (isExit)
             Application.Quit();
-        }
     }
-
-    // Update is called once per frame
-    void Update () {
-	
-	}
 }
