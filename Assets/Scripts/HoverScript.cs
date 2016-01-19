@@ -45,7 +45,7 @@ public class HoverScript : MonoBehaviour {
         }
         if (isInstructions)
         {
-            // SceneManager.LoadScene();
+			SceneManager.LoadScene("Instructions");
         }
         if (isQuit)
         {
