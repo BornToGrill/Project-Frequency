@@ -15,6 +15,10 @@ public class WaterUnit : BaseUnit {
 
     public override void DamageUnit(int damage) {
         Health -= damage;
+        if (Health > 0)
+            return;
+        Health = 0;
+        GameObject.Destroy(gameObject);
         // TODO: Death check.
     }
 }

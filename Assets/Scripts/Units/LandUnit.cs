@@ -31,6 +31,12 @@ public class LandUnit : BaseUnit {
 
     public override void DamageUnit(int damage) {
         _stackHealth -= damage;
+        if (_stackHealth <= 0) {
+            GameObject.Destroy(gameObject);
+            return;
+        }
+        _stackSize = Mathf.CeilToInt(_stackHealth / Health);
+        _stackDamage = Damage * _stackSize;
         // TODO: Death check for all and individual units in stack.
     }
 }
