@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class LandUnit : BaseUnit {
+
+
 
     public int Damage;
     public int Range;
@@ -10,7 +11,8 @@ public class LandUnit : BaseUnit {
     private int _stackHealth;
     private int _stackDamage;
 
-    internal int StackSize {
+
+    internal override int StackSize {
         get { return _stackSize; }
         set {
             int diff = Mathf.Abs(value - _stackSize);
