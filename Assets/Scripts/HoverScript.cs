@@ -39,7 +39,7 @@ public class HoverScript : MonoBehaviour {
         }
         if (isSettings)
         {
-            // SceneManager.LoadScene();
+            SceneManager.LoadScene("Settings");
         }
         if (isInstructions)
         {
