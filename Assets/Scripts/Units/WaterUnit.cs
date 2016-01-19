@@ -1,7 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class WaterUnit : BaseUnit {
+
+    private int _stackSize;
+
+    internal override int StackSize {
+        get { return _stackSize; }
+        set {
+            if (value != 1)
+                throw new InvalidOperationException("Only 1 water unit allowed per tile");
+            _stackSize = value;
+        }
+    }
 
     internal BaseUnit CarryUnit;
 
