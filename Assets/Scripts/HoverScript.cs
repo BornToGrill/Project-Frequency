@@ -1,37 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class HoverScript : MonoBehaviour {
+
+	public bool isStart;
+	public bool isQuit;
+	public bool isInstructions;
+	public bool isSettings;
 
     // Use this for initialization
     void Start()
     {
         //renderer.material.color = Color.black;
-        TextMesh tm = gameObject.GetComponent<TextMesh>();
-        tm.color = Color.white;
+		Text tm = gameObject.GetComponent<Text>();
+		tm.color = Color.white;
     }
 
-    void OnMouseEnter()
+    public void OnMouseEnter()
     {
         //renderer.material.color = Color.red;
-        TextMesh tm = gameObject.GetComponent<TextMesh>();
-        tm.color = Color.green;
+		Text tm = gameObject.GetComponent<Text>();
+		tm.color = Color.red;
     }
 
-    void OnMouseExit()
+	public void OnMouseExit()
     {
         //renderer.material.color = Color.black;
-        TextMesh tm = gameObject.GetComponent<TextMesh>();
-        tm.color = Color.white;
+        //TextMesh tm = gameObject.GetComponent<TextMesh>();
+        //tm.color = Color.white;
+		Text tm = gameObject.GetComponent<Text>();
+		tm.color = Color.white;
     }
-
-    public bool isStart;
-    public bool isQuit;
-    public bool isInstructions;
-    public bool isSettings;
-
-    void OnMouseUp()
+	public void OnMouseUp()
     {
         if (isStart)
         {
@@ -50,9 +52,4 @@ public class HoverScript : MonoBehaviour {
             Application.Quit();
         }
     }
-
-    // Update is called once per frame
-    void Update () {
-	
-	}
 }
