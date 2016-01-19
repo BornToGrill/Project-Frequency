@@ -3,18 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Player : MonoBehaviour {
+public class Player {
 
     public int Number;
     public int MoneyAmount;
     public Color Color;
     public Environment StartEnvironment;
-    public List<GameObject> units;
-	
-    // Use this for initialization
-	void Start () {
-
-	}
+	public List<GameObject> units;
 
     void GenerateMoney() {
         throw new System.NotImplementedException();
@@ -22,6 +17,7 @@ public class Player : MonoBehaviour {
 
 	public Player(int x) {
 		Number = x;
+		MoneyAmount = 500;
 
 		switch (Number) {
 		case 1:
@@ -40,10 +36,5 @@ public class Player : MonoBehaviour {
 			Color = Color.black;
 			break;
 		};
-	}
-
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

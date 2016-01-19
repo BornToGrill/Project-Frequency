@@ -10,6 +10,11 @@ public class GameController : MonoBehaviour {
 		get { return _players; }
 	}
 
+	void Awake() {
+		_players = new List<Player> ();
+		GeneratePlayers ();
+	}
+
 	void GeneratePlayers() {
 		for (int i = 1; i <= AmountOfPlayers; i++) {
 			_players.Add(new Player(i));
