@@ -15,7 +15,7 @@ public class StructureUnit : BaseUnit {
 	}
 
 	public override int GetCost (Environment environment){
-		if (Owner.GetComponent<Player> ().StartEnvironment != environment)
+		if (Owner.StartEnvironment != environment)
 			return DiscountCost;
 		return Cost;
 	}
