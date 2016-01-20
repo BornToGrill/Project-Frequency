@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 
 public class Node : MonoBehaviour {
-	private int _fcost;
+
 	internal int X, Y;
 	internal Node Left, Right, Up, Down, Parent;
 	internal int HCost, GCost;
 	internal int FCost {
-		private set { _fcost = value; }
 		get { return GCost + HCost; }
 	}
 
