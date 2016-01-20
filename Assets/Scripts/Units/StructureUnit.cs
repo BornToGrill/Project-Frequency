@@ -23,26 +23,22 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
-	public int checkEnoughMoney() {
+	public int CheckEnoughMoney() {
 		int cost = GetCost(Owner.GetComponent<Player> ().StartEnvironment);
 		if (Owner.GetComponent<Player> ().MoneyAmount >= cost)
 			return cost;
 		return 0;
 	}
 
-	private void withdrawMoney(int cost) {
+	private bool WithdrawMoney(int cost) {
 		Owner.GetComponent<Player> ().MoneyAmount -= cost;
+		return true;
 	}
 
-	public void drawStructure() {
-
-	}
-
-	public void createStructure(string structure) {
-		int check = checkEnoughMoney();
+	public void CreateStructure(string structure) {
+		int check = CheckEnoughMoney();
 		if (check != 0) {
-			if (withdrawMoney (check))
-				drawStructure ();
+			WithdrawMoney(check);
 		} else {
 			throw new InvalidOperationException("Not enough money to build a barrack");
 		}
