@@ -4,16 +4,13 @@ using System;
 public class StructureUnit : BaseUnit {
 
 	private int _stackSize;
-	private int _stackHealth;
-	private int _stackDamage;
 
 	internal override int StackSize {
 		get { return _stackSize; }
 		set {
-			int diff = Mathf.Abs(value - _stackSize);
-			_stackHealth += diff * Health;
-			_stackDamage = 0;
-			_stackSize = value;
+		    if (value > MaxUnitStack)
+		        throw new ArgumentOutOfRangeException(string.Format("Structure can only have {0} stacked units", MaxUnitStack));
+		    _stackSize = value;
 		}
 	}
 
@@ -23,34 +20,21 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
-	public int CheckEnoughMoney() {
-		int cost = GetCost(Owner.GetComponent<Player> ().StartEnvironment);
-		if (Owner.GetComponent<Player> ().MoneyAmount >= cost)
-			return cost;
-		return 0;
-	}
+    public void GetCreatableUnits(Board board) {
+        throw new NotImplementedException(
+            "Need the new Board class with up,down,left,right to get the surrounding tiles");
+    }
+    
 
-	private bool WithdrawMoney(int cost) {
-		Owner.GetComponent<Player> ().MoneyAmount -= cost;
-		return true;
-	}
-
-	public void CreateStructure(string structure) {
-		int check = CheckEnoughMoney();
-		if (check != 0) {
-			WithdrawMoney(check);
-		} else {
-			throw new InvalidOperationException("Not enough money to build a barrack");
-		}
-	}
+    public void CreateUnit(GameObject unit) {
+        throw new NotImplementedException();
+    }
 
 	public override void DamageUnit(int damage) {
-		_stackHealth -= damage;
-		if (_stackHealth <= 0) {
+	    Health -= damage;
+		if (Health <= 0) {
 			GameObject.Destroy(gameObject);
 			return;
 		}
-		_stackSize = Mathf.CeilToInt(_stackHealth / Health);
-		_stackDamage = 0;
 	}
 }
