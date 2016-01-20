@@ -50,7 +50,7 @@ public class GameController : MonoBehaviour {
     void CreateBase(Board board, int x, int y) {
         GameObject go = board._tiles[y, x];
         TileController tile = go.GetComponent<TileController>();
-        GameObject baseObject = Instantiate(BasePrefab, new Vector3(x, y, 0), new Quaternion()) as GameObject;
+        GameObject baseObject = Instantiate(BasePrefab, new Vector3(x, y), new Quaternion()) as GameObject;
         //tile.Unit = baseObject.GetComponent<StructureUnit>(); TODO: Impleent StructureUnit
         //tile.Unit.Owner = Player;
     }
