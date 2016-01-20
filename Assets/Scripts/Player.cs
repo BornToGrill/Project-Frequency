@@ -1,25 +1,25 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using UnityEngine;
 
 
 public class Player {
 
-    public int Number;
+    public int PlayerId { get; private set; }
     public int MoneyAmount;
     public Color Color;
     public Environment StartEnvironment;
-	public List<GameObject> units;
 
     void GenerateMoney() {
         throw new System.NotImplementedException();
     }
 
+
 	public Player(int x) {
-		Number = x;
+		PlayerId = x;
 		MoneyAmount = 500;
 
-		switch (Number) {
+        // TODO: Remove temporary
+		switch (PlayerId) {
 		case 1:
 			Color = Color.red;
 			break;
@@ -37,4 +37,5 @@ public class Player {
 			break;
 		};
 	}
+
 }
