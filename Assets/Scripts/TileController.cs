@@ -8,7 +8,7 @@ public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
 public class TileController : MonoBehaviour {
 
     private Environment _environment;
-
+    internal int _moneyValue;
     internal BaseUnit Unit;
 
     public Environment Environment {
@@ -19,22 +19,28 @@ public class TileController : MonoBehaviour {
 			switch (_environment) {
 				case Environment.Swamp:
 					sr.color = Color.gray;
+                    _moneyValue = 50;
 					break;
 				case Environment.Ice:
 					sr.color = Color.white;
-					break;
+                    _moneyValue = 50;
+                    break;
 				case Environment.Desert:
 					sr.color = Color.yellow;
-					break;
+                    _moneyValue = 50;
+                    break;
 				case Environment.Forest:
 					sr.color = Color.green;
-					break;
+                    _moneyValue = 50;
+                    break;
 				case Environment.Island:
 					sr.color = Color.black;
-					break;
+                    _moneyValue = 150; 
+                    break;
 				case Environment.Water:
 					sr.color = Color.blue;
-					break;
+                    _moneyValue = 0;
+                    break;
 			}
 		}
 	}
