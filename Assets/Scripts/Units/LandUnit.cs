@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 
 public class LandUnit : BaseUnit {
-
-
-
     public int Damage;
     public int Range;
 

@@ -8,18 +8,12 @@ public class Board : MonoBehaviour {
 	public int BoardDimensions;
 	public GameObject[,] _tiles;
 
-	// Use this for initialization
 	void Awake () {
 		_tiles = new GameObject[BoardDimensions, BoardDimensions];
 		for (int x = 0; x < _tiles.GetLength (0); x++)
 			for (int y = 0; y < _tiles.GetLength (1); y++)
 				_tiles [x, y] = CreateTile (x, y);
 		GetSurroundingTiles();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	void GetSurroundingTiles() {
@@ -65,7 +59,6 @@ public class Board : MonoBehaviour {
 		Node node = go.GetComponent<Node> ();
 		node.X = posX;
 		node.Y = posY;
-
 		return go;
 	}
 }
