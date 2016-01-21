@@ -20,30 +20,47 @@ public class Board : MonoBehaviour {
 		GetSurroundingTiles();
 	}
 
-	void GetSurroundingTiles() {
-		for (int x = 0; x < _tiles.GetLength (0); x++)
-			for (int y = 0; y < _tiles.GetLength (1); y++) {
-				Node tile = _tiles [x, y].GetComponent<Node> ();
-				if (x > 0)
-					tile.Left = _tiles [x -1 , y].GetComponent<Node> ();
-				if (x < BoardDimensions-1)
-					tile.Right = _tiles [x + 1, y].GetComponent<Node> ();
-				if (y > 0)
-					tile.Up = _tiles [x, y - 1].GetComponent<Node> ();
-				if (y < BoardDimensions-1)
-					tile.Down = _tiles [x, y + 1].GetComponent<Node> ();
-			}
+	GameObject CreateTile(int posX, int posY)
+	{
+		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
+		go.transform.SetParent (transform);
+		TileController tile = go.GetComponent<TileController> ();
+		tile.Environment = GetEnvironment (posX, posY);
+		tile.Position = new Vector2 (posX, posY);
+		return go;
 	}
 
-	Environment GetEnvironment(int posX, int posY) {
-		if (posY < Math.Floor(BoardDimensions * 0.4f)) {
+	void GetSurroundingTiles()
+	{
+		for (int x = 0; x < _tiles.GetLength (0); x++)
+		{
+			for (int y = 0; y < _tiles.GetLength (1); y++)
+			{
+				TileController tile = _tiles [x, y].GetComponent<TileController> ();
+				if (x > 0)
+					tile.Left = _tiles [x - 1, y].GetComponent<TileController> ();
+				if (x < BoardDimensions - 1)
+					tile.Right = _tiles [x + 1, y].GetComponent<TileController> ();
+				if (y > 0)
+					tile.Up = _tiles [x, y - 1].GetComponent<TileController> ();
+				if (y < BoardDimensions - 1)
+					tile.Down = _tiles [x, y + 1].GetComponent<TileController> ();
+			}
+		}
+	}
+
+	Environment GetEnvironment(int posX, int posY)
+	{
+		if (posY < Math.Floor(BoardDimensions * 0.4f))
+		{
 			if (posX < Math.Floor(BoardDimensions * 0.4f))
 				return Environment.Desert;
 			if (posX > BoardDimensions * 0.6f)
 				return Environment.Forest;
 			return Environment.Water;
 		}
-		if (posY > BoardDimensions * 0.6f) {
+		if (posY > BoardDimensions * 0.6f)
+		{
 			if (posX < Math.Floor(BoardDimensions * 0.4f))
 				return Environment.Swamp;
 			if (posX > BoardDimensions * 0.6f)
@@ -53,17 +70,6 @@ public class Board : MonoBehaviour {
 		if (posX < Math.Floor(BoardDimensions * 0.4f) || posX > BoardDimensions * 0.6f)
 			return Environment.Water;
 		return Environment.Island;
-	}
-
-	GameObject CreateTile(int posX, int posY) {
-		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
-		go.transform.parent = transform;
-		TileController tile = go.GetComponent<TileController> ();
-		tile.Environment = GetEnvironment (posX, posY);
-		Node node = go.GetComponent<Node> ();
-		node.X = posX;
-		node.Y = posY;
-		return go;
 	}
 
     internal void OnTileSelected(GameObject tile) {
@@ -88,7 +94,7 @@ public class Board : MonoBehaviour {
 
         if (SelectedTile != null) {
             TileController firstController = SelectedTile.GetComponent<TileController>();
-            if (firstController.Unit != null && secondController.GetTraversable(firstController.Unit)) {
+            if (firstController.Unit != null && secondController.IsTraversable(firstController.Unit)) {
                 // TODO: Move unit
                 SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);
                 return;
