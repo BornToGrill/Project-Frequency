@@ -17,14 +17,9 @@ public class Player {
         foreach(GameObject tileObject in board._tiles)
         {
             TileController controller = tileObject.GetComponent<TileController>();
-            if (controller.Unit != null && controller.Unit.Owner == this) {
-                if (controller.Environment == StartEnvironment) {
-                    MoneyAmount += 50;
-                } else if (controller.Environment == Environment.Island) {
-                    MoneyAmount += 150;
-                } else if (controller.Environment != Environment.Water){
-                    MoneyAmount += 100;
-                } 
+            if (controller.Unit != null && controller.Unit.Owner == this)
+            {
+                MoneyAmount += controller.GetMonetaryValue(StartEnvironment);
             }
         }
 
