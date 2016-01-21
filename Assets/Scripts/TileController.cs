@@ -8,8 +8,9 @@ public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
 public class TileController : MonoBehaviour {
 
     private Environment _environment;
-    internal int _moneyValue;
+    private int _monetaryValue;
     internal BaseUnit Unit;
+    
 
     public Environment Environment {
 		get {return _environment;}
@@ -19,32 +20,37 @@ public class TileController : MonoBehaviour {
 			switch (_environment) {
 				case Environment.Swamp:
 					sr.color = Color.gray;
-                    _moneyValue = 50;
+                    _monetaryValue = 50;
 					break;
 				case Environment.Ice:
 					sr.color = Color.white;
-                    _moneyValue = 50;
+                    _monetaryValue = 50;
                     break;
 				case Environment.Desert:
 					sr.color = Color.yellow;
-                    _moneyValue = 50;
+                    _monetaryValue = 50;
                     break;
 				case Environment.Forest:
 					sr.color = Color.green;
-                    _moneyValue = 50;
+                    _monetaryValue = 50;
                     break;
 				case Environment.Island:
 					sr.color = Color.black;
-                    _moneyValue = 150; 
+                    _monetaryValue = 150;
                     break;
 				case Environment.Water:
 					sr.color = Color.blue;
-                    _moneyValue = 0;
+                    _monetaryValue = 0;
                     break;
 			}
 		}
 	}
 
+    public int GetMonetaryValue(Environment playerEnvironment) {
+        if (playerEnvironment == Environment || Environment == Environment.Island)
+            return _monetaryValue;
+        return _monetaryValue * 2;
+    }
     public bool GetTraversable() {
         return Unit == null;
     }
