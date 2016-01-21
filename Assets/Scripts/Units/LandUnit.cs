@@ -45,7 +45,6 @@ public class LandUnit : BaseUnit {
         firstTile.GetComponent<SpriteRenderer>().color = Color.black;
         return DeselectStatus.None;
         // TODO: Highlight own tile.
-        throw new System.NotImplementedException();
     }
 
     public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {

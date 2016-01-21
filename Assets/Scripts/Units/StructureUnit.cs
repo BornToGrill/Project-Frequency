@@ -39,10 +39,10 @@ public class StructureUnit : BaseUnit {
 	}
 
     public override DeselectStatus OnFirstSelected(GameObject firstTile) {
-        throw new NotImplementedException();
+        return DeselectStatus.Both;
     }
 
     public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
-        throw new NotImplementedException();
+        return DeselectStatus.Both;
     }
 }
