@@ -9,8 +9,7 @@ public class ActionBarController : MonoBehaviour {
     public GameObject ActionButtonPrefab;
     private List<GameObject> _buttons;
 
-    void Start ()
-    {
+    void Start () { 
         _buttons = new List<GameObject>();
     }
     	
@@ -26,7 +25,6 @@ public class ActionBarController : MonoBehaviour {
         button.transform.SetParent(transform);
         button.GetComponent<ActionButtonController>().Initialize(text, callback, offset);
         _buttons.Add(button);
-        Debug.Log(_buttons.Count);
     }
 
     public void Clear()

@@ -110,8 +110,9 @@ public class LandUnit : BaseUnit {
             path[i].Unit.gameObject.transform.position = path[i].transform.position;
             previous = path[i];
         }
-        previous.Unit = null;
+        GameObject.Destroy(previous.Unit.gameObject);
         path.Last().Unit.StackSize += this.StackSize;
+
         return DeselectStatus.Both;
     }
 }

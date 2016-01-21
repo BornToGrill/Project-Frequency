@@ -15,6 +15,10 @@ public abstract class BaseUnit : MonoBehaviour {
 
     public int MaxUnitStack;
 
+    void Awake() {
+        StackSize = 1;
+    }
+
     public virtual int GetCost(Environment environment) {
         return environment == DiscountEnvironment ? DiscountCost : Cost;
     }

@@ -9,7 +9,7 @@ public class TileController : MonoBehaviour {
     private int _monetaryValue;
     private Environment _environment;
 
-    internal BaseUnit Unit;
+    public BaseUnit Unit;
 	internal TileController Up, Down, Left, Right;
 	internal Vector2 Position;
 
@@ -60,13 +60,13 @@ public class TileController : MonoBehaviour {
 	}
 
     public bool IsTraversable(GameObject unit) {
-        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
+        BaseUnit unitBase = unit.GetComponent<TileController>().Unit;
         if (unitBase.TraversableEnvironments == null)
             throw new NullReferenceException("No traversable environment set");
         if (!unitBase.TraversableEnvironments.Contains(this.Environment))
             return false;
         if (this.Unit == null)
             return true;
-        return gameObject.name == unit.name && (unitBase.StackSize + unitBase.StackSize < unitBase.MaxUnitStack);
+        return this.Unit.name == unitBase.name && (this.Unit.StackSize + unitBase.StackSize <= this.Unit.MaxUnitStack);
     }
 }
