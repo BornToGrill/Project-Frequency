@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
     private Text _buttonText;
     private Callback _callback;
+	private string _id;
 
     void Awake()
     {
@@ -15,12 +16,13 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
 	public void OnPointerClick(PointerEventData data)
     {
         if (_callback != null)
-            _callback.Invoke();
+            _callback.Invoke(_id);
     }
 
-    public void Initialize(string text, Callback callback, float offset)
+	public void Initialize(string text, Callback callback, float offset)
     {
-        this._callback = callback;
+        _callback = callback;
+		_id = text;
         _buttonText.text = text;
         RectTransform rectTransform = transform as RectTransform;
         rectTransform.pivot = new Vector2(0.5f, 0.5f); 
