@@ -20,4 +20,7 @@ public abstract class BaseUnit : MonoBehaviour {
     }
 
     public abstract void DamageUnit(int damage);
+
+    public abstract DeselectStatus OnFirstSelected(GameObject firstTile);
+    public abstract DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile);
 }

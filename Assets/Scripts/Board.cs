@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+public enum DeselectStatus { First, Second, Both, None }
+
 public class Board : MonoBehaviour {
 	public GameObject TilePrefab;
 	public int BoardDimensions;
@@ -66,7 +68,20 @@ public class Board : MonoBehaviour {
 
     internal void OnTileSelected(GameObject tile) {
 
-        TileController secondController = tile.GetComponent<TileController>();
+        if (SelectedTile == null) {
+            TileController selected = tile.GetComponent<TileController>();
+            if (selected.Unit != null) {
+                DeselectStatus status = selected.Unit.OnFirstSelected(tile);
+                DeselectTile(status, tile);
+            }
+        }
+        else {
+            TileController first = SelectedTile.GetComponent<TileController>();
+            DeselectStatus status = first.Unit.OnSecondClicked(SelectedTile, tile);
+
+        }
+        //TODO: REMOVE BELOW
+        /*TileController secondController = tile.GetComponent<TileController>();
 
         // TODO: Not traversable. Not a valid spawn point etc.
         // TODO: In BaseUnit, TileSelected method (with second selected tile) That checks what the base unit can do.
@@ -98,13 +113,27 @@ public class Board : MonoBehaviour {
             tile.GetComponent<SpriteRenderer>().color = Color.black;
             // // // // //
             // secondController.OnFirstTileSelect();
-        }
+        }*/
     }
 
-    private void DeselectTile() {
-        if (SelectedTile == null)
-            return;
-        SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile); //TODO: Remove object parameter. Can be called from selectioncontroller.gameObject
-        SelectedTile = null;
+    private void DeselectTile(DeselectStatus status, GameObject secondTile) {
+        switch (status) {
+            case DeselectStatus.First:
+                if (SelectedTile != null) {
+                    SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);//TODO: Remove object parameter. Can be called from selectioncontroller.gameObject
+                    SelectedTile = null;
+                }
+                break;
+            case DeselectStatus.Second:
+                secondTile.GetComponent<SelectionController>().OnObjectDeselect(secondTile);
+                break;
+            case DeselectStatus.Both:
+                secondTile.GetComponent<SelectionController>().OnObjectDeselect(secondTile);
+                SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);
+                SelectedTile = null;
+                break;
+            case DeselectStatus.None:
+                break;
+        }
     }
 }

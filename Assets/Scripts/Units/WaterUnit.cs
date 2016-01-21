@@ -33,4 +33,12 @@ public class WaterUnit : BaseUnit {
         GameObject.Destroy(gameObject);
         // TODO: Death check.
     }
+
+    public override DeselectStatus OnFirstSelected(GameObject firstTile) {
+        throw new NotImplementedException();
+    }
+
+    public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
+        throw new NotImplementedException();
+    }
 }
