@@ -70,17 +70,6 @@ public class Board : MonoBehaviour {
 		return Environment.Island;
 	}
 
-	GameObject CreateTile(int posX, int posY) {
-		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
-		go.transform.parent = transform;
-		TileController tile = go.GetComponent<TileController> ();
-		tile.Environment = GetEnvironment (posX, posY);
-		Node node = go.GetComponent<Node> ();
-		node.X = posX;
-		node.Y = posY;
-		return go;
-	}
-
     internal void OnTileSelected(GameObject tile) {
 
         TileController secondController = tile.GetComponent<TileController>();
@@ -90,7 +79,7 @@ public class Board : MonoBehaviour {
 
         if (SelectedTile != null) {
             TileController firstController = SelectedTile.GetComponent<TileController>();
-            if (firstController.Unit != null && secondController.GetTraversable(firstController.Unit)) {
+            if (firstController.Unit != null && secondController.IsTraversable(firstController.Unit)) {
                 // TODO: Move unit
                 SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);
                 return;
