@@ -11,13 +11,30 @@ public class Player {
     public Environment StartEnvironment;
 	public List<GameObject> units;
 
-    void GenerateMoney() {
-        throw new System.NotImplementedException();
+    private void GenerateMoney() {
+        //throw new System.NotImplementedException();
+        Board board = GameObject.Find("Board").GetComponent<Board>();
+        foreach(GameObject tileObject in board._tiles)
+        {
+            TileController controller = tileObject.GetComponent<TileController>();
+            if (controller.Unit != null && controller.Unit.Owner == this) {
+                if (controller.Environment == StartEnvironment) {
+                    MoneyAmount += 50;
+                } else if (controller.Environment == Environment.Island) {
+                    MoneyAmount += 150;
+                } else if (controller.Environment != Environment.Water){
+                    MoneyAmount += 100;
+                } 
+            }
+        }
+
+
     }
+
 
 	public Player(int x) {
 		Number = x;
-		MoneyAmount = 500;
+		MoneyAmount += 500;
 
 		switch (Number) {
 		case 1:
