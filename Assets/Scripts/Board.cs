@@ -8,8 +8,9 @@ public class Board : MonoBehaviour {
 	public int BoardDimensions;
 	public GameObject[,] _tiles;
 
-	void Awake ()
-	{
+    internal GameObject SelectedTile;
+
+	void Awake () {
 		_tiles = new GameObject[BoardDimensions, BoardDimensions];
 		for (int x = 0; x < _tiles.GetLength (0); x++)
 			for (int y = 0; y < _tiles.GetLength (1); y++)
@@ -68,4 +69,59 @@ public class Board : MonoBehaviour {
 			return Environment.Water;
 		return Environment.Island;
 	}
+
+	GameObject CreateTile(int posX, int posY) {
+		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
+		go.transform.parent = transform;
+		TileController tile = go.GetComponent<TileController> ();
+		tile.Environment = GetEnvironment (posX, posY);
+		Node node = go.GetComponent<Node> ();
+		node.X = posX;
+		node.Y = posY;
+		return go;
+	}
+
+    internal void OnTileSelected(GameObject tile) {
+
+        TileController secondController = tile.GetComponent<TileController>();
+
+        // TODO: Not traversable. Not a valid spawn point etc.
+        // TODO: In BaseUnit, TileSelected method (with second selected tile) That checks what the base unit can do.
+
+        if (SelectedTile != null) {
+            TileController firstController = SelectedTile.GetComponent<TileController>();
+            if (firstController.Unit != null && secondController.GetTraversable(firstController.Unit)) {
+                // TODO: Move unit
+                SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);
+                return;
+            }
+
+            if (firstController.Unit != null && secondController.Unit != null) {
+                if (firstController.Unit.Owner != secondController.Unit.Owner) {
+                    // TODO: Range check. Maybe in attack func?
+                    if (firstController.Unit is LandUnit)
+                        secondController.Unit.DamageUnit(((LandUnit) firstController.Unit).Damage);
+                    DeselectTile();
+                    return;
+                }
+                DeselectTile();
+                return;
+            }
+            DeselectTile();
+        }
+        else {
+            // Temporary
+            SelectedTile = tile;
+            tile.GetComponent<SpriteRenderer>().color = Color.black;
+            // // // // //
+            // secondController.OnFirstTileSelect();
+        }
+    }
+
+    private void DeselectTile() {
+        if (SelectedTile == null)
+            return;
+        SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile); //TODO: Remove object parameter. Can be called from selectioncontroller.gameObject
+        SelectedTile = null;
+    }
 }
