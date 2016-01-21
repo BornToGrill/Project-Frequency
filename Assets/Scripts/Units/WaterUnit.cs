@@ -1,7 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class WaterUnit : BaseUnit {
+
+    private int _stackSize;
+
+    internal override int StackSize {
+        get { return _stackSize; }
+        set {
+            if (value != 1)
+                throw new InvalidOperationException("Only 1 water unit allowed per tile");
+            _stackSize = value;
+        }
+    }
 
     internal BaseUnit CarryUnit;
 
@@ -20,5 +32,13 @@ public class WaterUnit : BaseUnit {
         Health = 0;
         GameObject.Destroy(gameObject);
         // TODO: Death check.
+    }
+
+    public override DeselectStatus OnFirstSelected(GameObject firstTile) {
+        throw new NotImplementedException();
+    }
+
+    public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
+        throw new NotImplementedException();
     }
 }
