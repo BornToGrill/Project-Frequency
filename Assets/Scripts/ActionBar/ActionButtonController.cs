@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+<<<<<<< HEAD
 using UnityEngine.EventSystems;
 
 public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
@@ -27,4 +28,25 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
         rectTransform.localScale = new Vector3(1, 1, 0);
         rectTransform.anchoredPosition = new Vector2(offset+50, 50);
     }
+=======
+
+public class ActionButtonController : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+        Transform text = transform.Find("ActionButtonText");
+        GameObject textgo = text.gameObject;
+        Text texttext = textgo.GetComponent<Text>();
+        texttext.text = "hagrid";
+
+
+
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+>>>>>>> tilevalues
 }

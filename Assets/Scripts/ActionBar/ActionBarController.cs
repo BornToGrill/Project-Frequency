@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+<<<<<<< HEAD
 using System.Collections.Generic;
 
 public delegate void Callback();
@@ -35,4 +36,13 @@ public class ActionBarController : MonoBehaviour {
             GameObject.Destroy(go);
         _buttons.Clear();
     }
+=======
+
+public class ActionBarController : MonoBehaviour {
+
+	// Update is called once per frame
+	void Update () {
+	    
+	}
+>>>>>>> tilevalues
 }
