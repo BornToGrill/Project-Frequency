@@ -4,7 +4,7 @@ public abstract class BaseUnit : MonoBehaviour {
 
     internal abstract int StackSize { get; set; }
 
-    internal Players Owner;
+    internal Player Owner;
 
     public int Health;
     public int Cost;
