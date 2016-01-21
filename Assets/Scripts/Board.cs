@@ -17,20 +17,6 @@ public class Board : MonoBehaviour {
 		GetSurroundingTiles();
 	}
 
-
-	private bool triggercheck = true;
-
-	void Update() {
-		if (triggercheck && Input.GetKeyDown("space")) {
-			triggercheck = false;
-			List<TileController> x = Pathfinding.FindPath (_tiles [0, 0].GetComponent<TileController>(), _tiles [5, 5].GetComponent<TileController>());
-			Debug.Log (x.Count);
-			foreach (TileController tile in x) {
-				tile.Environment = Environment.None;
-			}
-		}
-	}
-
 	GameObject CreateTile(int posX, int posY)
 	{
 		GameObject go = Instantiate (TilePrefab, new Vector3(posX, posY, 0), new Quaternion()) as GameObject;
