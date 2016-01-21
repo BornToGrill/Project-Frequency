@@ -14,7 +14,7 @@ public class BaseStructure : StructureUnit {
 
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
         foreach (GameObject unit in BuildableUnits) {
-            actionBar.AddButton(unit.name, CreateSoldier); // TODO: TEMP
+            actionBar.AddButton(unit.name, CreateUnit); // TODO: TEMP
         }
 
         return DeselectStatus.None;
@@ -35,9 +35,8 @@ public class BaseStructure : StructureUnit {
         return DeselectStatus.Both;
     }
 
-    public void CreateSoldier() {
-        //TODO: TEMP
+    public void CreateUnit(string unitName) {
         _isBuilding = true;
-        _buildType = BuildableUnits.Single(x => x.name == "Soldier");
+        _buildType = BuildableUnits.Single(x => x.name == unitName);
     }
 }
