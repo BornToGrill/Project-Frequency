@@ -18,6 +18,11 @@ public class Board : MonoBehaviour {
 			for (int y = 0; y < _tiles.GetLength (1); y++)
 				_tiles [x, y] = CreateTile (x, y);
 		GetSurroundingTiles();
+
+        //TEMP
+	    _tiles[1, 1].GetComponent<TileController>().Unit = GameObject.Find("Soldier").GetComponent<BaseUnit>();
+	    _tiles[1, 1].GetComponent<TileController>().Unit.gameObject.transform.position = _tiles[1, 1].transform.position;
+	    //TEMP
 	}
 
 	GameObject CreateTile(int posX, int posY)
@@ -78,12 +83,14 @@ public class Board : MonoBehaviour {
             TileController selected = tile.GetComponent<TileController>();
             if (selected.Unit != null) {
                 DeselectStatus status = selected.Unit.OnFirstSelected(tile);
+                SelectedTile = tile;
                 DeselectTile(status, tile);
             }
         }
         else {
             TileController first = SelectedTile.GetComponent<TileController>();
             DeselectStatus status = first.Unit.OnSecondClicked(SelectedTile, tile);
+            DeselectTile(status, tile);
 
         }
         //TODO: REMOVE BELOW
@@ -122,7 +129,7 @@ public class Board : MonoBehaviour {
         }*/
     }
 
-    private void DeselectTile(DeselectStatus status, GameObject secondTile) {
+    private void DeselectTile(DeselectStatus status, GameObject lastSelected) {
         switch (status) {
             case DeselectStatus.First:
                 if (SelectedTile != null) {
@@ -131,10 +138,10 @@ public class Board : MonoBehaviour {
                 }
                 break;
             case DeselectStatus.Second:
-                secondTile.GetComponent<SelectionController>().OnObjectDeselect(secondTile);
+                lastSelected.GetComponent<SelectionController>().OnObjectDeselect(lastSelected);
                 break;
             case DeselectStatus.Both:
-                secondTile.GetComponent<SelectionController>().OnObjectDeselect(secondTile);
+                lastSelected.GetComponent<SelectionController>().OnObjectDeselect(lastSelected);
                 SelectedTile.GetComponent<SelectionController>().OnObjectDeselect(SelectedTile);
                 SelectedTile = null;
                 break;

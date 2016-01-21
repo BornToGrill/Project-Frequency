@@ -42,17 +42,15 @@ public class TileController : MonoBehaviour {
 		}
 	}
 
-    public bool IsTraversable() {
-        return Unit == null;
-    }
+    public bool IsTraversable(GameObject unit) {
+        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
 
-    public bool IsTraversable(BaseUnit unit) {
-        if (unit.TraversableEnvironments == null)
+        if (unitBase.TraversableEnvironments == null)
             throw new NullReferenceException("No traversable environment set");
-        if (!unit.TraversableEnvironments.Contains(this.Environment))
+        if (!unitBase.TraversableEnvironments.Contains(this.Environment))
             return false;
         if (this.Unit == null)
             return true;
-        return this.Unit.GetType() == unit.GetType() && (unit.StackSize < unit.MaxUnitStack);
+        return gameObject.name == unit.name && (unitBase.StackSize + unitBase.StackSize < unitBase.MaxUnitStack);
     }
 }
