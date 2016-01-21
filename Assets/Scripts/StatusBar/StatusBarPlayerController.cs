@@ -16,7 +16,7 @@ public class StatusBarPlayerController : MonoBehaviour {
 		_generateAmount = transform.GetChild (4).GetComponent<Text>();
 
 		_player = player;
-		rt.parent = parent;
+	    rt.SetParent(parent);
 		rt.localScale = new Vector3 (1, 1);
 		rt.anchoredPosition = new Vector2 (rt.rect.width * (player.PlayerId - 1), -10.0f);
 		UpdateStats ();
