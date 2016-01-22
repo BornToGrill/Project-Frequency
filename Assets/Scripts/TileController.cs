@@ -3,13 +3,13 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
-public enum Environment {Swamp, Ice, Desert, Forest, Water, Island};
+public enum Environment {Swamp, Ice, Desert, Forest, Water, Island, None};
 
 public class TileController : MonoBehaviour {
-
     private Environment _environment;
-
     internal BaseUnit Unit;
+	internal TileController Up, Down, Left, Right;
+	internal Vector2 Position;
 
     public Environment Environment {
 		get {return _environment;}
@@ -35,15 +35,18 @@ public class TileController : MonoBehaviour {
 				case Environment.Water:
 					sr.color = Color.blue;
 					break;
-			}
+				case Environment.None:
+					sr.color = Color.clear;
+					break;
+			}	
 		}
 	}
 
-    public bool GetTraversable() {
+    public bool IsTraversable() {
         return Unit == null;
     }
 
-    public bool GetTraversable(BaseUnit unit) {
+    public bool IsTraversable(BaseUnit unit) {
         if (unit.TraversableEnvironments == null)
             throw new NullReferenceException("No traversable environment set");
         if (!unit.TraversableEnvironments.Contains(this.Environment))
@@ -52,6 +55,4 @@ public class TileController : MonoBehaviour {
             return true;
         return this.Unit.GetType() == unit.GetType() && (unit.StackSize < unit.MaxUnitStack);
     }
-
-
 }
