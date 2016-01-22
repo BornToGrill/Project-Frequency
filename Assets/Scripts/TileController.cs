@@ -22,31 +22,19 @@ public class TileController : MonoBehaviour {
 			SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer> ();
 			switch (_environment) {
 				case Environment.Swamp:
-					sr.color = Color.gray;
-                    _monetaryValue = 50;
-					break;
 				case Environment.Ice:
-					sr.color = Color.white;
-                    _monetaryValue = 50;
-                    break;
 				case Environment.Desert:
-					sr.color = Color.yellow;
-                    _monetaryValue = 50;
-                    break;
 				case Environment.Forest:
-					sr.color = Color.green;
                     _monetaryValue = 50;
                     break;
 				case Environment.Island:
-					sr.color = Color.black;
                     _monetaryValue = 150;
                     break;
 				case Environment.Water:
-					sr.color = Color.blue;
                     _monetaryValue = 0;
 					break;
-			}	
-			sr.color = Color.black;
+			}
+		    sr.color = new Color(1, 1, 1, 0.5f); // 50% transparency
 		}
 	}
 

@@ -42,7 +42,8 @@ public class LandUnit : BaseUnit {
     }
 
     public override DeselectStatus OnFirstSelected(GameObject firstTile) {
-        firstTile.GetComponent<SpriteRenderer>().color = Color.black;
+        //firstTile.GetComponent<SpriteRenderer>().color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f); // Blue
+        firstTile.GetComponent<SpriteRenderer>().color = new Color(0.2274509803921569f, 0.7686274509803922f, 0.1529411764705882f, 1f); // Green
         return DeselectStatus.None;
         // TODO: Highlight own tile.
     }

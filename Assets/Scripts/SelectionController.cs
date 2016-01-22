@@ -1,9 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 
-public class SelectionController : MonoBehaviour, IPointerClickHandler {
+public class SelectionController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
 
     public void OnPointerClick(PointerEventData e) {
@@ -13,9 +12,16 @@ public class SelectionController : MonoBehaviour, IPointerClickHandler {
                 "SelectionController class is to be used on the Tile Prefab with a TileController");
         Board board = tile.gameObject.transform.parent.gameObject.GetComponent<Board>();
         board.OnTileSelected(tile.gameObject);
-
-        // TODO:
     }
+
+    public void OnPointerEnter(PointerEventData eventData) {
+
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
+
+    }
+
 
     internal void OnObjectDeselect() {
         var tileControl = gameObject.GetComponent<TileController>();
