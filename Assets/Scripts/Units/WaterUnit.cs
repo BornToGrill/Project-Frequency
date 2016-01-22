@@ -41,4 +41,12 @@ public class WaterUnit : BaseUnit {
     public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
         throw new NotImplementedException();
     }
+
+    public override void OnMouseEnter(GameObject firstTile, GameObject secondTile) {
+        throw new NotImplementedException();
+    }
+
+    public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {
+        throw new NotImplementedException();
+    }
 }

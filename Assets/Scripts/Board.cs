@@ -73,7 +73,7 @@ public class Board : MonoBehaviour {
 		return Environment.Island;
 	}
 
-    internal void OnTileSelected(GameObject tile) {
+    internal void OnTileClicked(GameObject tile) {
 
         if (SelectedTile == null) {
             TileController selected = tile.GetComponent<TileController>();
@@ -88,6 +88,25 @@ public class Board : MonoBehaviour {
             DeselectStatus status = first.Unit.OnSecondClicked(SelectedTile, tile);
             DeselectTile(status, tile);
 
+        }
+    }
+
+    internal void OnTileEnter(GameObject tile) {
+        if (SelectedTile == null) {
+            //tile.GetComponent<TileController>().OnMouseEnter();
+        }
+        else {
+            SelectedTile.GetComponent<TileController>().Unit.OnMouseEnter(SelectedTile, tile);
+        }
+    }
+
+    internal void OnTileLeave(GameObject tile) {
+        if (SelectedTile == null) {
+            // Checking if null in case the tile has been selected.
+            //tile.GetComponent<TileController>().OnMouseLeave();
+        }
+        else {
+            SelectedTile.GetComponent<TileController>().Unit.OnMouseLeave(SelectedTile, tile);
         }
     }
 

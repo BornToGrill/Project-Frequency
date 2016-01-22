@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public class LandUnit : BaseUnit {
+
     public int Damage;
     public int Range;
 
@@ -10,6 +11,7 @@ public class LandUnit : BaseUnit {
     private int _stackHealth;
     private int _stackDamage;
 
+    private List<TileController> _currentlyModified = new List<TileController>(); 
 
     internal override int StackSize {
         get { return _stackSize; }
@@ -41,6 +43,7 @@ public class LandUnit : BaseUnit {
         // TODO: Death check for all and individual units in stack.
     }
 
+    #region Selection
     public override DeselectStatus OnFirstSelected(GameObject firstTile) {
         //firstTile.GetComponent<SpriteRenderer>().color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f); // Blue
         firstTile.GetComponent<SpriteRenderer>().color = new Color(0.2274509803921569f, 0.7686274509803922f, 0.1529411764705882f, 1f); // Green
@@ -116,4 +119,44 @@ public class LandUnit : BaseUnit {
 
         return DeselectStatus.Both;
     }
+    #endregion
+
+    #region Mouse Enter/Leave
+
+    public override void OnMouseEnter(GameObject firstTile, GameObject secondTile) {
+        if (firstTile == secondTile)
+            return;
+        TileController first = firstTile.GetComponent<TileController>();
+        TileController second = secondTile.GetComponent<TileController>();
+        List<TileController> path = Pathfinding.FindPath(first, second);
+        path.Reverse(); //TODO: REMOVE
+        // TODO: Check for remaining moves.
+
+        if (second.Unit == null || second.IsTraversable(first.gameObject)) {
+            _currentlyModified = path.GetRange(1, path.Count - 1);
+            for (int i = 0; i < _currentlyModified.Count; i++) {
+                SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
+                if(i == _currentlyModified.Count)
+                    render.color = new Color(0.2274509803921569f, 0.7686274509803922f, 0.1529411764705882f, 1f);
+                else
+                    render.color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f); //TODO: Make public settable.
+            }
+        }
+        else {
+            _currentlyModified = path.GetRange(1, path.Count - 1);
+            for (int i = 0; i < _currentlyModified.Count + 1 - Range; i++) {
+                SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
+                render.color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f);
+            }
+            second.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+    }
+
+    public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {
+        foreach (TileController element in _currentlyModified)
+            element.Environment = element.Environment;
+    }
+
+    #endregion
 }
