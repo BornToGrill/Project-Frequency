@@ -46,6 +46,7 @@ public class TileController : MonoBehaviour {
                     _monetaryValue = 0;
 					break;
 			}	
+			sr.color = Color.black;
 		}
 	}
 
