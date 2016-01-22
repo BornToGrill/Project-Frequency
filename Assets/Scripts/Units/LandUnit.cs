@@ -64,7 +64,6 @@ public class LandUnit : BaseUnit {
         TileController second = secondTile.GetComponent<TileController>();
 
         var path = Pathfinding.FindPath(first, second);
-        path.Reverse(); // TODO: Fix pathfinding reversion.
         // if (path.Count > Owner.RemainingMoves) // TODO: Remainin moves check.
         //    return DeselectStatus.Both;
 
@@ -134,7 +133,6 @@ public class LandUnit : BaseUnit {
         TileController first = firstTile.GetComponent<TileController>();
         TileController second = secondTile.GetComponent<TileController>();
         List<TileController> path = Pathfinding.FindPath(first, second);
-        path.Reverse(); //TODO: REMOVE
         // TODO: Check for remaining moves.
 
         if (second.Unit == null || second.IsTraversable(first.gameObject)) {

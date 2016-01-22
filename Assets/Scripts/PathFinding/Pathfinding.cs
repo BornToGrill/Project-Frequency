@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public static class Pathfinding {
 	static List<Node> _openList = new List<Node> ();
@@ -10,23 +11,30 @@ public static class Pathfinding {
 	{
 		if (startTile == endTile)
 			return new List<TileController> ();
+
 		Node startNode = new Node (startTile);
 		Node endNode = new Node (endTile);
-		endNode = PathFinder(startNode, endNode);
+		endNode = PathFinder(startNode, endNode, startNode, false);
+		if (endNode.Tile != endTile) {
+			_openList.Clear ();
+			_closedList.Clear ();
+			endNode = new Node (endTile);
+			endNode = PathFinder(startNode, endNode, startNode, true);
+		}
 
 		_openList.Clear ();
 		_closedList.Clear ();
 		return ConvertNodesToList (endNode);
 	}
 
-	static Node PathFinder(Node currentNode, Node endNode)
+	static Node PathFinder(Node currentNode, Node endNode, Node startNode, bool ignoreEnvironment)
 	{
 		if (currentNode.Tile == endNode.Tile)
 			return currentNode;
 		_openList.Remove (currentNode);
 		_closedList.Add (currentNode.Tile);
 
-		UpdateSurroundingNodes (currentNode, endNode);
+		UpdateSurroundingNodes (currentNode, endNode, startNode, ignoreEnvironment);
 		if (_openList.Count < 1)
 			return currentNode;
 
@@ -37,34 +45,33 @@ public static class Pathfinding {
 			else if (cheapestNode.FCost == nextNode.FCost && cheapestNode.HCost > nextNode.HCost)
 				cheapestNode = nextNode;
 
-		return PathFinder (cheapestNode, endNode);
+		return PathFinder (cheapestNode, endNode, startNode, ignoreEnvironment);
 	}
 
-	static void UpdateSurroundingNodes(Node currentNode, Node endNode)
+	static void UpdateSurroundingNodes(Node currentNode, Node endNode, Node startNode, bool ignoreEnvironment)
 	{
-		if (currentNode.Tile.Left != null && !_closedList.Contains (currentNode.Tile.Left))
-		{
-			Node node = new Node (currentNode.Tile.Left);
-			node.UpdateValues (currentNode, endNode);
-			_openList.Add (node);
-		}
-		if (currentNode.Tile.Right != null && !_closedList.Contains (currentNode.Tile.Right))
-		{
-			Node node = new Node (currentNode.Tile.Right);
-			node.UpdateValues (currentNode, endNode);
-			_openList.Add(node);
-		}
-		if (currentNode.Tile.Up != null && !_closedList.Contains (currentNode.Tile.Up))
-		{
-			Node node = new Node (currentNode.Tile.Up);
-			node.UpdateValues (currentNode, endNode);
-			_openList.Add(node);
-		}
-		if (currentNode.Tile.Down != null && !_closedList.Contains (currentNode.Tile.Down))
-		{
-			Node node = new Node (currentNode.Tile.Down);
-			node.UpdateValues (currentNode, endNode);
-			_openList.Add(node);
+		GameObject unit = startNode.Tile.gameObject;
+		TileController[] surroundingTiles = new [] {
+			currentNode.Tile.Left,
+			currentNode.Tile.Up,
+			currentNode.Tile.Right,
+			currentNode.Tile.Down
+		};
+
+		foreach (TileController tile in surroundingTiles) {
+			if (tile != null && !_closedList.Contains(tile)) {
+				if (ignoreEnvironment) {
+					if (tile.IsTraversableUnitOnly (unit)) {
+						Node node = new Node (tile);
+						node.UpdateValues (currentNode, endNode);
+						_openList.Add (node);
+					}
+				} else if (tile.IsTraversable(unit)) {
+					Node node = new Node (tile);
+					node.UpdateValues (currentNode, endNode);
+					_openList.Add (node);
+				}
+			}
 		}
 	}
 
@@ -74,10 +81,10 @@ public static class Pathfinding {
 		List<TileController> tileList = new List<TileController> ();
 		while (currentNode.Parent != null)
 		{
-			tileList.Add (currentNode.Tile);
+			tileList.Insert (0, currentNode.Tile);
 			currentNode = currentNode.Parent;
 		}
-		tileList.Add (currentNode.Tile);
+		tileList.Insert (0, currentNode.Tile);
 		return tileList;
 	}
 
