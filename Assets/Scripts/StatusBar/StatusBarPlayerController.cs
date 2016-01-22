@@ -11,14 +11,14 @@ public class StatusBarPlayerController : MonoBehaviour {
 
 	public void Initialize(RectTransform parent, Player player) {
 		rt = gameObject.GetComponent<RectTransform> ();
-		transform.GetChild (2).GetComponent<Text> ().text = "P" + player.Number.ToString ();
+		transform.GetChild (2).GetComponent<Text> ().text = "P" + player.PlayerId.ToString ();
 		_goldAmount = transform.GetChild (1).GetComponent<Text>();
 		_generateAmount = transform.GetChild (4).GetComponent<Text>();
 
 		_player = player;
-		rt.parent = parent;
+	    rt.SetParent(parent);
 		rt.localScale = new Vector3 (1, 1);
-		rt.anchoredPosition = new Vector2 (rt.rect.width * (player.Number-1), -10.0f);
+		rt.anchoredPosition = new Vector2 (rt.rect.width * (player.PlayerId - 1), -10.0f);
 		UpdateStats ();
 	}
 

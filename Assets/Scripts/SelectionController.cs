@@ -17,9 +17,10 @@ public class SelectionController : MonoBehaviour, IPointerClickHandler {
         // TODO:
     }
 
-    internal void OnObjectDeselect(GameObject tile) {
-        var tileControl = tile.GetComponent<TileController>();
+    internal void OnObjectDeselect() {
+        var tileControl = gameObject.GetComponent<TileController>();
         tileControl.Environment = tileControl.Environment;
+        GameObject.Find("ActionBar").GetComponent<ActionBarController>().Clear();
     }
 
 

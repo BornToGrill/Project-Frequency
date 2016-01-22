@@ -15,7 +15,7 @@ public class StructureUnit : BaseUnit {
 	}
 
 	public override int GetCost (Environment environment){
-		if (Owner.GetComponent<Player> ().StartEnvironment != environment)
+		if (Owner.StartEnvironment != environment)
 			return DiscountCost;
 		return Cost;
 	}
@@ -37,4 +37,12 @@ public class StructureUnit : BaseUnit {
 			return;
 		}
 	}
+
+    public override DeselectStatus OnFirstSelected(GameObject firstTile) {
+        return DeselectStatus.Both;
+    }
+
+    public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
+        return DeselectStatus.Both;
+    }
 }
