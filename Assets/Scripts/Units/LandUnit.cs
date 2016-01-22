@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class LandUnit : BaseUnit {
 
+    public Color MoveColor;
+    public Color AttackColor;
+    public Color InvalidMoveColor;
+
     public int Damage;
     public int Range;
 
@@ -40,18 +44,19 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
-        // TODO: Death check for all and individual units in stack.
     }
 
     #region Selection
     public override DeselectStatus OnFirstSelected(GameObject firstTile) {
-        //firstTile.GetComponent<SpriteRenderer>().color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f); // Blue
-        firstTile.GetComponent<SpriteRenderer>().color = new Color(0.2274509803921569f, 0.7686274509803922f, 0.1529411764705882f, 1f); // Green
+        firstTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
         return DeselectStatus.None;
-        // TODO: Highlight own tile.
     }
 
     public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
+        foreach (TileController controller in _currentlyModified)
+            controller.Environment = controller.Environment;
+        _currentlyModified.Clear();
+
         if(firstTile == secondTile)
             return DeselectStatus.Both;
 
@@ -136,19 +141,26 @@ public class LandUnit : BaseUnit {
             _currentlyModified = path.GetRange(1, path.Count - 1);
             for (int i = 0; i < _currentlyModified.Count; i++) {
                 SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                if(i == _currentlyModified.Count)
-                    render.color = new Color(0.2274509803921569f, 0.7686274509803922f, 0.1529411764705882f, 1f);
+                if (i == _currentlyModified.Count)
+                    render.color = SelfSelectedColor;
                 else
-                    render.color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f); //TODO: Make public settable.
+                    render.color = MoveColor;
             }
         }
         else {
-            _currentlyModified = path.GetRange(1, path.Count - 1);
-            for (int i = 0; i < _currentlyModified.Count + 1 - Range; i++) {
-                SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                render.color = new Color(0.1529411764705882f, 0.5372549019607843f, 0.7686274509803922f, 1f);
+            if (second.Unit.Owner != Owner) {
+                _currentlyModified = path.GetRange(1, path.Count - 1);
+                for (int i = 0; i < _currentlyModified.Count - Range; i++) {
+                    SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
+                    render.color = MoveColor;
+                }
+                second.GetComponent<SpriteRenderer>().color = AttackColor;
             }
-            second.GetComponent<SpriteRenderer>().color = Color.red;
+            else {
+                _currentlyModified = path.GetRange(1, path.Count - 1);
+                foreach (TileController element in _currentlyModified)
+                    element.gameObject.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+            }
         }
 
     }
@@ -156,6 +168,7 @@ public class LandUnit : BaseUnit {
     public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {
         foreach (TileController element in _currentlyModified)
             element.Environment = element.Environment;
+        _currentlyModified.Clear();
     }
 
     #endregion

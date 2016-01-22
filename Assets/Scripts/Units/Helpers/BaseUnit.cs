@@ -2,6 +2,8 @@
 
 public abstract class BaseUnit : MonoBehaviour {
 
+    public Color SelfSelectedColor;
+
     internal abstract int StackSize { get; set; }
 
     internal Player Owner;
