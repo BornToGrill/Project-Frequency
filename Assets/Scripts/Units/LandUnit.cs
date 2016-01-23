@@ -54,7 +54,9 @@ public class LandUnit : BaseUnit {
 
     public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
         foreach (TileController controller in _currentlyModified)
-            controller.Environment = controller.Environment;
+            controller.ResetSprite();
+        firstTile.GetComponent<TileController>().ResetSprite();
+
         _currentlyModified.Clear();
 
         if(firstTile == secondTile)
@@ -73,7 +75,7 @@ public class LandUnit : BaseUnit {
             if (second.Unit.Owner != Owner)
                 return MoveToAttack(path);
             else {
-                if (second.IsTraversable(first.gameObject))
+                if (second.IsTraversable(gameObject))
                     return MoveToMerge(path);
                 return DeselectStatus.Both;
             }
@@ -135,14 +137,14 @@ public class LandUnit : BaseUnit {
         List<TileController> path = Pathfinding.FindPath(first, second);
         // TODO: Check for remaining moves.
 
-        if (second.Unit == null || second.IsTraversable(first.gameObject)) {
+        if (second.Unit == null || second.IsTraversable(gameObject)) {
             _currentlyModified = path.GetRange(1, path.Count - 1);
             for (int i = 0; i < _currentlyModified.Count; i++) {
                 SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                if (i == _currentlyModified.Count)
-                    render.color = SelfSelectedColor;
-                else
-                    render.color = MoveColor;
+                //if (i == _currentlyModified.Count - 1)
+                //    render.color = SelfSelectedColor;
+                //else
+                render.color = MoveColor;
             }
         }
         else {
@@ -165,7 +167,7 @@ public class LandUnit : BaseUnit {
 
     public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {
         foreach (TileController element in _currentlyModified)
-            element.Environment = element.Environment;
+            element.ResetSprite();
         _currentlyModified.Clear();
     }
 

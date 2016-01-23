@@ -19,7 +19,6 @@ public class TileController : MonoBehaviour {
 		get {return _environment;}
 		set {
 			_environment = value;
-			SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer> ();
 			switch (_environment) {
 				case Environment.Swamp:
 				case Environment.Ice:
@@ -34,9 +33,17 @@ public class TileController : MonoBehaviour {
                     _monetaryValue = 0;
 					break;
 			}
-		    sr.color = new Color(1, 1, 1, 0.5f); // 50% transparency
 		}
 	}
+
+    void Awake() {
+        ResetSprite();
+    }
+
+    public void ResetSprite() {
+        SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
+        sr.color = new Color(1, 1, 1, 0.5f); // 50% transparency
+    }
 
     public int GetMonetaryValue(Environment playerEnvironment) {
         if (playerEnvironment == Environment || Environment == Environment.Island)
@@ -49,7 +56,7 @@ public class TileController : MonoBehaviour {
 	}
 
     public bool IsTraversable(GameObject unit) {
-        BaseUnit unitBase = unit.GetComponent<TileController>().Unit;
+        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
         if (unitBase.TraversableEnvironments == null)
             throw new NullReferenceException("No traversable environment set");
         if (!unitBase.TraversableEnvironments.Contains(this.Environment))
