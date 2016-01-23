@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
@@ -48,9 +47,9 @@ public class GameController : MonoBehaviour {
 	}
 
     void CreateBase(Player owner, Board board, int x, int y) {
-        GameObject go = board._tiles[y, x];
+        GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
-        GameObject baseObject = Instantiate(BasePrefab, new Vector3(x, y), new Quaternion()) as GameObject;
+        GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }

@@ -141,10 +141,10 @@ public class LandUnit : BaseUnit {
             _currentlyModified = path.GetRange(1, path.Count - 1);
             for (int i = 0; i < _currentlyModified.Count; i++) {
                 SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                if (i == _currentlyModified.Count)
-                    render.color = SelfSelectedColor;
-                else
-                    render.color = MoveColor;
+                //if (i == _currentlyModified.Count - 1)
+                //    render.color = SelfSelectedColor;
+                //else
+                render.color = MoveColor;
             }
         }
         else {
