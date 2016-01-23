@@ -65,28 +65,29 @@ public class LandUnit : BaseUnit {
         TileController first = firstTile.GetComponent<TileController>();
         TileController second = secondTile.GetComponent<TileController>();
 
-        var path = Pathfinding.FindPath(first, second);
+        PathFindingResult path = Pathfinding.FindPath(first, second);
         // if (path.Count > Owner.RemainingMoves) // TODO: Remainin moves check.
         //    return DeselectStatus.Both;
 
         if (second.Unit == null)
-            return MoveToEmpty(path);
+            return MoveToEmpty(first, path.Path);
         else {
             if (second.Unit.Owner != Owner)
-                return MoveToAttack(path);
+                return MoveToAttack(first, path.Path);
             else {
                 if (second.IsTraversable(gameObject))
-                    return MoveToMerge(path);
+                    return MoveToMerge(first, path.Path);
                 return DeselectStatus.Both;
             }
         }
     }
 
-    public virtual DeselectStatus MoveToEmpty(List<TileController> path) {
+    public virtual DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
 
         // Loop over path and move to each tile.
         // On each move remove self from last position.
-
+        // TODO: Take into account on all moves that Path list now does not contain own position anymore!
+        start.Unit = null;
         TileController previous = path[0];
         for (int i = 1; i < path.Count; i++) {
             previous.Unit = null;
@@ -97,10 +98,11 @@ public class LandUnit : BaseUnit {
         return DeselectStatus.Both;
     }
 
-    public virtual DeselectStatus MoveToAttack(List<TileController> path) {
+    public virtual DeselectStatus MoveToAttack(TileController start, List<TileController> path) {
         // Move to path - Range tile.
         // Attack.
-
+        if(path.Count - Range > 0)
+            start.Unit = null;
         TileController previous = path[0];
         for (int i = 1; i < path.Count - Range; i++) {
             previous.Unit = null;
@@ -112,9 +114,11 @@ public class LandUnit : BaseUnit {
         return DeselectStatus.Both;
     }
 
-    public virtual DeselectStatus MoveToMerge(List<TileController> path) {
+    public virtual DeselectStatus MoveToMerge(TileController start, List<TileController> path) {
+        start.Unit = null;
+
         TileController previous = path[0];
-        for (int i = 0; i < path.Count - 1; i++) {
+        for (int i = 1; i < path.Count - 1; i++) {
             previous.Unit = null;
             path[i].Unit = this;
             path[i].Unit.gameObject.transform.position = path[i].transform.position;
@@ -134,35 +138,34 @@ public class LandUnit : BaseUnit {
             return;
         TileController first = firstTile.GetComponent<TileController>();
         TileController second = secondTile.GetComponent<TileController>();
-        List<TileController> path = Pathfinding.FindPath(first, second);
+        PathFindingResult path = Pathfinding.FindPath(first, second);
+        _currentlyModified = path.Path;
+
         // TODO: Check for remaining moves.
-
-        if (second.Unit == null || second.IsTraversable(gameObject)) {
-            _currentlyModified = path.GetRange(1, path.Count - 1);
-            for (int i = 0; i < _currentlyModified.Count; i++) {
-                SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                //if (i == _currentlyModified.Count - 1)
-                //    render.color = SelfSelectedColor;
-                //else
-                render.color = MoveColor;
-            }
-        }
+        if (path.FoundEndPoint == false || !path.ValidPath)
+            foreach (var element in _currentlyModified)
+                element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
         else {
-            if (second.Unit.Owner != Owner) {
-                _currentlyModified = path.GetRange(1, path.Count - 1);
-                for (int i = 0; i < _currentlyModified.Count - Range; i++) {
-                    SpriteRenderer render = _currentlyModified[i].gameObject.GetComponent<SpriteRenderer>();
-                    render.color = MoveColor;
-                }
-                second.GetComponent<SpriteRenderer>().color = AttackColor;
+            if (second.Unit == null) {
+                if (second.IsTraversable(gameObject))
+                    foreach (var element in _currentlyModified)
+                        element.GetComponent<SpriteRenderer>().color = MoveColor;
+                else
+                    foreach (var element in _currentlyModified)
+                        element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
             }
+
             else {
-                _currentlyModified = path.GetRange(1, path.Count - 1);
-                foreach (TileController element in _currentlyModified)
-                    element.gameObject.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+                if (second.Unit.Owner != Owner) {
+                    for (int i = 0; i < _currentlyModified.Count - Range; i++)
+                        _currentlyModified[i].GetComponent<SpriteRenderer>().color = MoveColor;
+                    _currentlyModified.Last().GetComponent<SpriteRenderer>().color = AttackColor;
+                }
+                else
+                    foreach (var element in _currentlyModified)
+                        element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
             }
         }
-
     }
 
     public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {

@@ -67,7 +67,7 @@ public class TileController : MonoBehaviour {
     }
 
 	public bool IsTraversableUnitOnly(GameObject unit) {
-		BaseUnit unitBase = unit.GetComponent<TileController>().Unit;
+	    BaseUnit unitBase = unit.GetComponent<BaseUnit>();
 		if (this.Unit == null)
 			return true;
 		return this.Unit.name == unitBase.name && (this.Unit.StackSize + unitBase.StackSize <= this.Unit.MaxUnitStack) && this.Unit.Owner == unitBase.Owner;
