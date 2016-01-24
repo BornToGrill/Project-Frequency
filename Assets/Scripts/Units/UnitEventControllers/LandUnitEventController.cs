@@ -70,6 +70,9 @@ public class LandUnitEventController : EventControllerBase {
                         ModifiedTiles[i].GetComponent<SpriteRenderer>().color = MoveColor;
                     ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
                 }
+                else if (tileTwo.IsTraversable(gameObject))
+                    foreach (var element in ModifiedTiles)
+                        element.GetComponent<SpriteRenderer>().color = MoveColor;
                 else
                     foreach (var element in ModifiedTiles)
                         element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -115,11 +118,10 @@ public class LandUnitEventController : EventControllerBase {
     public virtual DeselectStatus MoveToMerge(TileController start, List<TileController> path) {
         start.Unit = null;
 
-        StartCoroutine(AnimateToTile(path));
-        start.Unit = null;
-        path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
-
-        GameObject.Destroy(gameObject);
+        StartCoroutine(AnimateToTile(path, () => {
+            path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
+            GameObject.Destroy(gameObject);
+        }));
 
         return DeselectStatus.Both;
     }
