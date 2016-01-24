@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player {
 
     public int PlayerId { get; private set; }
+    public string Name;
     public int MoneyAmount;
     public Color Color;
     public Environment StartEnvironment;

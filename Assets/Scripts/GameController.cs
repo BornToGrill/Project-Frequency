@@ -16,17 +16,19 @@ public class GameController : MonoBehaviour {
 	void GeneratePlayers() {
 	    var rnd = new System.Random();
 
-	    List<int> ids = new List<int>() { 1, 2, 3, 4 };
+	    List<int> spawns = new List<int>() { 1, 2, 3, 4 };
 
 	    for (int i = 0; i < AmountOfPlayers; i++) {
-	        int random = rnd.Next(0, ids.Count);
-	        Player player = new Player(ids[random]);
-	        ids.RemoveAt(random);
+	        int random = rnd.Next(0, spawns.Count);
+	        Player player = new Player(i + 1);
+            int id = spawns[random];
+	        spawns.RemoveAt(random);
 	        Players.Add(player);
+            player.Name = "P" + (i + 1);
 
 	        Board board = gameObject.GetComponent<Board>();
 
-	        switch (player.PlayerId) {
+	        switch (id) {
                 case 1:
 	                CreateBase(player, board, 0, 0);
 	                break;
@@ -49,6 +51,7 @@ public class GameController : MonoBehaviour {
     void CreateBase(Player owner, Board board, int x, int y) {
         GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
+        owner.StartEnvironment = tile.Environment;
         GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;

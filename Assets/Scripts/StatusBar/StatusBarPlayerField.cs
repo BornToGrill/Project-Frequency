@@ -19,7 +19,7 @@ public class StatusBarPlayerField : MonoBehaviour {
     }
 
     public void Initialize(RectTransform parent, Player player) {
-        _playerNumber.text = "P" + player.PlayerId.ToString();
+        _playerNumber.text = player.Name;
 		Player = player;
         _rectTransform.SetParent(parent);
         _rectTransform.localScale = new Vector3 (1, 1);
