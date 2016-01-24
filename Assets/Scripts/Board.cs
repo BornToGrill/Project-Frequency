@@ -78,14 +78,14 @@ public class Board : MonoBehaviour {
         if (SelectedTile == null) {
             TileController selected = tile.GetComponent<TileController>();
             if (selected.Unit != null) {
-                DeselectStatus status = selected.Unit.OnFirstSelected(tile);
+                DeselectStatus status = selected.Unit.GetComponent<EventControllerBase>().OnSelected(tile);
                 SelectedTile = tile;
                 DeselectTile(status, tile);
             }
         }
         else {
             TileController first = SelectedTile.GetComponent<TileController>();
-            DeselectStatus status = first.Unit.OnSecondClicked(SelectedTile, tile);
+            DeselectStatus status = first.Unit.GetComponent<EventControllerBase>().OnClicked(SelectedTile, tile);
             DeselectTile(status, tile);
 
         }
@@ -96,7 +96,7 @@ public class Board : MonoBehaviour {
             //tile.GetComponent<TileController>().OnMouseEnter();
         }
         else {
-            SelectedTile.GetComponent<TileController>().Unit.OnMouseEnter(SelectedTile, tile);
+            SelectedTile.GetComponent<TileController>().Unit.GetComponent<EventControllerBase>().OnMouseEnter(SelectedTile, tile);
         }
     }
 
@@ -106,7 +106,7 @@ public class Board : MonoBehaviour {
             //tile.GetComponent<TileController>().OnMouseLeave();
         }
         else {
-            SelectedTile.GetComponent<TileController>().Unit.OnMouseLeave(SelectedTile, tile);
+            SelectedTile.GetComponent<TileController>().Unit.GetComponent<EventControllerBase>().OnMouseLeave(SelectedTile, tile);
         }
     }
 
@@ -114,7 +114,7 @@ public class Board : MonoBehaviour {
         switch (status) {
             case DeselectStatus.First:
                 if (SelectedTile != null) {
-                    SelectedTile.GetComponent<SelectionController>().OnObjectDeselect();//TODO: Remove object parameter. Can be called from selectioncontroller.gameObject
+                    SelectedTile.GetComponent<SelectionController>().OnObjectDeselect();
                     SelectedTile = null;
                 }
                 break;
