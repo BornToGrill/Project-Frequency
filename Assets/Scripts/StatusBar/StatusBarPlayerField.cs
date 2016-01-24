@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class StatusBarPlayerController : MonoBehaviour {
+public class StatusBarPlayerField : MonoBehaviour {
 	private Text _goldAmount;
 	private Text _generateAmount;
 
