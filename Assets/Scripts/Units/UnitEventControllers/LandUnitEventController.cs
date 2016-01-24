@@ -100,8 +100,11 @@ public class LandUnitEventController : EventControllerBase {
 
     public virtual DeselectStatus MoveToAttack(TileController start, List<TileController> path) {
         List<TileController> movePath = path.Take(path.Count - GetComponent<LandUnit>().Range).ToList();
-        start.Unit = null;
-        movePath.Last().Unit = GetComponent<BaseUnit>();
+        if (movePath.Count > 0) {
+            start.Unit = null;
+            movePath.Last().Unit = GetComponent<BaseUnit>();
+        }
+
         StartCoroutine(AnimateToTile(movePath, () => {
             GetComponent<LandUnit>().Attack(path.Last().Unit);
         }));
