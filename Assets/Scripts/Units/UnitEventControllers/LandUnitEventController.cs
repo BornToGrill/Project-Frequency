@@ -119,7 +119,8 @@ public class LandUnitEventController : EventControllerBase {
         start.Unit = null;
 
         StartCoroutine(AnimateToTile(path, () => {
-            path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
+            ((LandUnit) path.Last().Unit).Merge(GetComponent<BaseUnit>());
+            //path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
             GameObject.Destroy(gameObject);
         }));
 

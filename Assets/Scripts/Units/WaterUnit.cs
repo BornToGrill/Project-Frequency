@@ -1,21 +1,32 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 
-public class WaterUnit : BaseUnit {
+public class WaterUnit : LandUnit {
 
-    private int _stackSize;
+
 
     internal override int StackSize {
-        get { return _stackSize; }
+        get { return 1; }
         set {
             if (value != 1)
                 throw new InvalidOperationException("Only 1 water unit allowed per tile");
-            _stackSize = value;
         }
     }
 
     internal BaseUnit CarryUnit;
+
+
+    public override bool CanMerge(BaseUnit unit) {
+        return CarryUnit == null || (CarryUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name);
+    }
+
+    public override void Merge(BaseUnit unit) {
+        if (CarryUnit == null)
+            CarryUnit = unit;
+        else
+            CarryUnit.StackSize += unit.StackSize;
+        GameObject.Destroy(unit.gameObject);
+    }
 
     public void LoadUnit(BaseUnit unit) {
         CarryUnit = unit;
@@ -31,6 +42,5 @@ public class WaterUnit : BaseUnit {
             return;
         Health = 0;
         GameObject.Destroy(gameObject);
-        // TODO: Death check.
     }
 }

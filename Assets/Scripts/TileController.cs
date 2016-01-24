@@ -59,8 +59,12 @@ public class TileController : MonoBehaviour {
         BaseUnit unitBase = unit.GetComponent<BaseUnit>();
         if (unitBase.TraversableEnvironments == null)
             throw new NullReferenceException("No traversable environment set");
-        if (!unitBase.TraversableEnvironments.Contains(this.Environment))
+        if (!unitBase.TraversableEnvironments.Contains(this.Environment)) {
+            if (this.Unit != null && this.Unit is LandUnit && unitBase is LandUnit) {
+                return ((LandUnit) this.Unit).CanMerge(unitBase);
+            }
             return false;
+        }
         if (this.Unit == null)
             return true;
         return this.Unit.name == unitBase.name && (this.Unit.StackSize + unitBase.StackSize <= this.Unit.MaxUnitStack) && this.Unit.Owner == unitBase.Owner;
