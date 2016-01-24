@@ -15,17 +15,6 @@ public static class Pathfinding {
                 ValidPath = true,
                 FoundEndPoint = true
 	        };
-        // Stage 1: 
-	    Func<TileController, GameObject, bool> initial = (tile, unit) => {
-	        if (tile == endTile)
-	            return true;
-	        return tile.IsTraversable(unit);
-	    };
-        Func<TileController, GameObject, bool> ignoreEnvironment = (tile, unit) => {
-            if (tile == endTile)
-                return true;
-            return tile.IsTraversableUnitOnly(unit);
-        };
 
 	    Node end = GetEndNode(startTile, endTile, (tile, unit) => {
 	        if (tile == endTile)

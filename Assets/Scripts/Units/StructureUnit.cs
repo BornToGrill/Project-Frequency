@@ -30,12 +30,6 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
-    public void GetCreatableUnits(Board board) {
-        throw new NotImplementedException(
-            "Need the new Board class with up,down,left,right to get the surrounding tiles");
-    }
-    
-
     public void CreateUnit(GameObject unit) {
         throw new NotImplementedException();
     }
