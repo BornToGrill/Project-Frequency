@@ -9,21 +9,24 @@ public class Player {
     public Color Color;
     public Environment StartEnvironment;
 
-    private void GenerateMoney() {
+    public int CalculateIncome() {
         //throw new System.NotImplementedException();
         Board board = GameObject.Find("Board").GetComponent<Board>();
+        int income = 0;
         foreach(GameObject tileObject in board._tiles)
         {
             TileController controller = tileObject.GetComponent<TileController>();
             if (controller.Unit != null && controller.Unit.Owner == this)
             {
-                MoneyAmount += controller.GetMonetaryValue(StartEnvironment);
+                income += controller.GetMonetaryValue(StartEnvironment);
             }
         }
-
-
+        return income;
     }
 
+    private void GenerateMoney() {
+        MoneyAmount += CalculateIncome();
+    }
 
 	public Player(int x) {
 		PlayerId = x;

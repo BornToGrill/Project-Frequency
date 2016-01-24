@@ -3,27 +3,32 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class StatusBarPlayerField : MonoBehaviour {
-	private Text _goldAmount;
+
+    private RectTransform _rectTransform;
+    private Text _playerNumber;
+    private Text _goldAmount;
 	private Text _generateAmount;
 
-	public Player _player;
-	private RectTransform rt;
+	public Player Player;
 
-	public void Initialize(RectTransform parent, Player player) {
-		rt = gameObject.GetComponent<RectTransform> ();
-		transform.GetChild (2).GetComponent<Text> ().text = "P" + player.PlayerId.ToString ();
-		_goldAmount = transform.GetChild (1).GetComponent<Text>();
-		_generateAmount = transform.GetChild (4).GetComponent<Text>();
+    void Awake() {
+        _rectTransform = gameObject.GetComponent<RectTransform>();
+        _playerNumber = transform.Find("PlayerNumber").GetComponent<Text>();
+        _goldAmount = transform.Find("GoldAmount").GetComponent<Text>();
+        _generateAmount = transform.Find("GenerateAmount").GetComponent<Text>();
+    }
 
-		_player = player;
-	    rt.SetParent(parent);
-		rt.localScale = new Vector3 (1, 1);
-		rt.anchoredPosition = new Vector2 (rt.rect.width * (player.PlayerId - 1), -10.0f);
+    public void Initialize(RectTransform parent, Player player) {
+        _playerNumber.text = "P" + player.PlayerId.ToString();
+		Player = player;
+        _rectTransform.SetParent(parent);
+        _rectTransform.localScale = new Vector3 (1, 1);
+        _rectTransform.anchoredPosition = new Vector2 (_rectTransform.rect.width * (player.PlayerId - 1), -10.0f);
 		UpdateStats ();
 	}
 
 	public void UpdateStats() {
-		_goldAmount.text = _player.MoneyAmount.ToString();
-		_generateAmount.text = 0.ToString();
+		_goldAmount.text = Player.MoneyAmount.ToString();
+		_generateAmount.text = Player.CalculateIncome().ToString();
 	}
 }
