@@ -65,6 +65,7 @@ public class GameController : MonoBehaviour {
 		i += 1;
 		if (i >= Players.Count)
 			i = 0;
+        CurrentPlayer.EndTurn();
 		CurrentPlayer = Players [i];
 		CurrentPlayer.StartTurn (this);
 	}

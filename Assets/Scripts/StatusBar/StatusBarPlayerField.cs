@@ -39,13 +39,13 @@ public class StatusBarPlayerField : MonoBehaviour {
 
 	void Update()
 	{
-		if (_gameController != null)
-		{
-			if (_gameController.CurrentPlayer == Player) {
-				_background.color = new Color (0f, 0f, 0f, 0.5f);
-			} else {
-				_background.color = Color.clear;
-			}
-		}
+        if (Player.isCurrentPlayer)
+        {
+            _background.color = new Color(0f, 0f, 0f, 0.5f);
+        }
+        else
+        {
+            _background.color = Color.clear;
+        }
 	}
 }

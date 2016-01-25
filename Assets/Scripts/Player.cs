@@ -10,6 +10,7 @@ public class Player{
     public Color Color;
     public Environment StartEnvironment;
 	public int Moves;
+    public bool isCurrentPlayer { get; private set; }
 
     public int CalculateIncome() {
         //throw new System.NotImplementedException();
@@ -27,9 +28,14 @@ public class Player{
     }
 
 	public void StartTurn(GameController gameController) {
+        isCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
 		GenerateMoney ();
 	}
+
+    public void EndTurn() {
+        isCurrentPlayer = false;
+    }
 
     private void GenerateMoney() {
         MoneyAmount += CalculateIncome();
@@ -45,7 +51,7 @@ public class Player{
 			Color = Color.red;
 			break;
 		case 2:
-			Color = Color.gray;
+			Color = new Color(255f, 165f, 0f);
 			break;
 		case 3:
 			Color = Color.cyan;
