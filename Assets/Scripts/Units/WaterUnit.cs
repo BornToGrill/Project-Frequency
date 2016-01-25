@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 public class WaterUnit : LandUnit {
 
 
+    private Environment[] _defaultEnvironments;
 
     internal override int StackSize {
         get { return 1; }
@@ -13,27 +15,37 @@ public class WaterUnit : LandUnit {
         }
     }
 
-    internal BaseUnit CarryUnit;
+    internal GameObject CarryUnit;
 
+    void Awake() {
+        _defaultEnvironments = TraversableEnvironments;
+    }
 
     public override bool CanMerge(BaseUnit unit) {
-        return CarryUnit == null || (CarryUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name);
+        if (CarryUnit == null)
+            return true;
+        BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
+        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize < internalUnit.MaxUnitStack;
     }
 
     public override void Merge(BaseUnit unit) {
-        if (CarryUnit == null)
-            CarryUnit = unit;
-        else
-            CarryUnit.StackSize += unit.StackSize;
-        GameObject.Destroy(unit.gameObject);
+        if (CarryUnit == null) {
+            CarryUnit = unit.gameObject;
+            CarryUnit.SetActive(false);
+            TraversableEnvironments = _defaultEnvironments.Concat(unit.TraversableEnvironments).ToArray();
+        }
+        else {
+            CarryUnit.GetComponent<BaseUnit>().StackSize += unit.StackSize;
+            GameObject.Destroy(unit.gameObject);
+        }
+
     }
 
-    public void LoadUnit(BaseUnit unit) {
-        CarryUnit = unit;
-    }
-
-    public void UnloadUnit() {
+    public void UnloadUnit(GameObject tile) {
+        CarryUnit.SetActive(true);
+        CarryUnit.transform.position = gameObject.transform.position;
         CarryUnit = null;
+        TraversableEnvironments = _defaultEnvironments;
     }
 
     public override void DamageUnit(int damage) {

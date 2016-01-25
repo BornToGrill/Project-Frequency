@@ -21,7 +21,7 @@ public class LandUnit : BaseUnit {
     }
 
     public virtual bool CanMerge(BaseUnit unit) {
-        return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack;
+        return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack && gameObject.name == unit.gameObject.name;
     }
     public virtual void Merge(BaseUnit unit) {
         StackSize += unit.StackSize;
