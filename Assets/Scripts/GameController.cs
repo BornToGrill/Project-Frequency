@@ -59,6 +59,5 @@ public class GameController : MonoBehaviour {
 		
 	public void RemovePlayer(Player player) {
 		Players.Remove(player);
-		Debug.Log (Players.Count);
 	}
 }

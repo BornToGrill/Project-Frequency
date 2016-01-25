@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WinScreen : MonoBehaviour {
 
-	//public List<Player> Players { get; private set; }
-	public GUIText Wtext;
+	private Player winner;
+	private List<Player> losers;
 
 	// Use this for initialization
 	void Start () {
-		GameObject boardGo = GameObject.Find ("Board");
-		GameController gc = boardGo.GetComponent<GameController> ();
-
-		Debug.Log (gc.AllPlayers.Count);
-
-		Wtext.text = "Hallo ik ben bert en ik <3 hagrid>gogogo";
-		Wtext.transform.position = new Vector3 (0, 0);
+		GameController gc = GetComponent<GameController> ();
+		winner = WinCondition.winner;
+		losers = WinCondition.losers;
 	}
 	
 	// Update is called once per frame
