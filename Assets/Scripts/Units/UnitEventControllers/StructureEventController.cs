@@ -12,13 +12,14 @@ public class StructureEventController : EventControllerBase {
     private TileController _hoveredTile;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
-
+        TileController thisTile = ownTile.GetComponent<TileController>();
+        thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
+        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+            return DeselectStatus.None;
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
         foreach (GameObject unit in GetComponent<StructureUnit>().BuildableUnits)
             actionBar.AddButton(unit.name, CreateUnit);
 
-        TileController thisTile = ownTile.GetComponent<TileController>();
-        thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
 
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
         foreach (TileController tile in directions.Where(x => x != null))

@@ -39,7 +39,7 @@ public class StatusBarPlayerField : MonoBehaviour {
 
 	void Update()
 	{
-        if (Player.isCurrentPlayer)
+        if (Player.IsCurrentPlayer)
         {
             _background.color = new Color(0f, 0f, 0f, 0.5f);
         }

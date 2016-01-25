@@ -27,7 +27,8 @@ public class LandUnitEventController : EventControllerBase {
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = clickedTile.GetComponent<TileController>();
-
+        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+            return DeselectStatus.Both;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         if (tileTwo.Unit == null)
@@ -45,9 +46,11 @@ public class LandUnitEventController : EventControllerBase {
 
     public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
         if (ownTile == hoveredTile)
-            return;
+            return;      
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
+        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+            return;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         ModifiedTiles = path.Path;
@@ -94,7 +97,6 @@ public class LandUnitEventController : EventControllerBase {
 
     #region Movement
     public virtual DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
-
         StartCoroutine(AnimateToTile(path));
         start.Unit = null;
         path.Last().Unit = GetComponent<BaseUnit>();

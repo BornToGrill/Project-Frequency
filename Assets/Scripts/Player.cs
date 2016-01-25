@@ -10,7 +10,7 @@ public class Player{
     public Color Color;
     public Environment StartEnvironment;
 	public int Moves;
-    public bool isCurrentPlayer { get; private set; }
+    public bool IsCurrentPlayer { get; private set; }
 
     public int CalculateIncome() {
         //throw new System.NotImplementedException();
@@ -28,13 +28,13 @@ public class Player{
     }
 
 	public void StartTurn(GameController gameController) {
-        isCurrentPlayer = true;
+        IsCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
 		GenerateMoney ();
 	}
 
     public void EndTurn() {
-        isCurrentPlayer = false;
+        IsCurrentPlayer = false;
     }
 
     private void GenerateMoney() {

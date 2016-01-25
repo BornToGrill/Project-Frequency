@@ -22,12 +22,15 @@ public class SoldierEventController : LandUnitEventController {
     private List<TileController> _surroundingTiles = new List<TileController>(); 
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
-        
+        TileController thisTile = ownTile.GetComponent<TileController>();
+        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+            return base.OnSelected(ownTile);
+
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
         foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures)
             actionBar.AddButton(structure.name, CreateStructure);
 
-        TileController thisTile = ownTile.GetComponent<TileController>();
+        
 
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
         foreach (TileController tile in directions.Where(x => x != null))
