@@ -7,9 +7,11 @@ public class GameController : MonoBehaviour {
     public GameObject BasePrefab;
 	public int AmountOfPlayers;
 	public List<Player> Players { get; private set; }
+	public List<Player> AllPlayers { get; private set; }
 
 	void Awake() {
 		Players = new List<Player> ();
+		AllPlayers = new List<Player> ();
 		GeneratePlayers ();
 	}
 
@@ -23,6 +25,7 @@ public class GameController : MonoBehaviour {
 	        Player player = new Player(ids[random]);
 	        ids.RemoveAt(random);
 	        Players.Add(player);
+			AllPlayers.Add(player);
 
 	        Board board = gameObject.GetComponent<Board>();
 
@@ -54,7 +57,8 @@ public class GameController : MonoBehaviour {
         tile.Unit.Owner = owner;
     }
 		
-	void RemovePlayer(Player player) {
+	public void RemovePlayer(Player player) {
 		Players.Remove(player);
+		Debug.Log (Players.Count);
 	}
 }
