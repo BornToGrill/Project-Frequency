@@ -2,13 +2,14 @@
 using UnityEngine;
 
 
-public class Player {
+public class Player{
 
     public int PlayerId { get; private set; }
     public string Name;
     public int MoneyAmount;
     public Color Color;
     public Environment StartEnvironment;
+	public int Moves;
 
     public int CalculateIncome() {
         //throw new System.NotImplementedException();
@@ -24,6 +25,11 @@ public class Player {
         }
         return income;
     }
+
+	public void StartTurn(GameController gameController) {
+		Moves = gameController.MovesPerTurn;
+		GenerateMoney ();
+	}
 
     private void GenerateMoney() {
         MoneyAmount += CalculateIncome();
@@ -52,5 +58,4 @@ public class Player {
 			break;
 		};
 	}
-
 }

@@ -8,6 +8,8 @@ public class StatusBarPlayerField : MonoBehaviour {
     private Text _playerNumber;
     private Text _goldAmount;
 	private Text _generateAmount;
+	private Image _background;
+	private GameController _gameController;
 
 	public Player Player;
 
@@ -16,6 +18,8 @@ public class StatusBarPlayerField : MonoBehaviour {
         _playerNumber = transform.Find("PlayerNumber").GetComponent<Text>();
         _goldAmount = transform.Find("GoldAmount").GetComponent<Text>();
         _generateAmount = transform.Find("GenerateAmount").GetComponent<Text>();
+		_background = gameObject.GetComponent<Image> ();
+		_gameController = GameObject.Find ("Board").GetComponent<GameController> ();
     }
 
     public void Initialize(RectTransform parent, Player player) {
@@ -30,5 +34,17 @@ public class StatusBarPlayerField : MonoBehaviour {
 	public void UpdateStats() {
 		_goldAmount.text = Player.MoneyAmount.ToString();
 		_generateAmount.text = Player.CalculateIncome().ToString();
+	}
+
+	void Update()
+	{
+		if (_gameController != null)
+		{
+			if (_gameController.CurrentPlayer == Player) {
+				_background.color = Color.green;
+			} else {
+				_background.color = Color.clear;
+			}
+		}
 	}
 }

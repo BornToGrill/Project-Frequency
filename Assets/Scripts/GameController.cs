@@ -1,16 +1,20 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameController : MonoBehaviour {
-
     public GameObject BasePrefab;
 	public int AmountOfPlayers;
+	public int MovesPerTurn;
+	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
 
 	void Awake() {
 		Players = new List<Player> ();
 		GeneratePlayers ();
+		CurrentPlayer = Players [0];
+		CurrentPlayer.StartTurn (this);
 	}
 
 	void GeneratePlayers() {
@@ -44,7 +48,6 @@ public class GameController : MonoBehaviour {
                 default:
 	                throw new ArgumentOutOfRangeException("Only 4 players allowed.");
 	        }
-
 	    }
 	}
 
@@ -56,6 +59,13 @@ public class GameController : MonoBehaviour {
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }
-
-
+		
+	public void NextTurn() {
+		int i = Players.IndexOf (CurrentPlayer);
+		i += 1;
+		if (i >= Players.Count)
+			i = 0;
+		CurrentPlayer = Players [i];
+		CurrentPlayer.StartTurn (this);
+	}
 }
