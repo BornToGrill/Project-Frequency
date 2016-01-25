@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-public class winCondition : MonoBehaviour {
+public class WinCondition : MonoBehaviour {
 
 	private Player _baseOwner;
 	static public Player winner;
