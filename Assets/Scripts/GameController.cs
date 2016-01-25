@@ -53,6 +53,8 @@ public class GameController : MonoBehaviour {
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }
-
-
+		
+	void RemovePlayer(Player player) {
+		Players.Remove(player);
+	}
 }
