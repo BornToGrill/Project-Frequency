@@ -18,7 +18,6 @@ public class SoldierEventController : LandUnitEventController {
     private GameObject _buildType;
     private TileController _hoveredTile;
     private List<TileController> _surroundingTiles = new List<TileController>();
-	private Player _owner;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         TileController thisTile = ownTile.GetComponent<TileController>();
@@ -27,9 +26,9 @@ public class SoldierEventController : LandUnitEventController {
 
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
 		foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures) {
-			//int a = structure.GetComponent<StructureUnit> ().GetCost (thisTile.Environment);
-			//Environment env = thisTile.Environment;
-			if (structure.GetComponent<StructureUnit> ().GetCost (thisTile.Environment, GetComponent<BaseUnit>().Owner) > gameObject.GetComponent<BaseUnit> ().Owner.MoneyAmount) {
+			StructureUnit building = structure.GetComponent<StructureUnit> ();
+			Player owner = GetComponent<BaseUnit> ().Owner;
+			if ( building.GetCost (thisTile.Environment, owner) > owner.MoneyAmount || owner.Moves <= 0) {
 				actionBar.AddButton (structure.name, CreateStructure, false);
 			} else {
 				actionBar.AddButton (structure.name, CreateStructure, true);
@@ -66,6 +65,7 @@ public class SoldierEventController : LandUnitEventController {
         BaseUnit structBase = structure.GetComponent<BaseUnit>();
         structBase.Owner = GetComponent<BaseUnit>().Owner;
 		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
+		structBase.Owner.Moves -= 1;
         _buildType = null;
         if (tileTwo.Unit != null) {
             if (tileTwo.IsTraversable(structure))
