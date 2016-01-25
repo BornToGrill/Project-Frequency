@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using UnityEngine.Networking;
+using System.Linq;
 
 public static class Pathfinding {
 	static List<Node> _openList = new List<Node> ();
@@ -79,15 +79,15 @@ public static class Pathfinding {
         GameObject unit = startNode.Tile.Unit.gameObject;
         TileController[] surroundingTiles = { currentNode.Tile.Left, currentNode.Tile.Up, currentNode.Tile.Right, currentNode.Tile.Down };
 
-        foreach (TileController tile in surroundingTiles) {
-            if (tile != null && !_closedList.Contains(tile) && traversableCheck(tile, unit)) {
-                Node node = new Node(tile);
-                node.UpdateValues(currentNode, endNode);
-                _openList.Add(node);
-            }
+		foreach (TileController tile in surroundingTiles.Where(x => x != null && !_closedList.Contains(x))) {
+			if (traversableCheck (tile, unit)) {
+				Node node = new Node (tile);
+				node.UpdateValues (currentNode, endNode);
+				_openList.Add (node);
+			}
+			_closedList.Add (tile);
         }
     }
-
 
     static List<TileController> ConvertNodesToList( Node endNode)
 	{
@@ -106,7 +106,7 @@ public static class Pathfinding {
 	{
 		public Node Parent;
 		public TileController Tile;
-		public int HCost, GCost, xdiff, ydiff;
+		public int HCost, GCost;
 		public int FCost
 		{
 			get { return GCost + HCost; }
@@ -121,8 +121,6 @@ public static class Pathfinding {
 		{
 			GCost = parent.GCost + 1;
 			HCost = (int)(Mathf.Abs (endNode.Tile.Position.x - Tile.Position.x) + Mathf.Abs (endNode.Tile.Position.y - Tile.Position.y));
-			xdiff = (int)Mathf.Abs (endNode.Tile.Position.x - Tile.Position.x);
-			ydiff = (int)Mathf.Abs (endNode.Tile.Position.y - Tile.Position.y);
 			Parent = parent;
 		}
 	}
