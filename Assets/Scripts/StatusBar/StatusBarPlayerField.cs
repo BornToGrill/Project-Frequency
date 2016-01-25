@@ -24,6 +24,7 @@ public class StatusBarPlayerField : MonoBehaviour {
 
     public void Initialize(RectTransform parent, Player player) {
         _playerNumber.text = player.Name;
+		_playerNumber.color = player.Color;
 		Player = player;
         _rectTransform.SetParent(parent);
         _rectTransform.localScale = new Vector3 (1, 1);
@@ -41,7 +42,7 @@ public class StatusBarPlayerField : MonoBehaviour {
 		if (_gameController != null)
 		{
 			if (_gameController.CurrentPlayer == Player) {
-				_background.color = Color.green;
+				_background.color = new Color (0f, 0f, 0f, 0.5f);
 			} else {
 				_background.color = Color.clear;
 			}
