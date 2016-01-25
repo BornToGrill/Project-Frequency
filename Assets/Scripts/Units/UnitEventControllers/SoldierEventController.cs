@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class SoldierEventController : LandUnitEventController {
 
+
+    //
+    // See documentation : http://goo.gl/dMJsp7
+    //
+
+
     public Color BuildAllowedColor;
     public Color BuildNotAllowedColor;
-
-    //public Color MoveColor;
-    //public Color InvalidMoveColor;
-    //public Color AttackColor;
-    //
-    //public float MovementSpeed;
 
     private bool _isBuilding;
     private GameObject _buildType;
