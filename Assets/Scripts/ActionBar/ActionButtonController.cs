@@ -19,14 +19,18 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
             _callback.Invoke(_id);
     }
 
-	public void Initialize(string text, Callback callback, float offset)
+	public void Initialize(string text, Callback callback, float offset, bool clickable)
     {
-        _callback = callback;
 		_id = text;
         _buttonText.text = text;
         RectTransform rectTransform = transform as RectTransform;
         rectTransform.pivot = new Vector2(0.5f, 0.5f); 
         rectTransform.localScale = new Vector3(1, 1, 0);
         rectTransform.anchoredPosition = new Vector2(offset+50, 50);
+		if (!clickable) {
+			gameObject.GetComponent<Image> ().color = new Color (0.0f, 0.0f, 0.0f, 0.5f);
+			return;
+		}
+		_callback = callback;
     }
 }

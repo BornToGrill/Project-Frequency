@@ -13,7 +13,7 @@ public class ActionBarController : MonoBehaviour {
         _buttons = new List<GameObject>();
     }
     	
-	public void AddButton(string text, Callback callback) {
+	public void AddButton(string text, Callback callback, bool clickable) {
         float offset = 0;
         foreach ( GameObject currentButton in _buttons)
         {
@@ -23,7 +23,7 @@ public class ActionBarController : MonoBehaviour {
         }
         GameObject button = Instantiate(ActionButtonPrefab) as GameObject;
         button.transform.SetParent(transform);
-        button.GetComponent<ActionButtonController>().Initialize(text, callback, offset);
+        button.GetComponent<ActionButtonController>().Initialize(text, callback, offset, clickable);
         _buttons.Add(button);
     }
 

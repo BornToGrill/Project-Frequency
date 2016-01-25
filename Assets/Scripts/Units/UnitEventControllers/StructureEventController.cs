@@ -18,9 +18,11 @@ public class StructureEventController : EventControllerBase {
             return DeselectStatus.None;
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
         foreach (GameObject unit in GetComponent<StructureUnit>().BuildableUnits)
-            actionBar.AddButton(unit.name, CreateUnit);
-
-
+			if (unit.GetComponent<BaseUnit>().GetCost(thisTile.Environment) > gameObject.GetComponent<BaseUnit>().Owner.MoneyAmount)
+				actionBar.AddButton(unit.name, CreateUnit, false);
+			else
+				actionBar.AddButton(unit.name, CreateUnit, true);
+            
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
         foreach (TileController tile in directions.Where(x => x != null))
             ModifiedTiles.Add(tile);
@@ -50,6 +52,7 @@ public class StructureEventController : EventControllerBase {
         GameObject unit = (GameObject)Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
         BaseUnit unitBase = unit.GetComponent<BaseUnit>();
         unitBase.Owner = GetComponent<BaseUnit>().Owner;
+		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
         _buildType = null;
         if (second.Unit != null) {
             if (second.IsTraversable(unit))

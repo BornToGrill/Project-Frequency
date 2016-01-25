@@ -28,8 +28,10 @@ public class SoldierEventController : LandUnitEventController {
 
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
         foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures)
-            actionBar.AddButton(structure.name, CreateStructure);
-
+			if (structure.GetComponent<BaseUnit>().GetCost(thisTile.Environment) > gameObject.GetComponent<BaseUnit>().Owner.MoneyAmount)
+				actionBar.AddButton(structure.name, CreateStructure, false);
+			else
+				actionBar.AddButton(structure.name, CreateStructure, true);
         
 
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
