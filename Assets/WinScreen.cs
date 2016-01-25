@@ -8,6 +8,11 @@ public class WinScreen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		GameObject boardGo = GameObject.Find ("Board");
+		GameController gc = boardGo.GetComponent<GameController> ();
+
+		Debug.Log (gc.AllPlayers.Count);
+
 		Wtext.text = "Hallo ik ben bert en ik <3 hagrid>gogogo";
 		Wtext.transform.position = new Vector3 (0, 0);
 	}
