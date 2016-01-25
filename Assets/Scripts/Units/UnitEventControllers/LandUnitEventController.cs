@@ -143,18 +143,17 @@ public class LandUnitEventController : EventControllerBase {
         start.Unit = null;
 
         StartCoroutine(AnimateToTile(path, () => {
-            path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
-            GameObject.Destroy(gameObject);
+            ((LandUnit) path.Last().Unit).Merge(GetComponent<BaseUnit>());
         }));
 
         return DeselectStatus.Both;
     }
     #endregion
 
-    protected IEnumerator AnimateToTile(IEnumerable<TileController> path) {
+    internal IEnumerator AnimateToTile(IEnumerable<TileController> path) {
         yield return AnimateToTile(path, null);
     }
-    protected IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
+    internal IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
         foreach (TileController tile in path) {
             Vector3 startPosition = transform.position;
             for (float i = 0.1f; i <= 1f * MovementSpeed; i += 0.1f) {

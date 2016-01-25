@@ -20,8 +20,12 @@ public class LandUnit : BaseUnit {
         }
     }
 
-    public bool CanAttack(BaseUnit unit) {
-        return unit.Owner != this.Owner;
+    public virtual bool CanMerge(BaseUnit unit) {
+        return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack && gameObject.name == unit.gameObject.name;
+    }
+    public virtual void Merge(BaseUnit unit) {
+        StackSize += unit.StackSize;
+        GameObject.Destroy(unit.gameObject);
     }
 
     public void Attack(BaseUnit unit) {
