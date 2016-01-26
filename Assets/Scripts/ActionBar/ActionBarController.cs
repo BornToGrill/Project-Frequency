@@ -43,7 +43,7 @@ public class ActionBarController : MonoBehaviour {
 		case "Boat":
 			button = Instantiate(BoatButtonPrefab) as GameObject;
 			break;
-		case "Barracks":
+		case "Barrack":
 			button = Instantiate(BarracksButtonPrefab) as GameObject;
 			break;
 		default:

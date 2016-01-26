@@ -12,6 +12,9 @@ public class StructureEventController : EventControllerBase {
     private TileController _hoveredTile;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
+		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
+		unitStats.Set (0, GetComponent<BaseUnit> ().Health);
+
         TileController thisTile = ownTile.GetComponent<TileController>();
         thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
         if (!thisTile.Unit.Owner.IsCurrentPlayer)
@@ -29,6 +32,8 @@ public class StructureEventController : EventControllerBase {
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
         foreach (TileController tile in directions.Where(x => x != null))
             ModifiedTiles.Add(tile);
+
+
 
         return DeselectStatus.None;
     }

@@ -24,6 +24,8 @@ public class SelectionController : MonoBehaviour, IPointerClickHandler, IPointer
     internal void OnObjectDeselect() {
         var tileControl = gameObject.GetComponent<TileController>();
         tileControl.Environment = tileControl.Environment;
+		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
+		unitStats.Hide ();
         GameObject.Find("ActionBar").GetComponent<ActionBarController>().Clear();
     }
 
