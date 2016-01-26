@@ -17,7 +17,7 @@ public class WinScreen : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        /*winner = WinCondition.winner.PlayerId;
+        winner = WinCondition.winner.PlayerId;
         _winnerName = GameObject.Find("winnerName").GetComponent<Text>();
         _winnerName.text = "Player " + winner.ToString();
         losers = WinCondition.losers;
@@ -26,7 +26,7 @@ public class WinScreen : MonoBehaviour {
             AddLoser("Player " + losers[i].PlayerId.ToString());
         }
              
-        loserList = new List<GameObject>();*/
+        loserList = new List<GameObject>();
     } 
 	
 	void AddLoser (string name)
@@ -37,7 +37,7 @@ public class WinScreen : MonoBehaviour {
         yOffSet += loserName.GetComponent<Text>().rectTransform.rect.height;
         loserName.transform.SetParent(transform);
         loserName.GetComponent<Text>().text = name;
-        loserName.transform.position = new Vector2(transform.position.x, transform.position.y - (yOffSet-75) - margin);
+        loserName.transform.position = new Vector2(transform.position.x, transform.position.y - (yOffSet - 12) - margin);
         loserList.Add(loserName);
     }
 
