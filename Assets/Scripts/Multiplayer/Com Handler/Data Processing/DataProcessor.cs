@@ -5,9 +5,11 @@ using NetworkLibrary;
 class DataProcessor {
 
     private readonly Invokable _invokable;
+    private readonly Notifiable _notifiable;
 
-    public DataProcessor(IInvokable invoke) {
+    public DataProcessor(IInvokable invoke, INotifiable notify) {
         _invokable = new Invokable(invoke);
+        _notifiable = new Notifiable(notify);
     }
 
     internal void ProcessData(TcpClient client, string message) {
@@ -20,6 +22,13 @@ class DataProcessor {
             switch (data.CommandType) {
                 case "Invoke":
                     _invokable.HandleInvoke(client, data.Values);
+                    break;
+                case "Notify":
+                    _notifiable.HandleNotify(client, data.Values);
+                    break;
+                default:
+                    UnityEngine.Debug.LogError("Invalid message send to DataProcessor\n" + message + "\n" +
+                                               data.CommandType + "  with values : " + data.Values);
                     break;
             }
         }

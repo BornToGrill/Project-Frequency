@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetworkLibrary;
+using UnityEngine;
 
 class Invokable {
 
@@ -16,22 +17,21 @@ class Invokable {
         SplitData data = values.GetFirst();
 
         switch (data.CommandType) {
-            case "PlayerJoined":
-                PlayerJoined(data.Values);
-                break;
             case "SetPlayers":
                 SetPlayers(data.Values);
                 break;
             case "Authenticated":
                 Authenticated(data.Values);
                 break;
+            case "StartGame":
+                Debug.Log("TODO: Add game start");
+                break;
+            default:
+                Debug.LogError("Invalid message send to Notify\n" + values);
+                break;
         }
     }
 
-    private void PlayerJoined(string values) {
-        string[] split = values.Split(ValueDelimiter);
-        _invoke.PlayerConnected(Int32.Parse(split[0]), split[1]);
-    }
 
     private void SetPlayers(string values) {
         string[] players =

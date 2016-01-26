@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -19,14 +20,14 @@ class CommunicationHandler {
 
     private string _guid;
 
-    public CommunicationHandler(IInvokable invoke) {
+    public CommunicationHandler(IInvokable invoke, INotifiable notify) {
         Socket connSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         connSocket.Connect(IPAddress.Parse("127.0.0.1"), 9500); //TODO: Move to Settings
         _tcpClient = new TcpClient(connSocket);
-        _tcpClient.DataReceived += _tcpClient_DataReceived;
+        _tcpClient.DataReceived += TcpClient_DataReceived;
         _tcpClient.Start();
 
-        _processor = new DataProcessor(invoke);
+        _processor = new DataProcessor(invoke, notify);
     }
 
     public void SetGuid(string guid) {
@@ -38,7 +39,8 @@ class CommunicationHandler {
         _tcpClient.Send(message);
     }
 
-    private void _tcpClient_DataReceived(TcpDataReceivedEventArgs e) {
+    private void TcpClient_DataReceived(TcpDataReceivedEventArgs e) {
+        UnityEngine.Debug.Log(e.ReceivedString);
         if (e.ReceivedString.Length > 0)
             _processor.ProcessData(e.Sender, e.ReceivedString);
     }

@@ -11,7 +11,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
 	void Start () {
 	    _gameController = GetComponent<GameController>();
-	    ServerComs = new CommunicationHandler(this);
+	    ServerComs = new CommunicationHandler(this, this);
 	}
 
     public void Send(string message) {
@@ -24,12 +24,6 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
         CornerId = id;
         Debug.Log(Guid + " : " + CornerId);
         ServerComs.SetGuid(guid);
-    }
-
-    public void PlayerConnected(int id, string playerName) {
-        Player newPlayer = _gameController.Players.SingleOrDefault(x => x.PlayerId == id);
-        newPlayer.Name = playerName;
-        Debug.Log("Player connected : " + playerName);
     }
 
     public void SetPlayers(string[] names, int[] ids) {
@@ -47,7 +41,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     #region INotifiable Implementation Members
 
     public void EndTurn(string name, int id) {
-        _gameController.NextTurn(id);
+        //_gameController.NextTurn(id);
+        _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));
+    }
+
+    public void PlayerJoined(int id, string playerName) {
+        Player newPlayer = _gameController.Players.SingleOrDefault(x => x.PlayerId == id);
+        newPlayer.Name = playerName;
+        Debug.Log("Player connected : " + playerName);
     }
     #endregion
 }

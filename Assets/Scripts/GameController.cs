@@ -10,12 +10,27 @@ public class GameController : MonoBehaviour {
 	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
 
+    public Queue<Action> MultiplayerActionQueue = new Queue<Action>(); 
+
 	void Awake() {
 		Players = new List<Player> ();
 		GeneratePlayers ();
 		CurrentPlayer = Players [0];
 		CurrentPlayer.StartTurn (this);
 	}
+
+    void Update() {
+        lock (MultiplayerActionQueue) {
+            while (MultiplayerActionQueue.Count > 0) {
+                MultiplayerActionQueue.Dequeue().Invoke();
+            }
+        }
+    }
+
+    public void QueueMultiplayerAction(Action action) {
+        lock(MultiplayerActionQueue)
+            MultiplayerActionQueue.Enqueue(action);
+    }
 
 	void GeneratePlayers() {
 	    var rnd = new System.Random();
@@ -46,7 +61,8 @@ public class GameController : MonoBehaviour {
 	                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1);
 	                break;
                 default:
-	                throw new ArgumentOutOfRangeException("Only 4 players allowed.");
+                    Debug.LogError("Only 4 players allowed.");
+	                break;
 	        }
 	    }
 	}
@@ -73,7 +89,13 @@ public class GameController : MonoBehaviour {
     public void NextTurn(int id) {
         lock (Players) {
             CurrentPlayer.EndTurn();
-            CurrentPlayer = Players.Find(x => x.PlayerId == id);
+            //TODO: Players.Find(x => x.PlayerId == id);
+            for (int i = 0; i < Players.Count; i++) {
+                if (Players[i].PlayerId == id) {
+                    CurrentPlayer = Players[i];
+                }
+            }
+            CurrentPlayer.StartTurn(this);
         }
     }
 }

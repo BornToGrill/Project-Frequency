@@ -13,8 +13,6 @@ public class EndTurnButton : MonoBehaviour, IPointerClickHandler {
 	        gameController.NextTurn();
 	    else {
 	        StateController state = go.GetComponent<StateController>();
-	        if (state.CornerId == go.GetComponent<GameController>().CurrentPlayer.PlayerId)
-	            gameController.NextTurn();
             state.ServerComs.Invoke.TurnEnd();
 	    }
 	}
