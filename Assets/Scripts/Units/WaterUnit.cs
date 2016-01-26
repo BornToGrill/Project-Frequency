@@ -1,28 +1,51 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 
-public class WaterUnit : BaseUnit {
+public class WaterUnit : LandUnit {
 
-    private int _stackSize;
+
+    private Environment[] _defaultEnvironments;
 
     internal override int StackSize {
-        get { return _stackSize; }
+        get { return 1; }
         set {
             if (value != 1)
                 throw new InvalidOperationException("Only 1 water unit allowed per tile");
-            _stackSize = value;
         }
     }
 
-    internal BaseUnit CarryUnit;
+    internal GameObject CarryUnit;
 
-    public void LoadUnit(BaseUnit unit) {
-        CarryUnit = unit;
+    void Awake() {
+        _defaultEnvironments = TraversableEnvironments;
     }
 
-    public void UnloadUnit() {
+    public override bool CanMerge(BaseUnit unit) {
+        if (CarryUnit == null)
+            return true;
+        BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
+        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize < internalUnit.MaxUnitStack;
+    }
+
+    public override void Merge(BaseUnit unit) {
+        if (CarryUnit == null) {
+            CarryUnit = unit.gameObject;
+            CarryUnit.SetActive(false);
+            TraversableEnvironments = _defaultEnvironments.Concat(unit.TraversableEnvironments).ToArray();
+        }
+        else {
+            CarryUnit.GetComponent<BaseUnit>().StackSize += unit.StackSize;
+            GameObject.Destroy(unit.gameObject);
+        }
+
+    }
+
+    public void UnloadUnit(GameObject tile) {
+        CarryUnit.SetActive(true);
+        CarryUnit.transform.position = gameObject.transform.position;
         CarryUnit = null;
+        TraversableEnvironments = _defaultEnvironments;
     }
 
     public override void DamageUnit(int damage) {
@@ -31,22 +54,5 @@ public class WaterUnit : BaseUnit {
             return;
         Health = 0;
         GameObject.Destroy(gameObject);
-        // TODO: Death check.
-    }
-
-    public override DeselectStatus OnFirstSelected(GameObject firstTile) {
-        throw new NotImplementedException();
-    }
-
-    public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
-        throw new NotImplementedException();
-    }
-
-    public override void OnMouseEnter(GameObject firstTile, GameObject secondTile) {
-        throw new NotImplementedException();
-    }
-
-    public override void OnMouseLeave(GameObject firstTile, GameObject secondTile) {
-        throw new NotImplementedException();
     }
 }
