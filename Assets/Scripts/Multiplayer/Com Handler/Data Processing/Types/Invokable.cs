@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using NetworkLibrary;
 
-class Invoke {
+class Invokable {
 
     private readonly IInvokable _invoke;
     private const char ValueDelimiter = '|';
 
-    public Invoke(IInvokable invoke) {
+    public Invokable(IInvokable invoke) {
         _invoke = invoke;
     }
 

@@ -69,4 +69,11 @@ public class GameController : MonoBehaviour {
 		CurrentPlayer = Players [i];
 		CurrentPlayer.StartTurn (this);
 	}
+
+    public void NextTurn(int id) {
+        lock (Players) {
+            CurrentPlayer.EndTurn();
+            CurrentPlayer = Players.Find(x => x.PlayerId == id);
+        }
+    }
 }

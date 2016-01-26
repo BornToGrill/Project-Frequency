@@ -1,23 +1,29 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class StateController : MonoBehaviour, IInvokable {
+public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
-    private CommunicationHandler _comHandler;
+    internal CommunicationHandler ServerComs;
     private GameController _gameController;
 
-    public string Guid;
-    public int CornerId;
+    internal string Guid;
+    internal int CornerId;
 
 	void Start () {
 	    _gameController = GetComponent<GameController>();
-	    _comHandler = new CommunicationHandler(this);
+	    ServerComs = new CommunicationHandler(this);
 	}
 
+    public void Send(string message) {
+        ServerComs.SendTcp(message);
+    }
+
+    #region IInvokable Implementation Members
     public void Authenticated(string guid, int id) {
         Guid = guid;
         CornerId = id;
         Debug.Log(Guid + " : " + CornerId);
+        ServerComs.SetGuid(guid);
     }
 
     public void PlayerConnected(int id, string playerName) {
@@ -36,8 +42,12 @@ public class StateController : MonoBehaviour, IInvokable {
     public void StartGame() {
 
     }
+    #endregion
 
-    public void GameStart() {
-        
+    #region INotifiable Implementation Members
+
+    public void EndTurn(string name, int id) {
+        _gameController.NextTurn(id);
     }
+    #endregion
 }

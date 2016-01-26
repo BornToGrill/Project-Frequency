@@ -4,10 +4,10 @@ using NetworkLibrary;
 
 class DataProcessor {
 
-    private readonly Invoke _invoke;
+    private readonly Invokable _invokable;
 
     public DataProcessor(IInvokable invoke) {
-        _invoke = new Invoke(invoke);
+        _invokable = new Invokable(invoke);
     }
 
     internal void ProcessData(TcpClient client, string message) {
@@ -19,7 +19,7 @@ class DataProcessor {
 
             switch (data.CommandType) {
                 case "Invoke":
-                    _invoke.HandleInvoke(client, data.Values);
+                    _invokable.HandleInvoke(client, data.Values);
                     break;
             }
         }
