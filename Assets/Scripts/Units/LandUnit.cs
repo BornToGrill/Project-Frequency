@@ -6,7 +6,7 @@ public class LandUnit : BaseUnit {
     public int Range;
 
     private int _stackSize;
-    private int _stackHealth;
+    internal int _stackHealth;
     internal int _stackDamage;
 
 
