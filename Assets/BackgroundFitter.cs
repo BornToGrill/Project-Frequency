@@ -25,7 +25,7 @@ public class BackgroundFitter : MonoBehaviour {
 		TextAreaText.text = "Gogogo";
 		RectTransform transText = TextArea.GetComponent<RectTransform> ();
 		RectTransform transImage = gameObject.GetComponent<RectTransform>();
-		transImage.sizeDelta = new Vector2 (transText.rect.width + margin, 50);
+		transImage.sizeDelta = new Vector2 (transText.rect.width + margin, transText.rect.height + margin);
 
 
 
