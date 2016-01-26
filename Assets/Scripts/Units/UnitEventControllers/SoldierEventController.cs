@@ -21,7 +21,7 @@ public class SoldierEventController : LandUnitEventController {
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         TileController thisTile = ownTile.GetComponent<TileController>();
-        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(thisTile))
             return base.OnSelected(ownTile);
 
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();

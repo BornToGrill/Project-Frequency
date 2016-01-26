@@ -27,7 +27,7 @@ public class LandUnitEventController : EventControllerBase {
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = clickedTile.GetComponent<TileController>();
-        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return DeselectStatus.Both;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
@@ -63,7 +63,7 @@ public class LandUnitEventController : EventControllerBase {
             return;      
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
-        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 

@@ -1,4 +1,6 @@
-﻿using NetworkLibrary;
+﻿using System;
+using System.Linq;
+using NetworkLibrary;
 
 class DataProcessor {
 
@@ -9,12 +11,17 @@ class DataProcessor {
     }
 
     internal void ProcessData(TcpClient client, string message) {
-        SplitData data = message.GetFirst();
+        string[] separated =
+            message.Split(new[] { "]" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.TrimStart('[')).ToArray();
 
-        switch (data.CommandType) {
-            case "Invoke":
-                _invoke.HandleInvoke(client, data.Values);
-                break;
+        foreach (string command in separated) {
+            SplitData data = command.GetFirst();
+
+            switch (data.CommandType) {
+                case "Invoke":
+                    _invoke.HandleInvoke(client, data.Values);
+                    break;
+            }
         }
 
     }

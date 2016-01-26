@@ -14,7 +14,8 @@ public class StructureEventController : EventControllerBase {
     public override DeselectStatus OnSelected(GameObject ownTile) {
         TileController thisTile = ownTile.GetComponent<TileController>();
         thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
-        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+        var tst = GetComponent<BaseUnit>();
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(thisTile))
             return DeselectStatus.None;
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
 		foreach (GameObject unit in GetComponent<StructureUnit>().BuildableUnits){
