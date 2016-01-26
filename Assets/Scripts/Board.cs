@@ -132,7 +132,7 @@ public class Board : MonoBehaviour {
 		}
 	}
 
-	private void DeselectTile(DeselectStatus status, GameObject lastSelected) {
+	internal void DeselectTile(DeselectStatus status, GameObject lastSelected) {
 		switch (status) {
 		case DeselectStatus.First:
 			if (SelectedTile != null) {
@@ -144,8 +144,10 @@ public class Board : MonoBehaviour {
 			lastSelected.GetComponent<SelectionController>().OnObjectDeselect();
 			break;
 		case DeselectStatus.Both:
-			lastSelected.GetComponent<SelectionController>().OnObjectDeselect();
-			SelectedTile.GetComponent<SelectionController>().OnObjectDeselect();
+			if(lastSelected != null)
+				lastSelected.GetComponent<SelectionController>().OnObjectDeselect();
+			if(SelectedTile != null)
+				SelectedTile.GetComponent<SelectionController>().OnObjectDeselect();
 			SelectedTile = null;
 			break;
 		case DeselectStatus.None:
