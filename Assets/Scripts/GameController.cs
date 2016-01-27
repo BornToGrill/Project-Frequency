@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 public class GameController : MonoBehaviour {
     public GameObject BasePrefab;
@@ -88,14 +89,11 @@ public class GameController : MonoBehaviour {
 
     public void NextTurn(int id) {
         lock (Players) {
-            CurrentPlayer.EndTurn();
-            //TODO: Players.Find(x => x.PlayerId == id);
-            for (int i = 0; i < Players.Count; i++) {
-                if (Players[i].PlayerId == id) {
-                    CurrentPlayer = Players[i];
-                }
+            lock (CurrentPlayer) {
+                CurrentPlayer.EndTurn();
+                CurrentPlayer = Players.Find(x => x.PlayerId == id);
+                CurrentPlayer.StartTurn(this);
             }
-            CurrentPlayer.StartTurn(this);
         }
     }
 }

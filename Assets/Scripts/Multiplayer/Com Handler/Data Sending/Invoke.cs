@@ -11,6 +11,6 @@ internal class Invoke {
     }
 
     internal void TurnEnd() {
-        _tcpClient.Send(string.Format("[Notify:EndTurn:{0}", _guid));
+        _tcpClient.Send(string.Format("[Notify:EndTurn:{0}]", _guid));
     }
 }

@@ -23,6 +23,7 @@ public class LandUnitEventController : EventControllerBase {
             ResetModifiedTiles(ownTile.GetComponent<TileController>());
             return DeselectStatus.Both;
         }
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
 
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
@@ -37,6 +38,8 @@ public class LandUnitEventController : EventControllerBase {
 				return DeselectStatus.Both;
 			else {
 				owner.Moves -= path.Path.Count;
+			    if (multiplayerController != null)
+			        multiplayerController.ServerComs.Notify.MoveToEmpty(tileOne, tileTwo);
 				return MoveToEmpty (tileOne, path.Path);
 			}
 		}
@@ -60,7 +63,8 @@ public class LandUnitEventController : EventControllerBase {
 
     public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
         if (ownTile == hoveredTile)
-            return;      
+            return;
+        
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))

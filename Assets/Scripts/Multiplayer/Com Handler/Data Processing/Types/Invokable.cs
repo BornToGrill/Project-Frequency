@@ -26,6 +26,13 @@ class Invokable {
             case "StartGame":
                 Debug.Log("TODO: Add game start");
                 break;
+            case "CreateUnit":
+                CreateUnit(data.Values);
+                break;
+            case "MoveToEmpty":
+                MoveToEmpty(data.Values);
+                break;
+
             default:
                 Debug.LogError("Invalid message send to Notify\n" + values);
                 break;
@@ -50,5 +57,20 @@ class Invokable {
         string[] data = values.Split(ValueDelimiter);
         _invoke.Authenticated(data[0], Int32.Parse(data[1]));
     }
+
+    private void CreateUnit(string values) {
+        string[] data = values.Split(ValueDelimiter);
+        int[] start = data[0].Split(':').Select(x => x.Trim('(',')')).Select(c => Int32.Parse(c)).ToArray();
+        _invoke.CreateUnit(start[0], start[1], data[1], Int32.Parse(data[2]));
+    }
+
+    private void MoveToEmpty(string values) {
+        string[] positions = values.Split(ValueDelimiter).Select(x => x.Trim('(',')')).ToArray();
+        int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        _invoke.MoveToEmpty(start[0], start[1], stop[0], stop[1]);
+    }
+
+
 
 }

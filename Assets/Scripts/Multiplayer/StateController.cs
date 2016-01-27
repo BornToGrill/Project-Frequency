@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
+    public GameObject[] Units;
+
     internal CommunicationHandler ServerComs;
     private GameController _gameController;
 
@@ -22,33 +24,58 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     public void Authenticated(string guid, int id) {
         Guid = guid;
         CornerId = id;
-        Debug.Log(Guid + " : " + CornerId);
         ServerComs.SetGuid(guid);
     }
 
     public void SetPlayers(string[] names, int[] ids) {
         for (int i = 0; i < names.Length; i++)
             _gameController.Players.Single(x => x.PlayerId == ids[i]).Name = names[i];
-        foreach (var element in _gameController.Players)
-            Debug.Log("ID : " + element.PlayerId + "  |   name : " + element.Name);
     }
 
     public void StartGame() {
 
+    }
+
+    public void CreateUnit(int targetX, int targetY, string unitType, int ownerId) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            //TODO: Add locks
+            Board board = _gameController.GetComponent<Board>();
+            TileController target = board._tiles[targetX, targetY].GetComponent<TileController>();
+            if (target.Unit != null) {
+                target.Unit.StackSize++;
+                return;
+            }
+            GameObject go =
+                (GameObject)
+                    Instantiate(Units.Single(x => x.name == unitType), new Vector3(targetX, targetY),
+                        Quaternion.identity);
+            target.Unit = go.GetComponent<BaseUnit>();
+            target.Unit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
+        });
+    }
+
+    public void MoveToEmpty(int startX, int startY, int endX, int endY) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            Board board = _gameController.GetComponent<Board>();
+            TileController start = board._tiles[startX, startY].GetComponent<TileController>();
+            TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
+            PathFindingResult result = Pathfinding.FindPath(start, stop);
+            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+            //unitEvent.StartCoroutine(unitEvent.AnimateToTile(result.Path));
+            unitEvent.MoveToEmpty(start, result.Path);
+        });
     }
     #endregion
 
     #region INotifiable Implementation Members
 
     public void EndTurn(string name, int id) {
-        //_gameController.NextTurn(id);
         _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));
     }
 
     public void PlayerJoined(int id, string playerName) {
         Player newPlayer = _gameController.Players.SingleOrDefault(x => x.PlayerId == id);
         newPlayer.Name = playerName;
-        Debug.Log("Player connected : " + playerName);
     }
     #endregion
 }

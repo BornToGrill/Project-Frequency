@@ -58,6 +58,11 @@ public class StructureEventController : EventControllerBase {
         unitBase.Owner = GetComponent<BaseUnit>().Owner;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
 		unitBase.Owner.Moves -= 1;
+
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+        if (multiplayerController != null)
+            multiplayerController.ServerComs.Notify.CreateUnit(second, _buildType.name);
+
         _buildType = null;
         if (second.Unit != null) {
             if (second.IsTraversable(unit))

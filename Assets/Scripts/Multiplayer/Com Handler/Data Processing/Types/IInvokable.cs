@@ -8,4 +8,9 @@ interface IInvokable {
 
     void StartGame();
 
+    void CreateUnit(int targetX, int targetY, string unitType, int ownerId);
+
+    void MoveToEmpty(int startX, int startY, int endX, int endY);
+
+
 }

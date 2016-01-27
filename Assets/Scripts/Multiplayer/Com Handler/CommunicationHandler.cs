@@ -17,6 +17,7 @@ class CommunicationHandler {
     private readonly DataProcessor _processor;
 
     public Invoke Invoke { get; private set; }
+    public Notify Notify { get; private set; }
 
     private string _guid;
 
@@ -33,6 +34,7 @@ class CommunicationHandler {
     public void SetGuid(string guid) {
         _guid = guid;
         Invoke = new Invoke(_tcpClient, guid);
+        Notify = new Notify(_tcpClient, guid);
     }
 
     public void SendTcp(string message) {
