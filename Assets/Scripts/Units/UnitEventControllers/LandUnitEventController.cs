@@ -16,7 +16,10 @@ public class LandUnitEventController : EventControllerBase {
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
 		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
-		unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ()._stackHealth);
+		if (GetComponent<LandUnit>()._stackDamage == 0)
+			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ().Health);
+		else
+			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ()._stackHealth);
         return DeselectStatus.None;
     }
 
@@ -33,6 +36,9 @@ public class LandUnitEventController : EventControllerBase {
             return DeselectStatus.Both;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
+
+		if (path.FoundEndPoint == false || !path.ValidPath)
+			return DeselectStatus.Both;
 
 		if (tileTwo.Unit == null) {
 			if (!tileTwo.IsTraversable(gameObject))
@@ -56,6 +62,7 @@ public class LandUnitEventController : EventControllerBase {
             else {
                 if (tileTwo.IsTraversable(gameObject))
 					if (path.Path.Count <= owner.Moves)
+						owner.Moves -= path.Path.Count;
                     	return MoveToMerge(tileOne, path.Path);
                 return DeselectStatus.Both;
             }

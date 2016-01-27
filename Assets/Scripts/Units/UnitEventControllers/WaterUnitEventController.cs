@@ -66,7 +66,8 @@ public class WaterUnitEventController : LandUnitEventController {
 				unitPath.Last ().Unit = unit;
 			}
         }
-		if(index > 0) // If boat also moves.
+
+		if(index != 0) // If boat also moves.
         	startTile.Unit = null;
     }
 
