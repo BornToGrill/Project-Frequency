@@ -2,7 +2,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 public class GameController : MonoBehaviour {
     public GameObject BasePrefab;
@@ -10,11 +9,13 @@ public class GameController : MonoBehaviour {
 	public int MovesPerTurn;
 	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
+	public List<Player> AllPlayers { get; private set; }
 
     public Queue<Action> MultiplayerActionQueue = new Queue<Action>(); 
 
 	void Awake() {
 		Players = new List<Player> ();
+		AllPlayers = new List<Player> ();
 		GeneratePlayers ();
 		CurrentPlayer = Players [0];
 		CurrentPlayer.StartTurn (this);
@@ -44,6 +45,8 @@ public class GameController : MonoBehaviour {
             int id = spawns[random];
 	        spawns.RemoveAt(random);
 	        Players.Add(player);
+			AllPlayers.Add(player);
+            
             player.Name = "P" + (i + 1);
 
 	        Board board = gameObject.GetComponent<Board>();
@@ -77,6 +80,11 @@ public class GameController : MonoBehaviour {
         tile.Unit.Owner = owner;
     }
 		
+
+	public void RemovePlayer(Player player) {
+		Players.Remove(player);
+	}
+
 	public void NextTurn() {
 		int i = Players.IndexOf (CurrentPlayer);
 		i += 1;

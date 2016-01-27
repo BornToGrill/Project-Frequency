@@ -15,6 +15,8 @@ public class LandUnitEventController : EventControllerBase {
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
+		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
+		unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ()._stackHealth);
         return DeselectStatus.None;
     }
 
@@ -23,6 +25,7 @@ public class LandUnitEventController : EventControllerBase {
             ResetModifiedTiles(ownTile.GetComponent<TileController>());
             return DeselectStatus.Both;
         }
+
         StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
 
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
@@ -34,6 +37,8 @@ public class LandUnitEventController : EventControllerBase {
 		Player owner = GetComponent<BaseUnit> ().Owner;
 
 		if (tileTwo.Unit == null) {
+			if (!tileTwo.IsTraversable(gameObject))
+				return DeselectStatus.Both;
 			if (path.Path.Count > owner.Moves)
 				return DeselectStatus.Both;
 			else {

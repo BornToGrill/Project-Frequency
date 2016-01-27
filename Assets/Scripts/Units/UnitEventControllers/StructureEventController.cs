@@ -12,6 +12,9 @@ public class StructureEventController : EventControllerBase {
     private TileController _hoveredTile;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
+		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
+		unitStats.Set (0, GetComponent<BaseUnit> ().Health);
+
         TileController thisTile = ownTile.GetComponent<TileController>();
         thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
         var tst = GetComponent<BaseUnit>();
@@ -54,6 +57,10 @@ public class StructureEventController : EventControllerBase {
         ModifiedTiles.Clear();
 
         GameObject unit = (GameObject)Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
+		if (!second.IsTraversable (unit)) {
+			GameObject.Destroy (unit);
+			return DeselectStatus.Both;
+		}
         BaseUnit unitBase = unit.GetComponent<BaseUnit>();
         unitBase.Owner = GetComponent<BaseUnit>().Owner;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
@@ -65,9 +72,10 @@ public class StructureEventController : EventControllerBase {
 
         _buildType = null;
         if (second.Unit != null) {
-            if (second.IsTraversable(unit))
-                second.Unit.StackSize++;
-            GameObject.Destroy(unit);
+			if (second.IsTraversable (unit)) {
+				if (((LandUnit)second.Unit).CanMerge (unitBase))
+					((LandUnit)second.Unit).Merge (unitBase);
+			}
             return DeselectStatus.Both;
         }
         else
