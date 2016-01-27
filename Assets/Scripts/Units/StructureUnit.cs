@@ -19,6 +19,12 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
+	public int GetCost (Environment environment, Player owner){
+		if (owner.StartEnvironment != environment)
+			return DiscountCost;
+		return Cost;
+	}
+
     public void CreateUnit(GameObject unit) {
         throw new NotImplementedException();
     }

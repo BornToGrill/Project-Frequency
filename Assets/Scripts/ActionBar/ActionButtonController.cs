@@ -7,10 +7,17 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
     private Text _buttonText;
     private Callback _callback;
 	private string _id;
+	public Sprite TankButton;
+	public Sprite SoldierButton;
+	public Sprite RobotButton;
+	public Sprite BarracksButton;
+
 
     void Awake()
     {
-        _buttonText = gameObject.transform.Find("Text").gameObject.GetComponent<Text>();
+		Transform textObject = transform.Find ("Text");
+		if (textObject != null)
+        	_buttonText = textObject.GetComponent<Text>();
     }
 	
 	public void OnPointerClick(PointerEventData data)
@@ -19,14 +26,19 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
             _callback.Invoke(_id);
     }
 
-	public void Initialize(string text, Callback callback, float offset)
+	public void Initialize(string text, Callback callback, float offset, bool clickable)
     {
-        _callback = callback;
 		_id = text;
-        _buttonText.text = text;
+		if (_buttonText != null)
+        	_buttonText.text = text;
         RectTransform rectTransform = transform as RectTransform;
-        rectTransform.pivot = new Vector2(0.5f, 0.5f); 
+        //rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.localScale = new Vector3(1, 1, 0);
-        rectTransform.anchoredPosition = new Vector2(offset+50, 50);
+        rectTransform.anchoredPosition = new Vector2(offset + 20, 0);
+		if (!clickable) {
+			gameObject.GetComponent<Button> ().interactable = false;
+			return;
+		}
+		_callback = callback;
     }
 }
