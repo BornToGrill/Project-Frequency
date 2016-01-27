@@ -38,7 +38,6 @@ class Invokable {
             case "MoveToAttack":
                 Move(_invoke.MoveToAttack, data.Values);
                 break;
-
             default:
                 Debug.LogError("Invalid message send to Notify\n" + values);
                 break;

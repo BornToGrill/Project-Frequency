@@ -19,6 +19,12 @@ public class GameController : MonoBehaviour {
 		GeneratePlayers ();
 		CurrentPlayer = Players [0];
 		CurrentPlayer.StartTurn (this);
+        //TODO: TEMP
+	    foreach (var element in Players)
+	        element.MoneyAmount += 50000;
+
+
+	    //TODO: TEMP
 	}
 
     void Update() {

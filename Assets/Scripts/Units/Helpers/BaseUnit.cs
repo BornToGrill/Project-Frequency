@@ -18,7 +18,7 @@ public abstract class BaseUnit : MonoBehaviour {
 
     public int MaxUnitStack;
 
-    void Awake() {
+    public virtual void Awake() {
         StackSize = 1;
         if ((GameObject.Find("Board").GetComponent<StateController>() == null)) {
             CurrentPlayerPredicate = (x) => { return x.Unit.Owner.IsCurrentPlayer; };

@@ -77,7 +77,11 @@ public class LandUnitEventController : EventControllerBase {
         
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
-        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
+        //if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
+            //return;
+        BaseUnit test = GetComponent<BaseUnit>();
+        bool test2 = test.CurrentPlayerPredicate(tileOne);
+        if (!test2)
             return;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 

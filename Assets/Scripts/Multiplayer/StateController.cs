@@ -60,8 +60,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             TileController start = board._tiles[startX, startY].GetComponent<TileController>();
             TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
             PathFindingResult result = Pathfinding.FindPath(start, stop);
-            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
-            unitEvent.MoveToEmpty(start, result.Path);
+            WaterUnitEventController waterEvent = start.Unit.GetComponent<WaterUnitEventController>();
+            if (waterEvent != null) {
+                waterEvent.MoveToEmpty(start, result.Path);
+            }
+            else {
+                LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+                unitEvent.MoveToEmpty(start, result.Path);
+            }
         });
     }
 
@@ -71,8 +77,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             TileController start = board._tiles[startX, startY].GetComponent<TileController>();
             TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
             PathFindingResult result = Pathfinding.FindPath(start, stop);
-            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
-            unitEvent.MoveToMerge(start, result.Path);
+            WaterUnitEventController waterEvent = start.Unit.GetComponent<WaterUnitEventController>();
+            if (waterEvent != null) {
+                waterEvent.MoveToMerge(start, result.Path);
+            }
+            else {
+                LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+                unitEvent.MoveToMerge(start, result.Path);
+            }
         });
     }
 
@@ -82,8 +94,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             TileController start = board._tiles[startX, startY].GetComponent<TileController>();
             TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
             PathFindingResult result = Pathfinding.FindPath(start, stop);
-            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
-            unitEvent.MoveToAttack(start, result.Path);
+            WaterUnitEventController waterEvent = start.Unit.GetComponent<WaterUnitEventController>();
+            if (waterEvent != null) {
+                waterEvent.MoveToAttack(start, result.Path);
+            }
+            else {
+                LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+                unitEvent.MoveToAttack(start, result.Path);
+            }
         });
     }
 
