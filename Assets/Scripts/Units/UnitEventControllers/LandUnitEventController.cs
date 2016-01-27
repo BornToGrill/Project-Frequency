@@ -158,28 +158,42 @@ public class LandUnitEventController : EventControllerBase {
         yield return AnimateToTile(path, null);
     }
     internal IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
+		
         foreach (TileController tile in path) {
-			SetSpriteDirection (tile.transform.position, transform.position);
+			StartSpriteAnimation (tile.transform.position, transform.position, true);
             Vector3 startPosition = transform.position;
             for (float i = 0.1f; i <= 1f * MovementSpeed; i += 0.1f) {
                 transform.position = Vector3.Lerp(startPosition, tile.transform.position, i);
                 yield return null;
             }
+			StartSpriteAnimation (tile.transform.position, startPosition, false);
             transform.position = tile.transform.position;
         }
         if (endAction != null)
             endAction.Invoke();
     }
 
-	private void SetSpriteDirection(Vector3 direction, Vector3 position) {
+	private void StartSpriteAnimation(Vector3 direction, Vector3 position, bool moving) {
 		Animator anim = GetComponent<Animator> ();
-		if (direction.x - position.x < 0)
-			anim.Play ("FaceLeft");
-		else if (direction.x - position.x > 0)
-			anim.Play ("FaceRight");
-		else if (direction.y - position.y > 0)
-			anim.Play ("FaceUp");
-		else if (direction.y - position.y < 0)
-			anim.Play ("FaceDown");
+		if (moving) {
+			if (direction.x - position.x < 0)
+				anim.Play ("MoveLeft");
+			else if (direction.x - position.x > 0)
+				anim.Play ("MoveRight");
+			else if (direction.y - position.y > 0)
+				anim.Play ("MoveUp");
+			else if (direction.y - position.y < 0)
+				anim.Play ("MoveDown");
+			
+		} else {
+			if (direction.x - position.x < 0)
+				anim.Play ("FaceLeft");
+			else if (direction.x - position.x > 0)
+				anim.Play ("FaceRight");
+			else if (direction.y - position.y > 0)
+				anim.Play ("FaceUp");
+			else if (direction.y - position.y < 0)
+				anim.Play ("FaceDown");
+		}
 	}
 }
