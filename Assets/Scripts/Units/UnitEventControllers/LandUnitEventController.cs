@@ -35,6 +35,8 @@ public class LandUnitEventController : EventControllerBase {
 		Player owner = GetComponent<BaseUnit> ().Owner;
 
 		if (tileTwo.Unit == null) {
+			if (!tileTwo.IsTraversable(gameObject))
+				return DeselectStatus.Both;
 			if (path.Path.Count > owner.Moves)
 				return DeselectStatus.Both;
 			else {

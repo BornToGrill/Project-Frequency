@@ -11,13 +11,15 @@ public class WinCondition : MonoBehaviour {
 	public int moneyWinAmount;
 
 	void Start () {
-		BaseUnit bu = gameObject.GetComponent<BaseUnit> ();
-		_baseOwner = bu.Owner;
+		BaseUnit unit = gameObject.GetComponent<BaseUnit> ();
+		_baseOwner = unit.Owner;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		moneyCondition (_baseOwner);
 	}
+
 
 	void OnDestroy() {
 		GameObject boardGo = GameObject.Find ("Board");
