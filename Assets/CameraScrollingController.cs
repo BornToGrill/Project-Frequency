@@ -60,13 +60,13 @@ public class CameraScrollingController : MonoBehaviour {
 			camera.orthographicSize = minZoom;
 		}
 
-		if (zoom < maxZoom && mouseScroll > 0)
+		if (zoom < maxZoom && -mouseScroll > 0)
 		{
-			camera.orthographicSize += mouseScroll;
+			camera.orthographicSize += -mouseScroll;
 		}
-		else if (zoom > minZoom && mouseScroll < 0)
+		else if (zoom > minZoom && -mouseScroll < 0)
 		{
-			camera.orthographicSize += mouseScroll;
+			camera.orthographicSize += -mouseScroll;
 		}
 	}
 
