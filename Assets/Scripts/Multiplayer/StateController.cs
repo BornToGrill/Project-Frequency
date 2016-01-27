@@ -61,13 +61,35 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
             PathFindingResult result = Pathfinding.FindPath(start, stop);
             LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
-            //unitEvent.StartCoroutine(unitEvent.AnimateToTile(result.Path));
             unitEvent.MoveToEmpty(start, result.Path);
         });
     }
+
+    public void MoveToMerge(int startX, int startY, int endX, int endY) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            Board board = _gameController.GetComponent<Board>();
+            TileController start = board._tiles[startX, startY].GetComponent<TileController>();
+            TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
+            PathFindingResult result = Pathfinding.FindPath(start, stop);
+            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+            unitEvent.MoveToMerge(start, result.Path);
+        });
+    }
+
+    public void MoveToAttack(int startX, int startY, int endX, int endY) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            Board board = _gameController.GetComponent<Board>();
+            TileController start = board._tiles[startX, startY].GetComponent<TileController>();
+            TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
+            PathFindingResult result = Pathfinding.FindPath(start, stop);
+            LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+            unitEvent.MoveToAttack(start, result.Path);
+        });
+    }
+
     #endregion
 
-    #region INotifiable Implementation Members
+        #region INotifiable Implementation Members
 
     public void EndTurn(string name, int id) {
         _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));

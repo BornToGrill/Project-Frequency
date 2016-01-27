@@ -44,7 +44,7 @@ public class LandUnitEventController : EventControllerBase {
 			else {
 				owner.Moves -= path.Path.Count;
 			    if (multiplayerController != null)
-			        multiplayerController.ServerComs.Notify.MoveToEmpty(tileOne, tileTwo);
+			        multiplayerController.ServerComs.Notify.Move(MoveType.Empty, tileOne, tileTwo);
 				return MoveToEmpty (tileOne, path.Path);
 			}
 		}
@@ -54,14 +54,19 @@ public class LandUnitEventController : EventControllerBase {
 					return DeselectStatus.Both;
 				else {
 					owner.Moves -= (path.Path.Count - GetComponent<LandUnit> ().Range + 1);
+				    if (multiplayerController != null)
+				        multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
 					return MoveToAttack (tileOne, path.Path);
 				}
 			}
             else {
                 if (tileTwo.IsTraversable(gameObject))
-					if (path.Path.Count <= owner.Moves)
-                    	return MoveToMerge(tileOne, path.Path);
-                return DeselectStatus.Both;
+                    if (path.Path.Count <= owner.Moves) {
+                        if (multiplayerController != null)
+                            multiplayerController.ServerComs.Notify.Move(MoveType.Merge, tileOne, tileTwo);
+                        return MoveToMerge(tileOne, path.Path);
+                    }
+			    return DeselectStatus.Both;
             }
         }
     }

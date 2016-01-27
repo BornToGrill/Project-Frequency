@@ -30,7 +30,13 @@ class Invokable {
                 CreateUnit(data.Values);
                 break;
             case "MoveToEmpty":
-                MoveToEmpty(data.Values);
+                Move(_invoke.MoveToEmpty, data.Values);
+                break;
+            case "MoveToMerge":
+                Move(_invoke.MoveToMerge, data.Values);
+                break;
+            case "MoveToAttack":
+                Move(_invoke.MoveToAttack, data.Values);
                 break;
 
             default:
@@ -64,11 +70,11 @@ class Invokable {
         _invoke.CreateUnit(start[0], start[1], data[1], Int32.Parse(data[2]));
     }
 
-    private void MoveToEmpty(string values) {
-        string[] positions = values.Split(ValueDelimiter).Select(x => x.Trim('(',')')).ToArray();
+    private void Move(Action<int,int,int,int> action, string values) {
+        string[] positions = values.Split(ValueDelimiter).Select(x => x.Trim('(', ')')).ToArray();
         int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
         int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
-        _invoke.MoveToEmpty(start[0], start[1], stop[0], stop[1]);
+        action.Invoke(start[0], start[1], stop[0], stop[1]);
     }
 
 

@@ -1,5 +1,11 @@
 ﻿using NetworkLibrary;
 
+public enum MoveType {
+    Empty,
+    Merge,
+    Attack
+};
+
 class Notify {
 
 
@@ -11,8 +17,12 @@ class Notify {
         _guid = guid;
     }
 
-    internal void MoveToEmpty(TileController start, TileController stop) {
-        _tcpClient.Send(string.Format("[Notify:MoveToEmpty:{0}|({1}:{2})|({3}:{4})]", _guid, start.Position.x,
+    internal void Move(MoveType type, TileController start, TileController stop) {
+        string moveType = type == MoveType.Empty
+            ? "MoveToEmpty"
+            : type == MoveType.Merge ? "MoveToMerge" : type == MoveType.Attack ? "MoveToAttack" : "";
+
+        _tcpClient.Send(string.Format("[Notify:{0}:{1}|({2}:{3})|({4}:{5})]", moveType, _guid, start.Position.x,
             start.Position.y, stop.Position.x, stop.Position.y));
     }
 

@@ -49,6 +49,8 @@ public class SoldierEventController : LandUnitEventController {
             _surroundingTiles.Clear();
             return base.OnClicked(ownTile, clickedTile);
         }
+
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
         _isBuilding = false;
         ResetModifiedTiles(_surroundingTiles.ToArray());
         ownTile.GetComponent<TileController>().ResetSprite();
@@ -70,6 +72,10 @@ public class SoldierEventController : LandUnitEventController {
         structBase.Owner = GetComponent<BaseUnit>().Owner;
 		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
 		structBase.Owner.Moves -= 1;
+
+        if (multiplayerController != null)
+            multiplayerController.ServerComs.Notify.CreateUnit(tileTwo, _buildType.name);
+
         _buildType = null;
         if (tileTwo.Unit != null) {
             if (tileTwo.IsTraversable(structure))
