@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using NetworkLibrary;
 using TcpClient = NetworkLibrary.TcpClient;
@@ -21,14 +17,14 @@ class CommunicationHandler {
 
     private string _guid;
 
-    public CommunicationHandler(IInvokable invoke, INotifiable notify) {
+    public CommunicationHandler(IInvokable invoke, INotifiable notify, ILobby lobby) {
         Socket connSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         connSocket.Connect(IPAddress.Parse("127.0.0.1"), 9500); //TODO: Move to Settings
         _tcpClient = new TcpClient(connSocket);
         _tcpClient.DataReceived += TcpClient_DataReceived;
         _tcpClient.Start();
 
-        _processor = new DataProcessor(invoke, notify);
+        _processor = new DataProcessor(invoke, notify, lobby);
     }
 
     public void SetGuid(string guid) {

@@ -30,4 +30,8 @@ class Notify {
         _tcpClient.Send(string.Format("[Notify:UnitCreated:{0}|({1}:{2})|{3}]", _guid, target.Position.x,
             target.Position.y, unitType));
     }
+
+    internal void CashChanged(int newValue) {
+        _tcpClient.Send(string.Format("[Notify:CashChanged:{0}|{1}]", _guid, newValue));
+    }
 }

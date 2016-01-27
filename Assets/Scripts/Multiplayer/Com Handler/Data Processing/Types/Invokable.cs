@@ -38,8 +38,11 @@ class Invokable {
             case "MoveToAttack":
                 Move(_invoke.MoveToAttack, data.Values);
                 break;
+            case "CashChanged":
+                CashChanged(data.Values);
+                break;
             default:
-                Debug.LogError("Invalid message send to Notify\n" + values);
+                Debug.LogError("Invalid message send to Invokable\n" + values);
                 break;
         }
     }
@@ -74,6 +77,11 @@ class Invokable {
         int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
         int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
         action.Invoke(start[0], start[1], stop[0], stop[1]);
+    }
+
+    private void CashChanged(string values) {
+        int[] data = values.Split(ValueDelimiter).Select(x => Int32.Parse(x)).ToArray();
+        _invoke.CashChanged(data[0], data[1]);
     }
 
 

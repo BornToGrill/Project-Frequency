@@ -19,12 +19,6 @@ public class GameController : MonoBehaviour {
 		GeneratePlayers ();
 		CurrentPlayer = Players [0];
 		CurrentPlayer.StartTurn (this);
-        //TODO: TEMP
-	    foreach (var element in Players)
-	        element.MoneyAmount += 50000;
-
-
-	    //TODO: TEMP
 	}
 
     void Update() {
@@ -47,9 +41,9 @@ public class GameController : MonoBehaviour {
 
 	    for (int i = 0; i < AmountOfPlayers; i++) {
 	        int random = rnd.Next(0, spawns.Count);
-	        Player player = new Player(i + 1);
             int id = spawns[random];
-	        spawns.RemoveAt(random);
+            Player player = new Player(id);
+            spawns.RemoveAt(random);
 	        Players.Add(player);
 			AllPlayers.Add(player);
             

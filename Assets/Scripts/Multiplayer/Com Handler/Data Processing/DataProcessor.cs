@@ -6,10 +6,15 @@ class DataProcessor {
 
     private readonly Invokable _invokable;
     private readonly Notifiable _notifiable;
+    private readonly Lobby _lobby;
 
-    public DataProcessor(IInvokable invoke, INotifiable notify) {
-        _invokable = new Invokable(invoke);
-        _notifiable = new Notifiable(notify);
+    public DataProcessor(IInvokable invoke, INotifiable notify, ILobby lobby) {
+        if(invoke != null)
+            _invokable = new Invokable(invoke);
+        if(notify != null)
+            _notifiable = new Notifiable(notify);
+        if (lobby != null)
+            _lobby = new Lobby(lobby);
     }
 
     internal void ProcessData(TcpClient client, string message) {
@@ -21,10 +26,16 @@ class DataProcessor {
 
             switch (data.CommandType) {
                 case "Invoke":
-                    _invokable.HandleInvoke(client, data.Values);
+                    if (_invokable != null)
+                        _invokable.HandleInvoke(client, data.Values);
                     break;
                 case "Notify":
-                    _notifiable.HandleNotify(client, data.Values);
+                    if (_notifiable != null)
+                        _notifiable.HandleNotify(client, data.Values);
+                    break;
+                case "Lobby":
+                    if (_lobby != null)
+                        _lobby.HandleLobby(client, data.Values);
                     break;
                 default:
                     UnityEngine.Debug.LogError("Invalid message send to DataProcessor\n" + message + "\n" +

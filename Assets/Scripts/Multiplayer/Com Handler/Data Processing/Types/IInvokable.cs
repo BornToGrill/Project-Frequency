@@ -14,5 +14,7 @@ interface IInvokable {
     void MoveToMerge(int startX, int startY, int endX, int endY);
     void MoveToAttack(int startX, int startY, int endX, int endY);
 
+    void CashChanged(int playerId, int newValue);
+
 
 }

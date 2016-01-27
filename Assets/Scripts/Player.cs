@@ -2,18 +2,28 @@
 using UnityEngine;
 
 
-public class Player{
+public class Player {
+
+    private int _moneyAmount;
+    private StateController _multiplayerController;
 
     public int PlayerId { get; private set; }
     public string Name;
-    public int MoneyAmount;
     public Color Color;
     public Environment StartEnvironment;
 	public int Moves;
     public bool IsCurrentPlayer { get; private set; }
 
+    public int MoneyAmount {
+        get { return _moneyAmount; }
+        set {
+            _moneyAmount = value;
+            if(_multiplayerController != null && _multiplayerController.ServerComs != null && _multiplayerController.ServerComs.Notify != null)
+                _multiplayerController.ServerComs.Notify.CashChanged(value);
+        }
+    }
+
     public int CalculateIncome() {
-        //throw new System.NotImplementedException();
         Board board = GameObject.Find("Board").GetComponent<Board>();
         int income = 0;
         foreach(GameObject tileObject in board._tiles)
@@ -30,7 +40,16 @@ public class Player{
 	public void StartTurn(GameController gameController) {
         IsCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
-		GenerateMoney ();
+
+
+	    if (_multiplayerController == null)
+	        GenerateMoney();
+	    else {
+	        if (_multiplayerController.CornerId == PlayerId) {
+                GenerateMoney();
+
+	        }
+	    }
 	}
 
     public void EndTurn() {
@@ -42,7 +61,8 @@ public class Player{
     }
 
 	public Player(int x) {
-		PlayerId = x;
+        _multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+        PlayerId = x;
 		MoneyAmount = 500;
 
         // TODO: Remove temporary

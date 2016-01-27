@@ -13,7 +13,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
 	void Start () {
 	    _gameController = GetComponent<GameController>();
-	    ServerComs = new CommunicationHandler(this, this);
+	    ServerComs = new CommunicationHandler(this, this, null);
 	}
 
     public void Send(string message) {
@@ -102,6 +102,12 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
                 LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
                 unitEvent.MoveToAttack(start, result.Path);
             }
+        });
+    }
+
+    public void CashChanged(int id, int newValue) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            _gameController.Players.Find(x => x.PlayerId == id).MoneyAmount = newValue;
         });
     }
 
