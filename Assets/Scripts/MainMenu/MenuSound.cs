@@ -4,7 +4,6 @@ using System.Collections;
 public class MenuSound : MonoBehaviour {
 	private static MenuSound instance;
 
-	AudioSource audio;
 
 	void Awake() {
 		if (instance != null && instance != this) {
@@ -35,7 +34,7 @@ public class MenuSound : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () { 
-		audio = gameObject.GetComponent<AudioSource> ();
+		AudioSource audio = gameObject.GetComponent<AudioSource> ();
 		if (!audio.isPlaying) {
 			audio.Play ();
 		}

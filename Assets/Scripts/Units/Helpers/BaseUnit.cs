@@ -2,8 +2,6 @@
 
 public abstract class BaseUnit : MonoBehaviour {
 
-    public Color SelfSelectedColor;
-
     internal abstract int StackSize { get; set; }
 
     internal Player Owner;
@@ -27,8 +25,4 @@ public abstract class BaseUnit : MonoBehaviour {
 
     public abstract void DamageUnit(int damage);
 
-    public abstract DeselectStatus OnFirstSelected(GameObject firstTile);
-    public abstract DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile);
-    public abstract void OnMouseEnter(GameObject firstTile, GameObject secondTile);
-    public abstract void OnMouseLeave(GameObject firstTile, GameObject secondTile);
 }
