@@ -20,9 +20,6 @@ class Invokable {
             case "SetPlayers":
                 SetPlayers(data.Values);
                 break;
-            case "Authenticated":
-                Authenticated(data.Values);
-                break;
             case "StartGame":
                 Debug.Log("TODO: Add game start");
                 break;
@@ -59,11 +56,6 @@ class Invokable {
             ids.Add(Int32.Parse(split[1]));
         }
         _invoke.SetPlayers(names.ToArray(), ids.ToArray());
-    }
-
-    private void Authenticated(string values) {
-        string[] data = values.Split(ValueDelimiter);
-        _invoke.Authenticated(data[0], Int32.Parse(data[1]));
     }
 
     private void CreateUnit(string values) {

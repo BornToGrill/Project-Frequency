@@ -17,6 +17,10 @@ class Notify {
         _guid = guid;
     }
 
+    internal void GameStart() {
+        _tcpClient.Send(string.Format("[Notify:GameStart:{0}]", _guid));
+    }
+
     internal void Move(MoveType type, TileController start, TileController stop) {
         string moveType = type == MoveType.Empty
             ? "MoveToEmpty"

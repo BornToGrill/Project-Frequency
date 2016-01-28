@@ -11,7 +11,7 @@ class CommunicationHandler : IDisposable {
     private readonly TcpClient _tcpClient;
     private readonly UdpClient _udpClient;
 
-    private readonly DataProcessor _processor;
+    private DataProcessor _processor;
 
     public Invoke Invoke { get; private set; }
     public Notify Notify { get; private set; }
@@ -32,6 +32,10 @@ class CommunicationHandler : IDisposable {
         _guid = guid;
         Invoke = new Invoke(_tcpClient, guid);
         Notify = new Notify(_tcpClient, guid);
+    }
+
+    public void SetProcessor(DataProcessor processor) {
+        _processor = processor;
     }
 
     public void SendTcp(string message) {

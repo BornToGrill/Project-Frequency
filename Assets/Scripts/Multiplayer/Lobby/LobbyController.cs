@@ -62,6 +62,7 @@ public class LobbyController : MonoBehaviour, ILobby {
                 SessionData session = lobbySettings.GetComponent<SessionData>();
                 session.Guid = guid;
                 session.OwnId = id;
+                ComHandler.SetGuid(guid);
             });
     }
 
@@ -71,6 +72,7 @@ public class LobbyController : MonoBehaviour, ILobby {
                 GameObject lobbySettings = GameObject.Find("Lobby Settings");
                 SessionData session = lobbySettings.GetComponent<SessionData>();
                 session.Players = players;
+                session.ServerCom = ComHandler;
 
                 SceneManager.LoadScene("MultiplayerGame");
             });

@@ -26,8 +26,8 @@ class Lobby {
             case "PlayerLeft":
                 PlayerLeft(data.Values);
                 break;
-            case "GameStart":
-                GameStart(data.Values);
+            case "StartGame":
+                StartGame(data.Values);
                 break;
             case "Authenticated":
                 Authenticate(data.Values);
@@ -48,15 +48,15 @@ class Lobby {
         _lobby.PlayerLeft(Int32.Parse(data[0]), data[1]);
     }
 
-    private void GameStart(string values) {
-        string[] data = values.Split(ValueDelimiter);
+    private void StartGame(string values) {
+        string[] data = values.Split(new [] {")"}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim('(')).ToArray();
         TempPlayer[] players = new TempPlayer[data.Length];
 
         for (int i = 0; i < data.Length; i++) {
-            string[] playerData = data[i].Split(':');
+            string[] playerData = data[i].Split(ValueDelimiter);
             players[i] = new TempPlayer() {
-                Id = Int32.Parse(playerData[0]),
-                Name = playerData[1]
+                Id = Int32.Parse(playerData[1]),
+                Name = playerData[0]
             };
         }
         _lobby.GameStart(players);

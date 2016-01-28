@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class StateController : MonoBehaviour, IInvokable, INotifiable {
@@ -13,7 +14,13 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
 	void Start () {
 	    _gameController = GetComponent<GameController>();
-	    ServerComs = new CommunicationHandler(this, this, null);
+	    //ServerComs = new CommunicationHandler(this, this, null);
+	    SessionData session = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
+	    ServerComs = session.ServerCom;
+	    Guid = session.Guid;
+	    CornerId = session.OwnId;
+	    ServerComs.SetGuid(Guid);
+	    ServerComs.SetProcessor(new DataProcessor(this, this, null));
 	}
 
     public void Send(string message) {
@@ -21,19 +28,10 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     }
 
     #region IInvokable Implementation Members
-    public void Authenticated(string guid, int id) {
-        Guid = guid;
-        CornerId = id;
-        ServerComs.SetGuid(guid);
-    }
 
     public void SetPlayers(string[] names, int[] ids) {
         for (int i = 0; i < names.Length; i++)
             _gameController.Players.Single(x => x.PlayerId == ids[i]).Name = names[i];
-    }
-
-    public void StartGame() {
-
     }
 
     public void CreateUnit(int targetX, int targetY, string unitType, int ownerId) {

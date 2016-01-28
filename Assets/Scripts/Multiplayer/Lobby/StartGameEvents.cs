@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
-public class StartGameEvents : MonoBehaviour {
+public class StartGameEvents : MonoBehaviour, IPointerClickHandler {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public void OnPointerClick(PointerEventData eventData) {
+        GameObject go = GameObject.Find("Canvas");
+        LobbyController lobby = go.GetComponent<LobbyController>();
+        lobby.ComHandler.Notify.GameStart();
+    }
 }
