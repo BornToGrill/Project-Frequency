@@ -19,7 +19,17 @@ public class GameController : MonoBehaviour {
 	void Awake() {
 		Players = new List<Player> ();
 		AllPlayers = new List<Player> ();
-		GeneratePlayers ();
+	    if (GetComponent<StateController>() == null)
+	        GeneratePlayers();
+	    else {
+	        SessionData lobby = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
+	        foreach (TempPlayer temp in lobby.Players) {
+	            Player player = CreatePlayer(temp.Id);
+	            player.Name = temp.Name;
+	            AllPlayers.Add(player);
+	            Players.Add(player);
+	        }
+	    }
 		CurrentPlayer = Players [0];
 		CurrentPlayer.StartTurn (this);
 	}
@@ -42,39 +52,48 @@ public class GameController : MonoBehaviour {
 
 	    List<int> spawns = new List<int>() { 1, 2, 3, 4 };
 
+
 	    for (int i = 0; i < AmountOfPlayers; i++) {
 	        int random = rnd.Next(0, spawns.Count);
             int id = spawns[random];
-            Player player = new Player(id);
+	        Player player = CreatePlayer(id);
             spawns.RemoveAt(random);
 	        Players.Add(player);
 			AllPlayers.Add(player);
             
             player.Name = "P" + (i + 1);
 
-	        Board board = gameObject.GetComponent<Board>();
-			player.Color = PlayerColors [i];
-			player.BarrackSprite = Barracks [i];
 
-	        switch (id) {
-			case 1:
-				CreateBase (player, board, 0, 0, Bases [i]);
-	            break;
-			case 2:
-				CreateBase (player, board, board.BoardDimensions - 1, 0, Bases[i]);;
-		        break;
-			case 3:
-				CreateBase (player, board, 0, board.BoardDimensions - 1, Bases[i]);
-	            break;
-			case 4:
-				CreateBase (player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[i]);
-	            break;
-            default:
-	            Debug.LogError("Only 4 players allowed.");
-	                break;
-	        }
+
+
+
 	    }
 	}
+
+    Player CreatePlayer(int id) {
+        Board board = gameObject.GetComponent<Board>();
+        Player player = new Player(id);
+        switch (id) {
+            case 1:
+                CreateBase(player, board, 0, 0, Bases[id]);
+                break;
+            case 2:
+                CreateBase(player, board, board.BoardDimensions - 1, 0, Bases[id]); ;
+                break;
+            case 3:
+                CreateBase(player, board, 0, board.BoardDimensions - 1, Bases[id]);
+                break;
+            case 4:
+                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[id]);
+                break;
+            default:
+                Debug.LogError("Only 4 players allowed.");
+                break;
+        }
+        player.Color = PlayerColors[id];
+        player.BarrackSprite = Barracks[id];
+        return player;
+    }
 
 	void CreateBase(Player owner, Board board, int x, int y, Sprite sprite) {
         GameObject go = board._tiles[x, y];
