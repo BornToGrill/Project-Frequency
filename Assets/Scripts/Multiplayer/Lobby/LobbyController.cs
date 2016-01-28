@@ -11,6 +11,7 @@ public class LobbyController : MonoBehaviour, ILobby {
 
     internal CommunicationHandler ComHandler;
     public Text[] PlayerFields;
+    public Text LobbyId;
 
     void Start() {
         GameObject go = GameObject.Find("Lobby Settings");
@@ -52,7 +53,7 @@ public class LobbyController : MonoBehaviour, ILobby {
 
     }
 
-    public void Authenticated(string guid, int id, string playerName) {
+    public void Authenticated(string guid, int id, string playerName, string lobbyId) {
         lock (_lobbyActions)
             _lobbyActions.Enqueue(() => {
                 GameObject lobbySettings = GameObject.Find("Lobby Settings");
@@ -65,6 +66,7 @@ public class LobbyController : MonoBehaviour, ILobby {
                 session.Guid = guid;
                 session.OwnId = id;
                 ComHandler.SetGuid(guid);
+                LobbyId.text = lobbyId;
                 foreach(Text text in PlayerFields)
                     if (string.IsNullOrEmpty(text.text)) {
                         text.text = playerName; //TODO: Actual name
