@@ -70,6 +70,8 @@ public class SoldierEventController : LandUnitEventController {
         structBase.Owner = GetComponent<BaseUnit>().Owner;
 		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
 		structBase.Owner.Moves -= 1;
+		structBase.GetComponent<SpriteRenderer> ().sprite = structBase.Owner.BarrackSprite;
+
         _buildType = null;
         if (tileTwo.Unit != null) {
             if (tileTwo.IsTraversable(structure))

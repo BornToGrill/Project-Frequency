@@ -38,27 +38,21 @@ public class GameController : MonoBehaviour {
             player.Name = "P" + (i + 1);
 
 	        Board board = gameObject.GetComponent<Board>();
+			player.Color = PlayerColors [i];
+			player.BarrackSprite = Barracks [i];
 
 	        switch (id) {
 			case 1:
-				CreateBase (player, board, 0, 0, Bases [0]);
-				player.Color = PlayerColors [0];
-				player.BarrackSprite = Barracks [0];
+				CreateBase (player, board, 0, 0, Bases [i]);
 	            break;
 			case 2:
-				CreateBase (player, board, board.BoardDimensions - 1, 0, Bases[1]);
-				player.Color = PlayerColors [1];
-				player.BarrackSprite = Barracks [1];
+				CreateBase (player, board, board.BoardDimensions - 1, 0, Bases[i]);;
 		        break;
 			case 3:
-				CreateBase (player, board, 0, board.BoardDimensions - 1, Bases[2]);
-				player.Color = PlayerColors [2];
-				player.BarrackSprite = Barracks [2];
+				CreateBase (player, board, 0, board.BoardDimensions - 1, Bases[i]);
 	            break;
 			case 4:
-				CreateBase (player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[3]);
-				player.Color = PlayerColors [3];
-				player.BarrackSprite = Barracks [3];
+				CreateBase (player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[i]);
 	            break;
             default:
 	            throw new ArgumentOutOfRangeException("Only 4 players allowed.");
