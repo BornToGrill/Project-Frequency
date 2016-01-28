@@ -12,7 +12,6 @@ public class LandUnitEventController : EventControllerBase {
 
     public float MovementSpeed;
 
-
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
 		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();

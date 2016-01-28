@@ -12,8 +12,7 @@ public abstract class BaseUnit : MonoBehaviour {
     public Environment DiscountEnvironment;
 
     public Environment[] TraversableEnvironments;
-
-    public int MaxUnitStack;
+	public int MaxUnitStack;
 
     void Awake() {
         StackSize = 1;
