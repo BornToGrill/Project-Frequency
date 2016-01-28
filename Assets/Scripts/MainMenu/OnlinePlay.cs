@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class test : MonoBehaviour {
+public class OnlinePlay : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
