@@ -75,7 +75,7 @@ public class GameController : MonoBehaviour {
         Player player = new Player(id);
         switch (id) {
             case 1:
-                CreateBase(player, board, 0, 0, Bases[id]);
+                CreateBase(player, board, 0, 0, Bases[id - 1]);
                 break;
             case 2:
                 CreateBase(player, board, board.BoardDimensions - 1, 0, Bases[id - 1]); ;
@@ -107,6 +107,7 @@ public class GameController : MonoBehaviour {
 		
 
 	public void RemovePlayer(Player player) {
+		player.IsAlive = false;
 		Players.Remove(player);
 	}
 

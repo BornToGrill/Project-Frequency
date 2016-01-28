@@ -14,12 +14,15 @@ public class Player {
 	public int Moves;
     public bool IsCurrentPlayer { get; private set; }
 	public Sprite BarrackSprite;
+	public bool IsAlive = true;
 
     public int MoneyAmount {
         get { return _moneyAmount; }
         set {
             _moneyAmount = value;
-            if(_multiplayerController != null && _multiplayerController.ServerComs != null && _multiplayerController.ServerComs.Notify != null)
+            if(_multiplayerController != null &&
+                _multiplayerController.CornerId == PlayerId &&
+                _multiplayerController.ServerComs != null && _multiplayerController.ServerComs.Notify != null)
                 _multiplayerController.ServerComs.Notify.CashChanged(value);
         }
     }
