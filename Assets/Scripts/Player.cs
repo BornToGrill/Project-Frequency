@@ -12,6 +12,7 @@ public class Player{
 	public int Moves;
     public bool IsCurrentPlayer { get; private set; }
 	public Sprite BarrackSprite;
+	public bool IsAlive = true;
 
     public int CalculateIncome() {
         //throw new System.NotImplementedException();
@@ -44,6 +45,6 @@ public class Player{
 
 	public Player(int x) {
 		PlayerId = x;
-		MoneyAmount = 500;
+		MoneyAmount = 5000;
 	}
 }
