@@ -5,29 +5,36 @@ using UnityEngine;
 
 public class SoldierEventController : LandUnitEventController {
 
+
+    //
+    // See documentation : http://goo.gl/dMJsp7
+    //
+
+
     public Color BuildAllowedColor;
     public Color BuildNotAllowedColor;
 
-    //public Color MoveColor;
-    //public Color InvalidMoveColor;
-    //public Color AttackColor;
-    //
-    //public float MovementSpeed;
-
     private bool _isBuilding;
     private GameObject _buildType;
-
     private TileController _hoveredTile;
-
-    private List<TileController> _surroundingTiles = new List<TileController>(); 
+    private List<TileController> _surroundingTiles = new List<TileController>();
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
-        
-        ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
-        foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures)
-            actionBar.AddButton(structure.name, CreateStructure);
-
         TileController thisTile = ownTile.GetComponent<TileController>();
+        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+            return base.OnSelected(ownTile);
+
+        ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
+		foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures) {
+			StructureUnit building = structure.GetComponent<StructureUnit> ();
+			Player owner = GetComponent<BaseUnit> ().Owner;
+			if ( building.GetCost (thisTile.Environment, owner) > owner.MoneyAmount || owner.Moves <= 0) {
+				actionBar.AddButton (structure.name, CreateStructure, false);
+			} else {
+				actionBar.AddButton (structure.name, CreateStructure, true);
+			}
+		}
+        
 
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
         foreach (TileController tile in directions.Where(x => x != null))
@@ -55,8 +62,14 @@ public class SoldierEventController : LandUnitEventController {
         _surroundingTiles.Clear();
 
         GameObject structure = (GameObject) Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
+		if (!tileTwo.IsTraversable (structure)) {
+			GameObject.Destroy (structure);
+			return DeselectStatus.Both;
+		}
         BaseUnit structBase = structure.GetComponent<BaseUnit>();
         structBase.Owner = GetComponent<BaseUnit>().Owner;
+		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
+		structBase.Owner.Moves -= 1;
         _buildType = null;
         if (tileTwo.Unit != null) {
             if (tileTwo.IsTraversable(structure))

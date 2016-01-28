@@ -19,11 +19,17 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
+	public int GetCost (Environment environment, Player owner){
+		if (owner.StartEnvironment != environment)
+			return DiscountCost;
+		return Cost;
+	}
+
     public void CreateUnit(GameObject unit) {
         throw new NotImplementedException();
     }
 
-	public override void DamageUnit(int damage) {
+	public override void DamageUnit(int damage, BaseUnit attacker) {
 	    Health -= damage;
 		if (Health <= 0) {
 			GameObject.Destroy(gameObject);

@@ -15,6 +15,11 @@ public class LandUnitEventController : EventControllerBase {
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
+		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
+		if (GetComponent<LandUnit>()._stackDamage == 0)
+			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ().Health);
+		else
+			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ()._stackHealth);
         return DeselectStatus.None;
     }
 
@@ -23,21 +28,42 @@ public class LandUnitEventController : EventControllerBase {
             ResetModifiedTiles(ownTile.GetComponent<TileController>());
             return DeselectStatus.Both;
         }
-
+			
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = clickedTile.GetComponent<TileController>();
-
+        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+            return DeselectStatus.Both;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
+		Player owner = GetComponent<BaseUnit> ().Owner;
 
-        if (tileTwo.Unit == null)
-            return MoveToEmpty(tileOne, path.Path);
+		if (path.FoundEndPoint == false || !path.ValidPath)
+			return DeselectStatus.Both;
+
+		if (tileTwo.Unit == null) {
+			if (!tileTwo.IsTraversable(gameObject))
+				return DeselectStatus.Both;
+			if (path.Path.Count > owner.Moves)
+				return DeselectStatus.Both;
+			else {
+				owner.Moves -= path.Path.Count;
+				return MoveToEmpty (tileOne, path.Path);
+			}
+		}
         else {
-            if (tileTwo.Unit.Owner != GetComponent<BaseUnit>().Owner)
-                return MoveToAttack(tileOne, path.Path);
+			if (tileTwo.Unit.Owner != GetComponent<BaseUnit> ().Owner) {
+				if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > owner.Moves)
+					return DeselectStatus.Both;
+				else {
+					owner.Moves -= (path.Path.Count - GetComponent<LandUnit> ().Range + 1);
+					return MoveToAttack (tileOne, path.Path);
+				}
+			}
             else {
                 if (tileTwo.IsTraversable(gameObject))
-                    return MoveToMerge(tileOne, path.Path);
+					if (path.Path.Count <= owner.Moves)
+						owner.Moves -= path.Path.Count;
+                    	return MoveToMerge(tileOne, path.Path);
                 return DeselectStatus.Both;
             }
         }
@@ -45,9 +71,11 @@ public class LandUnitEventController : EventControllerBase {
 
     public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
         if (ownTile == hoveredTile)
-            return;
+            return;      
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
+        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+            return;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         ModifiedTiles = path.Path;
@@ -57,22 +85,30 @@ public class LandUnitEventController : EventControllerBase {
                 element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
         else {
             if (tileTwo.Unit == null) {
-                if (tileTwo.IsTraversable(gameObject))
-                    foreach (var element in ModifiedTiles)
-                        element.GetComponent<SpriteRenderer>().color = MoveColor;
+				if (tileTwo.IsTraversable (gameObject)) {
+					Color result = path.Path.Count > GetComponent<BaseUnit> ().Owner.Moves ? InvalidMoveColor : MoveColor;
+					foreach (var element in ModifiedTiles)
+						element.GetComponent<SpriteRenderer> ().color = result;
+				}
                 else
                     foreach (var element in ModifiedTiles)
                         element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
             }
             else {
-                if (tileTwo.Unit.Owner != GetComponent<BaseUnit>().Owner) {
-                    for (int i = 0; i < ModifiedTiles.Count - GetComponent<LandUnit>().Range; i++)
-                        ModifiedTiles[i].GetComponent<SpriteRenderer>().color = MoveColor;
-                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
-                }
-                else if (tileTwo.IsTraversable(gameObject))
-                    foreach (var element in ModifiedTiles)
-                        element.GetComponent<SpriteRenderer>().color = MoveColor;
+				if (tileTwo.Unit.Owner != GetComponent<BaseUnit> ().Owner) {
+					if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > GetComponent<BaseUnit> ().Owner.Moves)
+						foreach (var element in ModifiedTiles)
+							element.GetComponent<SpriteRenderer> ().color = InvalidMoveColor;
+					else {
+						for (int i = 0; i < ModifiedTiles.Count - GetComponent<LandUnit> ().Range; i++)
+							ModifiedTiles [i].GetComponent<SpriteRenderer> ().color = MoveColor;
+						ModifiedTiles.Last ().GetComponent<SpriteRenderer> ().color = AttackColor;
+					}
+				} else if (tileTwo.IsTraversable (gameObject)) {
+					Color result = path.Path.Count > GetComponent<BaseUnit> ().Owner.Moves ? InvalidMoveColor : MoveColor;
+					foreach (var element in ModifiedTiles)
+						element.GetComponent<SpriteRenderer> ().color = result;
+				}
                 else
                     foreach (var element in ModifiedTiles)
                         element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -94,7 +130,6 @@ public class LandUnitEventController : EventControllerBase {
 
     #region Movement
     public virtual DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
-
         StartCoroutine(AnimateToTile(path));
         start.Unit = null;
         path.Last().Unit = GetComponent<BaseUnit>();
@@ -119,18 +154,17 @@ public class LandUnitEventController : EventControllerBase {
         start.Unit = null;
 
         StartCoroutine(AnimateToTile(path, () => {
-            path.Last().Unit.StackSize += GetComponent<BaseUnit>().StackSize;
-            GameObject.Destroy(gameObject);
+            ((LandUnit) path.Last().Unit).Merge(GetComponent<BaseUnit>());
         }));
 
         return DeselectStatus.Both;
     }
     #endregion
 
-    protected IEnumerator AnimateToTile(IEnumerable<TileController> path) {
+    internal IEnumerator AnimateToTile(IEnumerable<TileController> path) {
         yield return AnimateToTile(path, null);
     }
-    protected IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
+    internal IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
         foreach (TileController tile in path) {
             Vector3 startPosition = transform.position;
             for (float i = 0.1f; i <= 1f * MovementSpeed; i += 0.1f) {
