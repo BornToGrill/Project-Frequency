@@ -75,6 +75,8 @@ public class SoldierEventController : LandUnitEventController {
 
         if (multiplayerController != null)
             multiplayerController.ServerComs.Notify.CreateUnit(tileTwo, _buildType.name);
+            
+		structBase.GetComponent<SpriteRenderer> ().sprite = structBase.Owner.BarrackSprite;
 
         _buildType = null;
         if (tileTwo.Unit != null) {

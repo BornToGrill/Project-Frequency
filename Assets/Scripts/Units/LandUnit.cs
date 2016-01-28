@@ -9,7 +9,6 @@ public class LandUnit : BaseUnit {
     internal int _stackHealth;
     internal int _stackDamage;
 
-
     internal override int StackSize {
         get { return _stackSize; }
         set {
@@ -23,6 +22,7 @@ public class LandUnit : BaseUnit {
     public virtual bool CanMerge(BaseUnit unit) {
         return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack && gameObject.name == unit.gameObject.name;
     }
+
     public virtual void Merge(BaseUnit unit) {
         StackSize += unit.StackSize;
         GameObject.Destroy(unit.gameObject);
@@ -30,10 +30,11 @@ public class LandUnit : BaseUnit {
 
     public void Attack(BaseUnit unit) {
         if (unit.Owner != this.Owner)
-            unit.DamageUnit(_stackDamage);
+            unit.DamageUnit(_stackDamage, this);
     }
 
-    public override void DamageUnit(int damage) {
+    public override void DamageUnit(int damage, BaseUnit attacker) {
+
         _stackHealth -= damage;
         if (_stackHealth <= 0) {
             GameObject.Destroy(gameObject);
@@ -41,5 +42,10 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
+        if (attacker != null)
+        {
+            attacker.DamageUnit(_stackDamage, null);
+        }
+        
     }
 }

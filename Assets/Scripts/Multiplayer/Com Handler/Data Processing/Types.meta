@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scripts/Multiplayer/Com Handler/Data Processing/Types.meta
 guid: 02895efe3b2f62944b94c0e487a07395
 folderAsset: yes
 timeCreated: 1453764063
+=======
+guid: 30fe0ee8213b7934aac66721894689d4
+folderAsset: yes
+timeCreated: 1453897607
+>>>>>>> develop:Assets/Animations.meta
 licenseType: Free
 DefaultImporter:
   userData: 

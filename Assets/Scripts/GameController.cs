@@ -10,6 +10,9 @@ public class GameController : MonoBehaviour {
 	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
 	public List<Player> AllPlayers { get; private set; }
+	public List<Color> PlayerColors;
+	public List<Sprite> Bases;
+	public List<Sprite> Barracks;
 
     public Queue<Action> MultiplayerActionQueue = new Queue<Action>(); 
 
@@ -50,32 +53,35 @@ public class GameController : MonoBehaviour {
             player.Name = "P" + (i + 1);
 
 	        Board board = gameObject.GetComponent<Board>();
+			player.Color = PlayerColors [i];
+			player.BarrackSprite = Barracks [i];
 
 	        switch (id) {
-                case 1:
-	                CreateBase(player, board, 0, 0);
-	                break;
-                case 2:
-                    CreateBase(player, board, board.BoardDimensions - 1, 0);
-	                break;
-                case 3:
-	                CreateBase(player, board, 0, board.BoardDimensions - 1);
-	                break;
-                case 4:
-	                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1);
-	                break;
-                default:
-                    Debug.LogError("Only 4 players allowed.");
+			case 1:
+				CreateBase (player, board, 0, 0, Bases [i]);
+	            break;
+			case 2:
+				CreateBase (player, board, board.BoardDimensions - 1, 0, Bases[i]);;
+		        break;
+			case 3:
+				CreateBase (player, board, 0, board.BoardDimensions - 1, Bases[i]);
+	            break;
+			case 4:
+				CreateBase (player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[i]);
+	            break;
+            default:
+	            Debug.LogError("Only 4 players allowed.");
 	                break;
 	        }
 	    }
 	}
 
-    void CreateBase(Player owner, Board board, int x, int y) {
+	void CreateBase(Player owner, Board board, int x, int y, Sprite sprite) {
         GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
         owner.StartEnvironment = tile.Environment;
         GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
+		baseObject.GetComponent<SpriteRenderer> ().sprite = sprite;
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }
