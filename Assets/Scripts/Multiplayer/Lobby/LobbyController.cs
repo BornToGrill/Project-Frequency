@@ -13,7 +13,9 @@ public class LobbyController : MonoBehaviour, ILobby {
     public Text[] PlayerFields;
 
     void Start() {
-        ComHandler = new CommunicationHandler(null, null, this);
+        GameObject go = GameObject.Find("Lobby Settings");
+        SessionData session = go.GetComponent<SessionData>();
+        ComHandler = new CommunicationHandler(session.LobbyIp, null, null, this);
     }
 
     void Update() {
