@@ -30,10 +30,11 @@ public class LandUnit : BaseUnit {
 
     public void Attack(BaseUnit unit) {
         if (unit.Owner != this.Owner)
-            unit.DamageUnit(_stackDamage);
+            unit.DamageUnit(_stackDamage, this);
     }
 
-    public override void DamageUnit(int damage) {
+    public override void DamageUnit(int damage, BaseUnit attacker) {
+
         _stackHealth -= damage;
         if (_stackHealth <= 0) {
             GameObject.Destroy(gameObject);
@@ -41,5 +42,10 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
+        if (attacker != null)
+        {
+            attacker.DamageUnit(_stackDamage, null);
+        }
+        
     }
 }
