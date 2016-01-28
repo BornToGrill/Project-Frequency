@@ -50,7 +50,7 @@ public class LobbyController : MonoBehaviour, ILobby {
 
     }
 
-    public void Authenticated(string guid, int id) {
+    public void Authenticated(string guid, int id, string playerName) {
         lock (_lobbyActions)
             _lobbyActions.Enqueue(() => {
                 GameObject lobbySettings = GameObject.Find("Lobby Settings");
@@ -63,7 +63,22 @@ public class LobbyController : MonoBehaviour, ILobby {
                 session.Guid = guid;
                 session.OwnId = id;
                 ComHandler.SetGuid(guid);
+                foreach(Text text in PlayerFields)
+                    if (string.IsNullOrEmpty(text.text)) {
+                        text.text = playerName; //TODO: Actual name
+                        break;
+                    }
             });
+    }
+
+    public void SetPlayers(string[] names) {
+        lock (_lobbyActions) {
+            _lobbyActions.Enqueue(() => {
+                for (int i = 0; i < PlayerFields.Length; i++) {
+                    PlayerFields[i].text = i < names.Length ? names[i] : "";
+                }
+            });
+        }
     }
 
     public void GameStart(TempPlayer[] players) {

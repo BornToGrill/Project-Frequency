@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using NetworkLibrary;
 using UnityEngine;
@@ -31,6 +32,9 @@ class Lobby {
                 break;
             case "Authenticated":
                 Authenticate(data.Values);
+                break;
+            case "SetPlayers":
+                SetPlayers(data.Values);
                 break;
             default:
                 Debug.LogError("Invalid message send to Lobby\n" + values);
@@ -64,7 +68,12 @@ class Lobby {
 
     private void Authenticate(string values) {
         string[] data = values.Split(ValueDelimiter);
-        _lobby.Authenticated(data[0], Int32.Parse(data[1]));
+        _lobby.Authenticated(data[0], Int32.Parse(data[1]), data[2]);
+    }
+
+    private void SetPlayers(string values) {
+        string[] data = values.Split(ValueDelimiter);
+        _lobby.SetPlayers(data);
     }
 }
 

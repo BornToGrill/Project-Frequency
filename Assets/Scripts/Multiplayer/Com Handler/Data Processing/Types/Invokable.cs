@@ -17,9 +17,6 @@ class Invokable {
         SplitData data = values.GetFirst();
 
         switch (data.CommandType) {
-            case "SetPlayers":
-                SetPlayers(data.Values);
-                break;
             case "StartGame":
                 Debug.Log("TODO: Add game start");
                 break;
@@ -42,20 +39,6 @@ class Invokable {
                 Debug.LogError("Invalid message send to Invokable\n" + values);
                 break;
         }
-    }
-
-
-    private void SetPlayers(string values) {
-        string[] players =
-            values.Split(new[] { ")" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.TrimStart('(')).ToArray();
-        List<string> names = new List<string>();
-        List<int> ids = new List<int>();
-        foreach (string player in players) {
-            string[] split = player.Split(ValueDelimiter);
-            names.Add(split[0]);
-            ids.Add(Int32.Parse(split[1]));
-        }
-        _invoke.SetPlayers(names.ToArray(), ids.ToArray());
     }
 
     private void CreateUnit(string values) {
