@@ -60,10 +60,11 @@ public class LandUnitEventController : EventControllerBase {
 			}
             else {
                 if (tileTwo.IsTraversable(gameObject))
-					if (path.Path.Count <= owner.Moves)
-						owner.Moves -= path.Path.Count;
-                    	return MoveToMerge(tileOne, path.Path);
-                return DeselectStatus.Both;
+                    if (path.Path.Count <= owner.Moves) {
+                        owner.Moves -= path.Path.Count;
+                        return MoveToMerge(tileOne, path.Path);
+                    }
+			    return DeselectStatus.Both;
             }
         }
     }
