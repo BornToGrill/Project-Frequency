@@ -10,6 +10,9 @@ public class GameController : MonoBehaviour {
 	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
 	public List<Player> AllPlayers { get; private set; }
+	public List<Color> PlayerColors;
+	public List<Sprite> Bases;
+	public List<Sprite> Barracks;
 
 	void Awake() {
 		Players = new List<Player> ();
@@ -37,29 +40,38 @@ public class GameController : MonoBehaviour {
 	        Board board = gameObject.GetComponent<Board>();
 
 	        switch (id) {
-                case 1:
-	                CreateBase(player, board, 0, 0);
-	                break;
-                case 2:
-                    CreateBase(player, board, board.BoardDimensions - 1, 0);
-	                break;
-                case 3:
-	                CreateBase(player, board, 0, board.BoardDimensions - 1);
-	                break;
-                case 4:
-	                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1);
-	                break;
-                default:
-	                throw new ArgumentOutOfRangeException("Only 4 players allowed.");
+			case 1:
+				CreateBase (player, board, 0, 0, Bases [0]);
+				player.Color = PlayerColors [0];
+				player.BarrackSprite = Barracks [0];
+	            break;
+			case 2:
+				CreateBase (player, board, board.BoardDimensions - 1, 0, Bases[1]);
+				player.Color = PlayerColors [1];
+				player.BarrackSprite = Barracks [1];
+		        break;
+			case 3:
+				CreateBase (player, board, 0, board.BoardDimensions - 1, Bases[2]);
+				player.Color = PlayerColors [2];
+				player.BarrackSprite = Barracks [2];
+	            break;
+			case 4:
+				CreateBase (player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[3]);
+				player.Color = PlayerColors [3];
+				player.BarrackSprite = Barracks [3];
+	            break;
+            default:
+	            throw new ArgumentOutOfRangeException("Only 4 players allowed.");
 	        }
 	    }
 	}
 
-    void CreateBase(Player owner, Board board, int x, int y) {
+	void CreateBase(Player owner, Board board, int x, int y, Sprite sprite) {
         GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
         owner.StartEnvironment = tile.Environment;
         GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
+		baseObject.GetComponent<SpriteRenderer> ().sprite = sprite;
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }
