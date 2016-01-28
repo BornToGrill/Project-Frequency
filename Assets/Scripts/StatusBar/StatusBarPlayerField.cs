@@ -10,6 +10,7 @@ public class StatusBarPlayerField : MonoBehaviour {
 	private Text _generateAmount;
 	private Image _background;
 	private GameController _gameController;
+	private StatusBarController _statusBarController;
 
 	public Player Player;
 
@@ -22,13 +23,13 @@ public class StatusBarPlayerField : MonoBehaviour {
 		_gameController = GameObject.Find ("Board").GetComponent<GameController> ();
     }
 
-    public void Initialize(RectTransform parent, Player player) {
-        _playerNumber.text = player.Name;
-		_playerNumber.color = player.Color;
+	public void Initialize(Player player, float offset, StatusBarController controller) {
 		Player = player;
-        _rectTransform.SetParent(parent);
+		_statusBarController = controller;
+        _playerNumber.text = Player.Name;
+		_playerNumber.color = Player.Color;
         _rectTransform.localScale = new Vector3 (1, 1);
-        _rectTransform.anchoredPosition = new Vector2 (_rectTransform.rect.width * (player.PlayerId - 1), -10.0f);
+        _rectTransform.anchoredPosition = new Vector2 (offset, -10.0f);
 		UpdateStats ();
 	}
 
@@ -47,5 +48,10 @@ public class StatusBarPlayerField : MonoBehaviour {
         {
             _background.color = Color.clear;
         }
+
+		if (!Player.IsAlive)
+		{
+			_statusBarController.DeletePlayerField (this);
+		}
 	}
 }

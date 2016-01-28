@@ -107,6 +107,7 @@ public class GameController : MonoBehaviour {
 		
 
 	public void RemovePlayer(Player player) {
+		player.IsAlive = false;
 		Players.Remove(player);
 	}
 

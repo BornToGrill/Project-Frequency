@@ -14,6 +14,7 @@ public class Player {
 	public int Moves;
     public bool IsCurrentPlayer { get; private set; }
 	public Sprite BarrackSprite;
+	public bool IsAlive = true;
 
     public int MoneyAmount {
         get { return _moneyAmount; }
