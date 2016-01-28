@@ -45,6 +45,6 @@ public class Player{
 
 	public Player(int x) {
 		PlayerId = x;
-		MoneyAmount = 5000;
+		MoneyAmount = 500;
 	}
 }
