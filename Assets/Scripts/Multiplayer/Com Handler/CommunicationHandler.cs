@@ -1,10 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using NetworkLibrary;
 using TcpClient = NetworkLibrary.TcpClient;
 using UdpClient = NetworkLibrary.UdpClient;
 
-class CommunicationHandler {
+class CommunicationHandler : IDisposable {
 
 
     private readonly TcpClient _tcpClient;
@@ -41,6 +42,21 @@ class CommunicationHandler {
         UnityEngine.Debug.Log(e.ReceivedString);
         if (e.ReceivedString.Length > 0)
             _processor.ProcessData(e.Sender, e.ReceivedString);
+    }
+
+
+    protected void Dispose(bool disposing) {
+        if (disposing) {
+            if(_tcpClient != null)
+                _tcpClient.Dispose();
+            if (_udpClient != null)
+                _udpClient.Dispose();
+        }
+    }
+
+    public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
 

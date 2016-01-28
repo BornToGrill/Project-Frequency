@@ -23,6 +23,15 @@ class Lobby {
             case "PlayerJoined":
                 PlayerJoined(data.Values);
                 break;
+            case "PlayerLeft":
+                PlayerLeft(data.Values);
+                break;
+            case "GameStart":
+                GameStart(data.Values);
+                break;
+            case "Authenticated":
+                Authenticate(data.Values);
+                break;
             default:
                 Debug.LogError("Invalid message send to Lobby\n" + values);
                 break;
@@ -33,5 +42,35 @@ class Lobby {
         string[] data = values.Split(ValueDelimiter);
         _lobby.PlayerJoined(Int32.Parse(data[0]), data[1]);
     }
+
+    private void PlayerLeft(string values) {
+        string[] data = values.Split(ValueDelimiter);
+        _lobby.PlayerLeft(Int32.Parse(data[0]), data[1]);
+    }
+
+    private void GameStart(string values) {
+        string[] data = values.Split(ValueDelimiter);
+        TempPlayer[] players = new TempPlayer[data.Length];
+
+        for (int i = 0; i < data.Length; i++) {
+            string[] playerData = data[i].Split(':');
+            players[i] = new TempPlayer() {
+                Id = Int32.Parse(playerData[0]),
+                Name = playerData[1]
+            };
+        }
+        _lobby.GameStart(players);
+    }
+
+    private void Authenticate(string values) {
+        string[] data = values.Split(ValueDelimiter);
+        _lobby.Authenticated(data[0], Int32.Parse(data[1]));
+    }
+}
+
+public class TempPlayer {
+
+    public int Id { get; set; }
+    public string Name { get; set; }
 }
 

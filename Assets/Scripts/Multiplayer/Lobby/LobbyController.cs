@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyController : MonoBehaviour, ILobby {
@@ -11,12 +12,12 @@ public class LobbyController : MonoBehaviour, ILobby {
     internal CommunicationHandler ComHandler;
     public Text[] PlayerFields;
 
-	void Start () {
-	    ComHandler = new CommunicationHandler(null, null, this);
-	}
+    void Start() {
+        ComHandler = new CommunicationHandler(null, null, this);
+    }
 
     void Update() {
-        lock(_lobbyActions)
+        lock (_lobbyActions)
             while (_lobbyActions.Count > 0)
                 _lobbyActions.Dequeue().Invoke();
     }
@@ -37,11 +38,43 @@ public class LobbyController : MonoBehaviour, ILobby {
     }
 
     public void PlayerLeft(int id, string name) {
-        //throw new System.NotImplementedException();
+        lock (_lobbyActions)
+            _lobbyActions.Enqueue(() => {
+                foreach (Text field in PlayerFields) {
+                    if (field.text == name) {
+                        field.text = "";
+                        break;
+                    }
+                }
+            });
+
     }
 
-    public void GameStart() {
-        //throw new System.NotImplementedException();
+    public void Authenticated(string guid, int id) {
+        lock (_lobbyActions)
+            _lobbyActions.Enqueue(() => {
+                GameObject lobbySettings = GameObject.Find("Lobby Settings");
+                if (lobbySettings == null) {
+                    lobbySettings = new GameObject("Lobby Settings");
+                    lobbySettings.AddComponent<SessionData>();
+                    DontDestroyOnLoad(lobbySettings);
+                }
+                SessionData session = lobbySettings.GetComponent<SessionData>();
+                session.Guid = guid;
+                session.OwnId = id;
+            });
     }
+
+    public void GameStart(TempPlayer[] players) {
+        lock (_lobbyActions)
+            _lobbyActions.Enqueue(() => {
+                GameObject lobbySettings = GameObject.Find("Lobby Settings");
+                SessionData session = lobbySettings.GetComponent<SessionData>();
+                session.Players = players;
+
+                SceneManager.LoadScene("MultiplayerGame");
+            });
+    }
+
     #endregion
 }

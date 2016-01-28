@@ -2,5 +2,6 @@
 
     void PlayerJoined(int id, string name);
     void PlayerLeft(int id, string name);
-    void GameStart();
+    void Authenticated(string guid, int id);
+    void GameStart(TempPlayer[] players);
 }

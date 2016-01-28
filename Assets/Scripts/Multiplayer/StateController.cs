@@ -113,7 +113,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
     #endregion
 
-        #region INotifiable Implementation Members
+    #region INotifiable Implementation Members
 
     public void EndTurn(string name, int id) {
         _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));
