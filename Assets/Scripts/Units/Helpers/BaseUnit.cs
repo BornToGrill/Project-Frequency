@@ -12,8 +12,7 @@ public abstract class BaseUnit : MonoBehaviour {
     public Environment DiscountEnvironment;
 
     public Environment[] TraversableEnvironments;
-
-    public int MaxUnitStack;
+	public int MaxUnitStack;
 
     void Awake() {
         StackSize = 1;
@@ -23,8 +22,6 @@ public abstract class BaseUnit : MonoBehaviour {
         return environment == DiscountEnvironment ? DiscountCost : Cost;
     }
 
-    public abstract void DamageUnit(int damage);
+	public abstract void DamageUnit(int damage, BaseUnit Attacker);
 
-    public abstract DeselectStatus OnFirstSelected(GameObject firstTile);
-    public abstract DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile);
 }

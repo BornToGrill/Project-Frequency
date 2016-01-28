@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LandUnit : BaseUnit {
+
     public int Damage;
     public int Range;
 
     private int _stackSize;
-    private int _stackHealth;
-    private int _stackDamage;
-
+    internal int _stackHealth;
+    internal int _stackDamage;
 
     internal override int StackSize {
         get { return _stackSize; }
@@ -21,16 +19,22 @@ public class LandUnit : BaseUnit {
         }
     }
 
-    public bool CanAttack(BaseUnit unit) {
-        return unit.Owner != this.Owner;
+    public virtual bool CanMerge(BaseUnit unit) {
+        return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack && gameObject.name == unit.gameObject.name;
+    }
+
+    public virtual void Merge(BaseUnit unit) {
+        StackSize += unit.StackSize;
+        GameObject.Destroy(unit.gameObject);
     }
 
     public void Attack(BaseUnit unit) {
         if (unit.Owner != this.Owner)
-            unit.DamageUnit(_stackDamage);
+            unit.DamageUnit(_stackDamage, this);
     }
 
-    public override void DamageUnit(int damage) {
+    public override void DamageUnit(int damage, BaseUnit attacker) {
+
         _stackHealth -= damage;
         if (_stackHealth <= 0) {
             GameObject.Destroy(gameObject);
@@ -38,81 +42,10 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
-        // TODO: Death check for all and individual units in stack.
-    }
-
-    public override DeselectStatus OnFirstSelected(GameObject firstTile) {
-        firstTile.GetComponent<SpriteRenderer>().color = Color.black;
-        return DeselectStatus.None;
-        // TODO: Highlight own tile.
-    }
-
-    public override DeselectStatus OnSecondClicked(GameObject firstTile, GameObject secondTile) {
-        if(firstTile == secondTile)
-            return DeselectStatus.Both;
-
-        TileController first = firstTile.GetComponent<TileController>();
-        TileController second = secondTile.GetComponent<TileController>();
-
-        var path = Pathfinding.FindPath(first, second);
-        path.Reverse(); // TODO: Fix pathfinding reversion.
-        // if (path.Count > Owner.RemainingMoves) // TODO: Remainin moves check.
-        //    return DeselectStatus.Both;
-
-        if (second.Unit == null)
-            return MoveToEmpty(path);
-        else {
-            if (second.Unit.Owner != Owner)
-                return MoveToAttack(path);
-            else {
-                if (second.IsTraversable(first.gameObject))
-                    return MoveToMerge(path);
-                return DeselectStatus.Both;
-            }
+        if (attacker != null)
+        {
+            attacker.DamageUnit(_stackDamage, null);
         }
-    }
-
-    public virtual DeselectStatus MoveToEmpty(List<TileController> path) {
-
-        // Loop over path and move to each tile.
-        // On each move remove self from last position.
-
-        TileController previous = path[0];
-        for (int i = 1; i < path.Count; i++) {
-            previous.Unit = null;
-            path[i].Unit = this;
-            path[i].Unit.gameObject.transform.position = path[i].transform.position;
-            previous = path[i];
-        }
-        return DeselectStatus.Both;
-    }
-
-    public virtual DeselectStatus MoveToAttack(List<TileController> path) {
-        // Move to path - Range tile.
-        // Attack.
-
-        TileController previous = path[0];
-        for (int i = 1; i < path.Count - Range; i++) {
-            previous.Unit = null;
-            path[i].Unit = this;
-            path[i].Unit.gameObject.transform.position = path[i].transform.position;
-            previous = path[i];
-        }
-        path.Last().Unit.DamageUnit(_stackDamage);
-        return DeselectStatus.Both;
-    }
-
-    public virtual DeselectStatus MoveToMerge(List<TileController> path) {
-        TileController previous = path[0];
-        for (int i = 0; i < path.Count - 1; i++) {
-            previous.Unit = null;
-            path[i].Unit = this;
-            path[i].Unit.gameObject.transform.position = path[i].transform.position;
-            previous = path[i];
-        }
-        GameObject.Destroy(previous.Unit.gameObject);
-        path.Last().Unit.StackSize += this.StackSize;
-
-        return DeselectStatus.Both;
+        
     }
 }
