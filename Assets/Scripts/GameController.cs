@@ -78,20 +78,20 @@ public class GameController : MonoBehaviour {
                 CreateBase(player, board, 0, 0, Bases[id]);
                 break;
             case 2:
-                CreateBase(player, board, board.BoardDimensions - 1, 0, Bases[id]); ;
+                CreateBase(player, board, board.BoardDimensions - 1, 0, Bases[id - 1]); ;
                 break;
             case 3:
-                CreateBase(player, board, 0, board.BoardDimensions - 1, Bases[id]);
+                CreateBase(player, board, 0, board.BoardDimensions - 1, Bases[id - 1]);
                 break;
             case 4:
-                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[id]);
+                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[id - 1]);
                 break;
             default:
                 Debug.LogError("Only 4 players allowed.");
                 break;
         }
-        player.Color = PlayerColors[id];
-        player.BarrackSprite = Barracks[id];
+        player.Color = PlayerColors[id - 1];
+        player.BarrackSprite = Barracks[id - 1];
         return player;
     }
 
