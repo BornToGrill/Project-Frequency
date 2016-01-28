@@ -13,7 +13,7 @@ public class StatusBarController : MonoBehaviour {
 		_gameController = board.GetComponent<GameController> ();
 		_playerFields = new List<StatusBarPlayerField> ();
 
-		for (int i = 0; i < _gameController.AmountOfPlayers; i++) {
+		for (int i = 0; i < _gameController.Players.Count; i++) {
 			AddPlayer(_gameController.Players [i]);
 		}
 	}
