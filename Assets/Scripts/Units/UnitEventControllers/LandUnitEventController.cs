@@ -165,9 +165,10 @@ public class LandUnitEventController : EventControllerBase {
 
     public virtual DeselectStatus MoveToMerge(TileController start, List<TileController> path) {
         start.Unit = null;
+        LandUnit mergeTarget = (LandUnit) path.Last().Unit;
 
         StartCoroutine(AnimateToTile(path, () => {
-            ((LandUnit) path.Last().Unit).Merge(GetComponent<BaseUnit>());
+            mergeTarget.Merge(GetComponent<BaseUnit>());
         }));
 
         return DeselectStatus.Both;

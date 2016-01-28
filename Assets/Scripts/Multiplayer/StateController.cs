@@ -49,6 +49,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
                         Quaternion.identity);
             target.Unit = go.GetComponent<BaseUnit>();
             target.Unit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
+            target.Unit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
         });
     }
 
