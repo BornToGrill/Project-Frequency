@@ -23,6 +23,6 @@ public abstract class BaseUnit : MonoBehaviour {
         return environment == DiscountEnvironment ? DiscountCost : Cost;
     }
 
-    public abstract void DamageUnit(int damage);
-
+    public abstract void DamageUnit(int damage, BaseUnit attacker);
+        
 }
