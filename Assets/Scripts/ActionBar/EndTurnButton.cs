@@ -10,5 +10,6 @@ public class EndTurnButton : MonoBehaviour, IPointerClickHandler {
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		gameController.NextTurn ();
+		gameController.GetComponent<Board> ().DeselectTile (DeselectStatus.Both, null);
 	}
 }

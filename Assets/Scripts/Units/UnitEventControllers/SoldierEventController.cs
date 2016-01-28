@@ -62,10 +62,16 @@ public class SoldierEventController : LandUnitEventController {
         _surroundingTiles.Clear();
 
         GameObject structure = (GameObject) Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
+		if (!tileTwo.IsTraversable (structure)) {
+			GameObject.Destroy (structure);
+			return DeselectStatus.Both;
+		}
         BaseUnit structBase = structure.GetComponent<BaseUnit>();
         structBase.Owner = GetComponent<BaseUnit>().Owner;
 		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
 		structBase.Owner.Moves -= 1;
+		structBase.GetComponent<SpriteRenderer> ().sprite = structBase.Owner.BarrackSprite;
+
         _buildType = null;
         if (tileTwo.Unit != null) {
             if (tileTwo.IsTraversable(structure))

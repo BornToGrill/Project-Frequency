@@ -53,15 +53,22 @@ public class WaterUnitEventController : LandUnitEventController {
         else {
             TileController[] boatPath = path.Take(index).ToArray();
             TileController[] unitPath = path.Skip(index).ToArray();
-
-            StartCoroutine(AnimateToTile(boatPath, () => {
-                startBoat.UnloadUnit(boatPath.Last().gameObject);
-                unit.StartCoroutine(unit.GetComponent<LandUnitEventController>().AnimateToTile(unitPath, finalAction));
-            }));
-            boatPath.Last().Unit = GetComponent<BaseUnit>();
-            unitPath.Last().Unit = unit;
+			if (boatPath.Length > 0) {
+				StartCoroutine (AnimateToTile (boatPath, () => {
+					startBoat.UnloadUnit (boatPath.Last ().gameObject);
+					unit.StartCoroutine (unit.GetComponent<LandUnitEventController> ().AnimateToTile (unitPath, finalAction));
+				}));
+				boatPath.Last ().Unit = GetComponent<BaseUnit> ();
+				unitPath.Last ().Unit = unit;
+			} else {
+				startBoat.UnloadUnit (unitPath.First ().gameObject);
+				unit.StartCoroutine(unit.GetComponent<LandUnitEventController>().AnimateToTile(unitPath, finalAction));
+				unitPath.Last ().Unit = unit;
+			}
         }
-        startTile.Unit = null;
+
+		if(index != 0) // If boat also moves.
+        	startTile.Unit = null;
     }
 
     #endregion
