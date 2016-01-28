@@ -6,16 +6,22 @@ public class SelectionController : MonoBehaviour, IPointerClickHandler, IPointer
 
 
     public void OnPointerClick(PointerEventData e) {
+        if (GameObject.Find("PauseMenu") != null)
+            return;
         ThrowErrorIfNecessary();
         gameObject.transform.parent.gameObject.GetComponent<Board>().OnTileClicked(gameObject);
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        if (GameObject.Find("PauseMenu") != null)
+            return;
         ThrowErrorIfNecessary();
         gameObject.transform.parent.gameObject.GetComponent<Board>().OnTileEnter(gameObject);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
+        if (GameObject.Find("PauseMenu") != null)
+            return;
         ThrowErrorIfNecessary();
         gameObject.transform.parent.gameObject.GetComponent<Board>().OnTileLeave(gameObject);
     }
