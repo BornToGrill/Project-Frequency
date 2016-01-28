@@ -9,7 +9,6 @@ public class LandUnit : BaseUnit {
     internal int _stackHealth;
     internal int _stackDamage;
 
-
     internal override int StackSize {
         get { return _stackSize; }
         set {
@@ -23,6 +22,7 @@ public class LandUnit : BaseUnit {
     public virtual bool CanMerge(BaseUnit unit) {
         return Owner == unit.Owner && StackSize + unit.StackSize <= MaxUnitStack && gameObject.name == unit.gameObject.name;
     }
+
     public virtual void Merge(BaseUnit unit) {
         StackSize += unit.StackSize;
         GameObject.Destroy(unit.gameObject);

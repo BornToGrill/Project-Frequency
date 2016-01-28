@@ -62,6 +62,7 @@ public class StructureEventController : EventControllerBase {
 		}
         BaseUnit unitBase = unit.GetComponent<BaseUnit>();
         unitBase.Owner = GetComponent<BaseUnit>().Owner;
+		unitBase.GetComponent<SpriteRenderer> ().color = unitBase.Owner.Color;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
 		unitBase.Owner.Moves -= 1;
         _buildType = null;
