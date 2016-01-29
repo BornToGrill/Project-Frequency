@@ -46,10 +46,11 @@ public class Player {
 	public void StartTurn(GameController gameController) {
         IsCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
+        GameController gc = GameObject.Find("Board").GetComponent<GameController>();
 
-	    if (_multiplayerController == null) {
+        if (_multiplayerController == null) {
             GenerateMoney();
-            GameController gc = GameObject.Find("Board").GetComponent<GameController>();
+
             if (MoneyAmount >= gc.CashWinCondition) {
                 WinCondition.Winner = this;
                 WinCondition.Losers = gc.AllPlayers.Where(x => x != this).ToArray();
@@ -60,6 +61,9 @@ public class Player {
 	    else {
 	        if (_multiplayerController.CornerId == PlayerId) {
                 GenerateMoney();
+	            if (MoneyAmount >= gc.CashWinCondition)
+	                _multiplayerController.ServerComs.Notify.GameWon();
+
 	        }
 	    }
 	}

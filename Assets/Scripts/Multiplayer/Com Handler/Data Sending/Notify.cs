@@ -38,4 +38,8 @@ class Notify {
     internal void CashChanged(int newValue) {
         _tcpClient.Send(string.Format("[Notify:CashChanged:{0}|{1}]", _guid, newValue));
     }
+
+    internal void GameWon() {
+        _tcpClient.Send(string.Format("[Notify:GameWon:{0}]", _guid));
+    }
 }

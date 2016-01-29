@@ -59,6 +59,4 @@ class Invokable {
         _invoke.CashChanged(data[0], data[1]);
     }
 
-
-
 }

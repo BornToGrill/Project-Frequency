@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
@@ -118,9 +119,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
         _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));
     }
 
-    public void PlayerJoined(int id, string playerName) {
-        Player newPlayer = _gameController.Players.SingleOrDefault(x => x.PlayerId == id);
-        newPlayer.Name = playerName;
+    public void GameWon(int winner, int[] losers) {
+        WinCondition.Winner = _gameController.AllPlayers.Find(x => x.PlayerId == winner);
+        if(losers != null)
+            WinCondition.Losers = _gameController.AllPlayers.Where(x => losers.Any(c => c == x.PlayerId)).ToArray();
+        _gameController.QueueMultiplayerAction(() => {
+            SceneManager.LoadScene("WinScreen");
+        });
+
     }
     #endregion
 }

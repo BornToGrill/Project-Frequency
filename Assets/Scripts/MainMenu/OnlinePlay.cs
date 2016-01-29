@@ -14,12 +14,15 @@ public class OnlinePlay : MonoBehaviour {
     public GameObject LoginOverlay;
 
     public void ShowJoinScreen(GameObject panel) {
+        if (!LoginStatus())
+            return;
+
         panel.SetActive(true);
     }
 
     public void CreateLobby() {
 
-        if (LoginStatus())
+        if (!LoginStatus())
             return;
 
         SessionData session = GetSession();
@@ -39,9 +42,6 @@ public class OnlinePlay : MonoBehaviour {
 
 
     public void JoinLobby(InputField input) {
-        if (!LoginStatus())
-            return;
-
         if (string.IsNullOrEmpty(input.text)) {
             input.text = "";
             GameObject.Find("JoinLobbyOverlay").SetActive(false);
