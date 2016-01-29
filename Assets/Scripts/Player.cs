@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class Player {
@@ -45,13 +47,19 @@ public class Player {
         IsCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
 
+	    if (_multiplayerController == null) {
+            GenerateMoney();
+            GameController gc = GameObject.Find("Board").GetComponent<GameController>();
+            if (MoneyAmount >= gc.CashWinCondition) {
+                WinCondition.Winner = this;
+                WinCondition.Losers = gc.AllPlayers.Where(x => x != this).ToArray();
 
-	    if (_multiplayerController == null)
-	        GenerateMoney();
+                SceneManager.LoadScene("WinScreen");   
+            }
+        }
 	    else {
 	        if (_multiplayerController.CornerId == PlayerId) {
                 GenerateMoney();
-
 	        }
 	    }
 	}

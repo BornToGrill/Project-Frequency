@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour {
     public GameObject BasePrefab;
 	public int AmountOfPlayers;
 	public int MovesPerTurn;
+    public int CashWinCondition;
 	public Player CurrentPlayer { get; private set; }
 	public List<Player> Players { get; private set; }
 	public List<Player> AllPlayers { get; private set; }

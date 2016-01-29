@@ -40,8 +40,10 @@ public class StructureEventController : EventControllerBase {
     public override DeselectStatus OnClicked(GameObject ownTile, GameObject clickedTile) {
         // TODO: Refactor
         ownTile.GetComponent<TileController>().ResetSprite();
-        if (!_isBuilding)
+        if (!_isBuilding) {
+            ModifiedTiles.Clear();
             return DeselectStatus.Both;
+        }
         _isBuilding = false;
         foreach (TileController tile in ModifiedTiles)
             tile.ResetSprite();
@@ -57,12 +59,12 @@ public class StructureEventController : EventControllerBase {
         ModifiedTiles.Clear();
 
         GameObject unit = (GameObject)Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
-		if (!second.IsTraversable (unit)) {
+        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
+        unitBase.Owner = GetComponent<BaseUnit>().Owner;
+        if (!second.IsTraversable (unit)) {
 			GameObject.Destroy (unit);
 			return DeselectStatus.Both;
 		}
-        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
-        unitBase.Owner = GetComponent<BaseUnit>().Owner;
 		unitBase.GetComponent<SpriteRenderer> ().color = unitBase.Owner.Color;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
 		unitBase.Owner.Moves -= 1;
