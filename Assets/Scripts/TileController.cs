@@ -9,6 +9,8 @@ public class TileController : MonoBehaviour {
     private int _monetaryValue;
     private Environment _environment;
 
+	public Color DefaultColor;
+
     public BaseUnit Unit;
 	internal TileController Up, Down, Left, Right;
 	internal Vector2 Position;
@@ -36,13 +38,16 @@ public class TileController : MonoBehaviour {
 		}
 	}
 
-    void Awake() {
+    void Start() {
         ResetSprite();
     }
 
     public void ResetSprite() {
-        SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
-        sr.color = new Color(1, 1, 1, 0.5f); // 50% transparency
+		SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
+		sr.color = DefaultColor;
+
+		if(Settings.color != null) 
+			sr.color = Settings.color;
     }
 
     public int GetMonetaryValue(Environment playerEnvironment) {

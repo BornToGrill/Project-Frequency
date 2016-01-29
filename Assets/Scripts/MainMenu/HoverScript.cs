@@ -9,6 +9,7 @@ public class HoverScript : MonoBehaviour {
 	public bool isQuit;
 	public bool isInstructions;
 	public bool isSettings;
+	public bool isMenu;
 
     // Use this for initialization
     void Start()
@@ -51,5 +52,9 @@ public class HoverScript : MonoBehaviour {
         {
             Application.Quit();
         }
+		if (isMenu) 
+		{
+			SceneManager.LoadScene("MainMenu");
+		}
     }
 }
