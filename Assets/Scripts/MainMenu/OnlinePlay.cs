@@ -10,11 +10,17 @@ using TcpClient = NetworkLibrary.TcpClient;
 using UdpClient = NetworkLibrary.UdpClient;
 
 public class OnlinePlay : MonoBehaviour {
+
+    public GameObject LoginOverlay;
+
     public void ShowJoinScreen(GameObject panel) {
         panel.SetActive(true);
     }
 
     public void CreateLobby() {
+
+        if (LoginStatus())
+            return;
 
         SessionData session = GetSession();
 
@@ -33,6 +39,9 @@ public class OnlinePlay : MonoBehaviour {
 
 
     public void JoinLobby(InputField input) {
+        if (!LoginStatus())
+            return;
+
         if (string.IsNullOrEmpty(input.text)) {
             input.text = "";
             GameObject.Find("JoinLobbyOverlay").SetActive(false);
@@ -91,6 +100,16 @@ public class OnlinePlay : MonoBehaviour {
 
 
     #region Info getters
+
+    bool LoginStatus() {
+        GameObject go = GameObject.Find("LoginStatus");
+        if (go == null || string.IsNullOrEmpty(go.GetComponent<LoginStatus>().Name)) {
+            LoginOverlay.SetActive(true);
+            return false;
+        }
+        return true;
+    }
+
     IPEndPoint GetLobbyIp(string response) {
         SplitData command = response.GetFirst();
         if (command.CommandType == "Error") {
