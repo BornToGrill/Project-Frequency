@@ -25,7 +25,7 @@ public class WaterUnit : LandUnit {
         if (CarryUnit == null)
             return true;
         BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
-        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize < internalUnit.MaxUnitStack;
+        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize <= internalUnit.MaxUnitStack;
     }
 
     public override void Merge(BaseUnit unit) {
