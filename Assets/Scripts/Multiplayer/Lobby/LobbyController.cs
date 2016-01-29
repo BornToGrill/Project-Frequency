@@ -16,7 +16,16 @@ public class LobbyController : MonoBehaviour, ILobby {
     void Start() {
         GameObject go = GameObject.Find("Lobby Settings");
         SessionData session = go.GetComponent<SessionData>();
-        ComHandler = new CommunicationHandler(session.LobbyIp, null, null, this);
+        LobbyId.text = session.LobbyId;
+        for (int i = 0; i < session.Players.Length + 1; i++) {
+            if (i < session.Players.Length)
+                PlayerFields[i].text = session.Players[i].Name;
+            else
+                PlayerFields[i].text = session.OwnName;
+        }
+
+        ComHandler = new CommunicationHandler(session.LobbyConnection, null, null, this);
+        ComHandler.SetGuid(session.Guid);
     }
 
     void Update() {
@@ -51,28 +60,6 @@ public class LobbyController : MonoBehaviour, ILobby {
                 }
             });
 
-    }
-
-    public void Authenticated(string guid, int id, string playerName, string lobbyId) {
-        lock (_lobbyActions)
-            _lobbyActions.Enqueue(() => {
-                GameObject lobbySettings = GameObject.Find("Lobby Settings");
-                if (lobbySettings == null) {
-                    lobbySettings = new GameObject("Lobby Settings");
-                    lobbySettings.AddComponent<SessionData>();
-                    DontDestroyOnLoad(lobbySettings);
-                }
-                SessionData session = lobbySettings.GetComponent<SessionData>();
-                session.Guid = guid;
-                session.OwnId = id;
-                ComHandler.SetGuid(guid);
-                LobbyId.text = lobbyId;
-                foreach(Text text in PlayerFields)
-                    if (string.IsNullOrEmpty(text.text)) {
-                        text.text = playerName; //TODO: Actual name
-                        break;
-                    }
-            });
     }
 
     public void SetPlayers(string[] names) {

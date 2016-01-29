@@ -18,10 +18,8 @@ class CommunicationHandler : IDisposable {
 
     private string _guid;
 
-    public CommunicationHandler(IPEndPoint targetServer, IInvokable invoke, INotifiable notify, ILobby lobby) {
-        Socket connSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        connSocket.Connect(targetServer); //TODO: Move to Settings
-        _tcpClient = new TcpClient(connSocket);
+    public CommunicationHandler(TcpClient serverCon, IInvokable invoke, INotifiable notify, ILobby lobby) {
+        _tcpClient = serverCon;
         _tcpClient.DataReceived += TcpClient_DataReceived;
         _tcpClient.Start();
 

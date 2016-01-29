@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using NetworkLibrary;
 using UnityEngine;
 
@@ -29,9 +26,6 @@ class Lobby {
                 break;
             case "StartGame":
                 StartGame(data.Values);
-                break;
-            case "Authenticated":
-                Authenticate(data.Values);
                 break;
             case "SetPlayers":
                 SetPlayers(data.Values);
@@ -64,11 +58,6 @@ class Lobby {
             };
         }
         _lobby.GameStart(players);
-    }
-
-    private void Authenticate(string values) {
-        string[] data = values.Split(ValueDelimiter);
-        _lobby.Authenticated(data[0], Int32.Parse(data[1]), data[2], data[3]);
     }
 
     private void SetPlayers(string values) {
