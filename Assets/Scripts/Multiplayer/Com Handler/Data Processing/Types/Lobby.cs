@@ -68,7 +68,7 @@ class Lobby {
 
     private void Authenticate(string values) {
         string[] data = values.Split(ValueDelimiter);
-        _lobby.Authenticated(data[0], Int32.Parse(data[1]), data[2]);
+        _lobby.Authenticated(data[0], Int32.Parse(data[1]), data[2], data[3]);
     }
 
     private void SetPlayers(string values) {

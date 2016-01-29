@@ -10,12 +10,7 @@ public class OnlinePlay : MonoBehaviour {
 
     public void CreateLobby() {
 
-        GameObject lobbySettings = GameObject.Find("Lobby Settings");
-        if (lobbySettings != null)
-            Destroy(lobbySettings);
-        lobbySettings = new GameObject("Lobby Settings");
-        SessionData session = lobbySettings.AddComponent<SessionData>();
-        DontDestroyOnLoad(lobbySettings);
+        SessionData session = GetSession();
 
         UdpClient client = new UdpClient();
         client.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9500));
@@ -23,7 +18,7 @@ public class OnlinePlay : MonoBehaviour {
         if (!client.Socket.Poll(1000000, SelectMode.SelectRead)) {
             //TODO : Handle error
             Debug.LogError("Failed to receive lobby ip in 10000 of something");
-            GameObject.Destroy(lobbySettings);
+            EndSession();
             return;
         }
         byte[] buffer = new byte[4096];
@@ -33,12 +28,14 @@ public class OnlinePlay : MonoBehaviour {
         SplitData command = response.GetFirst();
         if (command.CommandType == "Error") {
             // TODO: Handle error
-            GameObject.Destroy(lobbySettings);
+            EndSession();
+            return;
         }
         else {
             string[] data = command.Values.Split('|');
             IPEndPoint lobby = new IPEndPoint(IPAddress.Parse(data[0]), int.Parse(data[1]));
             session.LobbyIp = lobby;
+
             SceneManager.LoadScene("Lobby");
         }
     }
@@ -54,12 +51,7 @@ public class OnlinePlay : MonoBehaviour {
             return;
         }
 
-        GameObject lobbySettings = GameObject.Find("Lobby Settings");
-        if (lobbySettings != null)
-            Destroy(lobbySettings);
-        lobbySettings = new GameObject("Lobby Settings");
-        SessionData session = lobbySettings.AddComponent<SessionData>();
-        DontDestroyOnLoad(lobbySettings);
+        SessionData session = GetSession();
 
         UdpClient client = new UdpClient();
         client.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9500));
@@ -67,7 +59,7 @@ public class OnlinePlay : MonoBehaviour {
         if (!client.Socket.Poll(1000000, SelectMode.SelectRead)) {
             //TODO : Handle error
             Debug.LogError("Failed to receive lobby ip in 10000 of something");
-            GameObject.Destroy(lobbySettings);
+            EndSession();
             return;
         }
         byte[] buffer = new byte[4096];
@@ -77,7 +69,8 @@ public class OnlinePlay : MonoBehaviour {
         SplitData command = response.GetFirst();
         if (command.CommandType == "Error") {
             // TODO: Handle error
-            GameObject.Destroy(lobbySettings);
+            EndSession();
+            return;
         }
         else {
             string[] data = command.Values.Split('|');
@@ -85,6 +78,30 @@ public class OnlinePlay : MonoBehaviour {
             session.LobbyIp = lobby;
             SceneManager.LoadScene("Lobby");
         }
+    }
+
+    SessionData GetSession() {
+        GameObject lobbySettings = GameObject.Find("Lobby Settings");
+        if (lobbySettings != null)
+            Destroy(lobbySettings);
+        lobbySettings = new GameObject("Lobby Settings");
+        SessionData session = lobbySettings.AddComponent<SessionData>();
+        DontDestroyOnLoad(lobbySettings);
+        return session;
+    }
+
+    void EndSession() {
+        GameObject go = GameObject.Find("Lobby Settings");
+        if (go != null)
+            Destroy(go);
+    }
+
+    LoginStatus GetLoginStatus() {
+        GameObject go = GameObject.Find("LoginStatus");
+        if(go != null)
+            return go.GetComponent<LoginStatus>();
+        go = new GameObject("LoginStatus");
+        return go.AddComponent<LoginStatus>();
     }
 
 }
