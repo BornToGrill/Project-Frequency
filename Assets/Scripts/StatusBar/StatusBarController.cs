@@ -26,7 +26,7 @@ public class StatusBarController : MonoBehaviour {
 		float offset = 0f;
 		foreach (StatusBarPlayerField existingField in _playerFields) {
 			RectTransform rt = existingField.transform as RectTransform;
-			offset += rt.rect.width;
+			offset += rt.rect.width + 15f;
 		}
 
 		GameObject fieldGo = Instantiate (StatusBarPlayerPrefab, new Vector3 (0, 0), new Quaternion ()) as GameObject;

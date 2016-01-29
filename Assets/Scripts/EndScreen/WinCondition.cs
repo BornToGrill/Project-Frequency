@@ -32,7 +32,7 @@ public class WinCondition : MonoBehaviour {
 				winner = gc.Players[0];
 				losers = gc.AllPlayers;
 
-				SceneManager.LoadScene ("WinScreen"); 
+				//SceneManager.LoadScene ("WinScreen"); 
 			}
 		}
 	}

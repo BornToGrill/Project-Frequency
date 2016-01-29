@@ -11,6 +11,7 @@ public class StatusBarPlayerField : MonoBehaviour {
 	private Image _background;
 	private GameController _gameController;
 	private StatusBarController _statusBarController;
+	private Animator animator;
 
 	public Player Player;
 
@@ -21,6 +22,7 @@ public class StatusBarPlayerField : MonoBehaviour {
         _generateAmount = transform.Find("GenerateAmount").GetComponent<Text>();
 		_background = gameObject.GetComponent<Image> ();
 		_gameController = GameObject.Find ("Board").GetComponent<GameController> ();
+		animator = transform.Find ("Background").GetComponent<Animator> ();
     }
 
 	public void Initialize(Player player, float offset, StatusBarController controller) {
@@ -29,7 +31,7 @@ public class StatusBarPlayerField : MonoBehaviour {
         _playerNumber.text = Player.Name;
 		_playerNumber.color = Player.Color;
         _rectTransform.localScale = new Vector3 (1, 1);
-        _rectTransform.anchoredPosition = new Vector2 (offset, -10.0f);
+        _rectTransform.anchoredPosition = new Vector2 (5.0f + offset, 0f);
 		UpdateStats ();
 	}
 
@@ -42,11 +44,11 @@ public class StatusBarPlayerField : MonoBehaviour {
 	{
         if (Player.IsCurrentPlayer)
         {
-            _background.color = new Color(0f, 0f, 0f, 0.5f);
+			animator.Play ("Active");
         }
         else
         {
-            _background.color = Color.clear;
+			animator.Play ("Inactive");
         }
 
 		if (!Player.IsAlive)
