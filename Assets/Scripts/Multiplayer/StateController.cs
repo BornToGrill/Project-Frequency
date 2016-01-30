@@ -13,9 +13,8 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     internal string Guid;
     internal int CornerId;
 
-	void Start () {
+	void OnEnable () {
 	    _gameController = GetComponent<GameController>();
-	    //ServerComs = new CommunicationHandler(this, this, null);
 	    SessionData session = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
 	    ServerComs = session.ServerCom;
 	    Guid = session.Guid;
@@ -127,6 +126,23 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             SceneManager.LoadScene("WinScreen");
         });
 
+    }
+
+    public void GameLoaded() {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            GameObject overlay = GameObject.Find("WaitingForPlayers");
+            if (overlay != null)
+                overlay.SetActive(false);
+            _gameController.CurrentPlayer = _gameController.Players[0];
+            _gameController.CurrentPlayer.StartTurn(_gameController);
+        });
+    }
+
+    public void PlayerLeft(int id, string name) {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            Player player = _gameController.Players.Find(x => x.PlayerId == id);
+            player.IsAlive = false; //TODO: Destroy all units.
+        });
     }
     #endregion
 }

@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour {
 	public int AmountOfPlayers;
 	public int MovesPerTurn;
     public int CashWinCondition;
-	public Player CurrentPlayer { get; private set; }
+	public Player CurrentPlayer { get; set; }
 	public List<Player> Players { get; private set; }
 	public List<Player> AllPlayers { get; private set; }
 	public List<Color> PlayerColors;
@@ -20,8 +20,11 @@ public class GameController : MonoBehaviour {
 	void Awake() {
 		Players = new List<Player> ();
 		AllPlayers = new List<Player> ();
-	    if (GetComponent<StateController>() == null)
+	    if (GetComponent<StateController>() == null) {
 	        GeneratePlayers();
+            CurrentPlayer = Players[0];
+            CurrentPlayer.StartTurn(this);
+        }
 	    else {
 	        SessionData lobby = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
 	        foreach (TempPlayer temp in lobby.Players) {
@@ -31,9 +34,13 @@ public class GameController : MonoBehaviour {
 	            Players.Add(player);
 	        }
 	    }
-		CurrentPlayer = Players [0];
-		CurrentPlayer.StartTurn (this);
 	}
+
+    void Start() {
+        StateController cont = GetComponent<StateController>();
+        if(cont != null)
+            cont.ServerComs.Notify.GameLoaded();
+    }
 
     void Update() {
         lock (MultiplayerActionQueue) {

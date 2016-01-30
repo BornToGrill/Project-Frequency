@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using NetworkLibrary;
+using UnityEngine;
 using TcpClient = NetworkLibrary.TcpClient;
 using UdpClient = NetworkLibrary.UdpClient;
 
@@ -21,9 +22,14 @@ class CommunicationHandler : IDisposable {
     public CommunicationHandler(TcpClient serverCon, IInvokable invoke, INotifiable notify, ILobby lobby) {
         _tcpClient = serverCon;
         _tcpClient.DataReceived += TcpClient_DataReceived;
+        _tcpClient.Disconnected += TcpClient_Disconnnected; 
         _tcpClient.Start();
 
         _processor = new DataProcessor(invoke, notify, lobby);
+    }
+
+    private void TcpClient_Disconnnected(TcpClient sender) {
+        Debug.LogError("Server was disconnected : TODO");
     }
 
     public void SetGuid(string guid) {
@@ -41,9 +47,14 @@ class CommunicationHandler : IDisposable {
     }
 
     private void TcpClient_DataReceived(TcpDataReceivedEventArgs e) {
-        UnityEngine.Debug.Log(e.ReceivedString);
-        if (e.ReceivedString.Length > 0)
-            _processor.ProcessData(e.Sender, e.ReceivedString);
+        try { //TODO: REMOVE
+            UnityEngine.Debug.Log(e.ReceivedString);
+            if (e.ReceivedString.Length > 0)
+                _processor.ProcessData(e.Sender, e.ReceivedString);
+        }
+        catch (Exception ex) {
+            Debug.LogError(ex.Message);
+        }
     }
 
 
