@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class Player{
@@ -15,7 +17,6 @@ public class Player{
 	public bool IsAlive = true;
 
     public int CalculateIncome() {
-        //throw new System.NotImplementedException();
         Board board = GameObject.Find("Board").GetComponent<Board>();
         int income = 0;
         foreach(GameObject tileObject in board._tiles)
@@ -33,6 +34,13 @@ public class Player{
         IsCurrentPlayer = true;
 		Moves = gameController.MovesPerTurn;
 		GenerateMoney ();
+	    GameController gc = GameObject.Find("Board").GetComponent<GameController>();
+	    if (MoneyAmount >= gc.CashWinCondition) {
+	        WinCondition.Winner = this;
+	        WinCondition.Losers = gc.AllPlayers.Where(x => x != this).ToArray();
+
+	        SceneManager.LoadScene("WinScreen");
+	    }
 	}
 
     public void EndTurn() {
