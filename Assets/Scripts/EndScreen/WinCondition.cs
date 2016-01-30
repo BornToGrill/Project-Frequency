@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class WinCondition : MonoBehaviour {
-
+    
     private Player _baseOwner;
     public static Player Winner;
     public static Player[] Losers;
