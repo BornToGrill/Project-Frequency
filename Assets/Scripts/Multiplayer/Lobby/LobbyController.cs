@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,22 +11,21 @@ public class LobbyController : MonoBehaviour, ILobby {
     private Queue<Action> _lobbyActions = new Queue<Action>();
 
     internal CommunicationHandler ComHandler;
+    public Text HostField;
     public Text[] PlayerFields;
+    public GameObject[] PlayerReadyObjects;
+
     public Text LobbyId;
 
     void Start() {
         GameObject go = GameObject.Find("Lobby Settings");
         SessionData session = go.GetComponent<SessionData>();
         LobbyId.text = session.LobbyId;
-        for (int i = 0; i < session.Players.Length + 1; i++) {
-            if (i < session.Players.Length)
-                PlayerFields[i].text = session.Players[i].Name;
-            else
-                PlayerFields[i].text = session.OwnName;
-        }
+        SetPlayers(session.Players);
 
         ComHandler = new CommunicationHandler(session.LobbyConnection, null, null, this);
         ComHandler.SetGuid(session.Guid);
+        ComHandler.SendTcp("[Request:PlayerList]");
     }
 
     void Update() {
@@ -36,37 +36,27 @@ public class LobbyController : MonoBehaviour, ILobby {
 
     #region ILobby Implementation Members
 
-    public void PlayerJoined(int id, string playerName) {
 
-        lock (_lobbyActions)
-            _lobbyActions.Enqueue(() => {
-                foreach (Text field in PlayerFields) {
-                    if (string.IsNullOrEmpty(field.text)) {
-                        field.text = playerName;
-                        break;
-                    }
-                }
-            });
-    }
-
-    public void PlayerLeft(int id, string name) {
-        lock (_lobbyActions)
-            _lobbyActions.Enqueue(() => {
-                foreach (Text field in PlayerFields) {
-                    if (field.text == name) {
-                        field.text = "";
-                        break;
-                    }
-                }
-            });
-
-    }
-
-    public void SetPlayers(string[] names) {
+    public void SetPlayers(TempPlayer[] players) {
+        //TODO: Set host & ready status
         lock (_lobbyActions) {
             _lobbyActions.Enqueue(() => {
+                SessionData session = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
+                TempPlayer host = players.FirstOrDefault(x => x.IsHost);
+                if(host != null)
+                    HostField.text = host.Name;
+                TempPlayer[] nonHosts = players.Where(x => !x.IsHost).ToArray();
                 for (int i = 0; i < PlayerFields.Length; i++) {
-                    PlayerFields[i].text = i < names.Length ? names[i] : "";
+                    if (i < nonHosts.Length) {
+                        PlayerFields[i].text = nonHosts[i].Name;
+                        PlayerReadyObjects[i].GetComponent<Image>().color = nonHosts[i].Ready
+                            ? Color.green
+                            : Color.red;
+                    }
+                    else {
+                        PlayerFields[i].text = "";
+                        PlayerReadyObjects[i].GetComponent<Image>().color = Color.clear;
+                    }
                 }
             });
         }

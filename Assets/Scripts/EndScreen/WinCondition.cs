@@ -18,19 +18,20 @@ public class WinCondition : MonoBehaviour {
     public void BaseDestroyed() {
         GameObject board = GameObject.Find("Board");
         if (board != null) {
+            GameController gc = board.GetComponent<GameController>();
             StateController mpController = board.GetComponent<StateController>();
+            gc.RemovePlayer(_baseOwner);
             if (mpController == null) {
-                GameController gc = board.GetComponent<GameController>();
-                gc.RemovePlayer(_baseOwner);
                 if (gc.Players.Count <= 1) {
                     Winner = gc.Players[0];
                     Losers = gc.AllPlayers.Where(x => x != Winner).ToArray();
-
                     SceneManager.LoadScene("WinScreen");
                 }
             }
-            else
-                mpController.ServerComs.Notify.GameWon();
+            else {
+                if(gc.Players.Count <= 1)
+                    mpController.ServerComs.Notify.GameWon();
+            }
         }
     }
 }

@@ -29,6 +29,21 @@ public class Player {
         }
     }
 
+    public Player(int x) {
+        _multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+        PlayerId = x;
+        MoneyAmount = 500;
+    }
+
+    public void DestroyPlayer() {
+        Board board = GameObject.Find("Board").GetComponent<Board>();
+        foreach (GameObject tile in board._tiles) {
+            TileController curr = tile.GetComponent<TileController>();
+            if (curr.Unit != null && curr.Unit.Owner == this)
+                curr.Unit.DamageUnit(99999, null);
+        }
+    }
+
     public int CalculateIncome() {
         Board board = GameObject.Find("Board").GetComponent<Board>();
         int income = 0;
@@ -76,9 +91,4 @@ public class Player {
         MoneyAmount += CalculateIncome();
     }
 
-	public Player(int x) {
-        _multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
-        PlayerId = x;
-		MoneyAmount = 500;
-	}
 }

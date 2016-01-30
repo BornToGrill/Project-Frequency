@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,6 +11,11 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 
     internal string Guid;
     internal int CornerId;
+
+    void OnDestroy() {
+        if(WinCondition.Winner == null)
+            ServerComs.Dispose();
+    }
 
 	void OnEnable () {
 	    _gameController = GetComponent<GameController>();
@@ -141,7 +145,8 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     public void PlayerLeft(int id, string name) {
         _gameController.MultiplayerActionQueue.Enqueue(() => {
             Player player = _gameController.Players.Find(x => x.PlayerId == id);
-            player.IsAlive = false; //TODO: Destroy all units.
+            //player.IsAlive = false; //TODO: Destroy all units.
+            player.DestroyPlayer();
         });
     }
     #endregion

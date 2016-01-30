@@ -58,7 +58,7 @@ public class OnlinePlay : MonoBehaviour {
         SetNameHandshake(response);
     }
 
-    private void SetNameHandshake(string response) {
+    public void SetNameHandshake(string response) {
         LoginStatus login = GetLoginStatus();
         SessionData session = GetSession();
 
@@ -91,8 +91,16 @@ public class OnlinePlay : MonoBehaviour {
 
         string[] playerData = messages[1].GetFirst().Values.GetFirst().Values.Split(new[] { "|", }, StringSplitOptions.RemoveEmptyEntries).ToArray();
         TempPlayer[] players = new TempPlayer[playerData.Length];
-        for (int i = 0; i < playerData.Length; i++)
-            players[i] = new TempPlayer() { Name = playerData[i] };
+        for (int i = 0; i < players.Length; i++) {
+            string info = playerData[i].Trim('(', ')');
+            string[] splt = info.Split(':');
+            players[i] = new TempPlayer() {
+                Name = splt[0],
+                Id = int.Parse(splt[1]),
+                Ready = bool.Parse(splt[2]),
+                IsHost = bool.Parse(splt[3])
+            };
+        }
 
         session.Players = players;
         SceneManager.LoadScene("Lobby");
@@ -101,7 +109,7 @@ public class OnlinePlay : MonoBehaviour {
 
     #region Info getters
 
-    bool LoginStatus() {
+    public bool LoginStatus() {
         GameObject go = GameObject.Find("LoginStatus");
         if (go == null || string.IsNullOrEmpty(go.GetComponent<LoginStatus>().Name)) {
             LoginOverlay.SetActive(true);
@@ -110,7 +118,7 @@ public class OnlinePlay : MonoBehaviour {
         return true;
     }
 
-    IPEndPoint GetLobbyIp(string response) {
+    public IPEndPoint GetLobbyIp(string response) {
         SplitData command = response.GetFirst();
         if (command.CommandType == "Error") {
             // TODO: Handle error
@@ -122,7 +130,7 @@ public class OnlinePlay : MonoBehaviour {
         return lobby;
     }
 
-    string GetResponse(Socket socket, string query) {
+    public string GetResponse(Socket socket, string query) {
         socket.Send(new ASCIIEncoding().GetBytes(query));
         if (!socket.Poll(1000000, SelectMode.SelectRead)) {
             Debug.LogError("Socket did not respond within 1000000 Micro seconds");
@@ -133,7 +141,7 @@ public class OnlinePlay : MonoBehaviour {
         return new ASCIIEncoding().GetString(buffer, 0, received);
     }
 
-    SessionData GetSession() {
+    public SessionData GetSession() {
         GameObject lobbySettings = GameObject.Find("Lobby Settings");
         if (lobbySettings != null)
             Destroy(lobbySettings);
@@ -143,13 +151,13 @@ public class OnlinePlay : MonoBehaviour {
         return session;
     }
 
-    void EndSession() {
+    public void EndSession() {
         GameObject go = GameObject.Find("Lobby Settings");
         if (go != null)
             Destroy(go);
     }
 
-    LoginStatus GetLoginStatus() {
+    internal LoginStatus GetLoginStatus() {
         GameObject go = GameObject.Find("LoginStatus");
         if(go != null)
             return go.GetComponent<LoginStatus>();
