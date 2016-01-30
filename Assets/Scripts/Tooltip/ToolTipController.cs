@@ -12,16 +12,9 @@ public class ToolTipController : MonoBehaviour {
 	public Image Image;
 	private RectTransform rectTransform;
 
-	void Start () {
+	void Awake () {
 		rectTransform = transform as RectTransform;
 		rectTransform.anchoredPosition = Input.mousePosition;
-		//Warning.enabled = false;
-		//Cost.enabled = false;
-		//Image.enabled = false;
-	}
-
-	void Update() {
-		//rectTransform.anchoredPosition = Input.mousePosition;
 	}
 
 	void FixedUpdate() {
@@ -35,7 +28,6 @@ public class ToolTipController : MonoBehaviour {
 	}
 
 	public void SetCost(string cost, bool enoughMoney) {
-		Cost.enabled = true;
 		Cost.text = cost;
 		if (enoughMoney)
 		{
@@ -48,7 +40,6 @@ public class ToolTipController : MonoBehaviour {
 	}
 
 	public void SetWarning(string warning) {
-		Warning.enabled = true;
 		Warning.text = warning;
 	}
 }

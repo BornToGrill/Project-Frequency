@@ -54,7 +54,7 @@ public class ActionBarController : MonoBehaviour {
 		button.transform.SetParent(transform);
 		button.GetComponent<ActionButtonController>().Initialize(text, callback, offset, clickable);
 		ToolTip tooltip = button.GetComponent<ToolTip> ();
-		tooltip.SetCost (cost, money > cost);
+		tooltip.SetCost (cost, money >= cost);
 
 		if (!clickable) {
 			tooltip.SetWarning ("No moves left");
