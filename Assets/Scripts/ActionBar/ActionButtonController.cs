@@ -7,11 +7,6 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
     private Text _buttonText;
     private Callback _callback;
 	private string _id;
-	public Sprite TankButton;
-	public Sprite SoldierButton;
-	public Sprite RobotButton;
-	public Sprite BarracksButton;
-
 
     void Awake()
     {
