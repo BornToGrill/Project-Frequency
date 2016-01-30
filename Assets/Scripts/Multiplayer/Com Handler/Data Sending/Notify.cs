@@ -46,4 +46,8 @@ class Notify {
     internal void GameLoaded() {
         _tcpClient.Send(string.Format("[Notify:GameLoaded:{0}]", _guid));
     }
+
+    internal void LobbyReady(bool ready) {
+        _tcpClient.Send(string.Format("[Notify:PlayerReady:{0}|{1}]", _guid, ready));
+    }
 }

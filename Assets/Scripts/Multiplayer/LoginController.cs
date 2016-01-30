@@ -23,10 +23,13 @@ class LoginController : MonoBehaviour {
         login = new GameObject("LoginStatus");
         LoginStatus status = login.AddComponent<LoginStatus>();
         string response = GetResponse(s, string.Format("Request:Login:{0}|{1}", Username.text, Password.text));
-        if (response == null)
+        if (response == null) {
+            Destroy(login);
             return; //TODO: Invalid acc error
+        }
 
         status.Name = response;
+        DontDestroyOnLoad(login);
         HideLoginDialog();
     }
 

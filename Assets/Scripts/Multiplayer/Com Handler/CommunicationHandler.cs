@@ -17,8 +17,6 @@ class CommunicationHandler : IDisposable {
     public Invoke Invoke { get; private set; }
     public Notify Notify { get; private set; }
 
-    private string _guid;
-
     public CommunicationHandler(TcpClient serverCon, IInvokable invoke, INotifiable notify, ILobby lobby) {
         _tcpClient = serverCon;
         _tcpClient.DataReceived += TcpClient_DataReceived;
@@ -33,7 +31,6 @@ class CommunicationHandler : IDisposable {
     }
 
     public void SetGuid(string guid) {
-        _guid = guid;
         Invoke = new Invoke(_tcpClient, guid);
         Notify = new Notify(_tcpClient, guid);
     }
@@ -48,7 +45,7 @@ class CommunicationHandler : IDisposable {
 
     private void TcpClient_DataReceived(TcpDataReceivedEventArgs e) {
         try { //TODO: REMOVE
-            UnityEngine.Debug.Log(e.ReceivedString);
+            Debug.Log(e.ReceivedString);
             if (e.ReceivedString.Length > 0)
                 _processor.ProcessData(e.Sender, e.ReceivedString);
         }

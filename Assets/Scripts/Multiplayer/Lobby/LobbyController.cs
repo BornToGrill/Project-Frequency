@@ -17,6 +17,8 @@ public class LobbyController : MonoBehaviour, ILobby {
 
     public Text LobbyId;
 
+    public Button ReadyStartButton;
+
     void Start() {
         GameObject go = GameObject.Find("Lobby Settings");
         SessionData session = go.GetComponent<SessionData>();
@@ -57,6 +59,18 @@ public class LobbyController : MonoBehaviour, ILobby {
                         PlayerFields[i].text = "";
                         PlayerReadyObjects[i].GetComponent<Image>().color = Color.clear;
                     }
+                }
+                LobbyButtonEvents events = ReadyStartButton.GetComponent<LobbyButtonEvents>();
+                if (host.Id == session.OwnId) {
+                    events.ButtonType = "Start";
+                    if (players.Any(x => !x.Ready && !x.IsHost))
+                        events.Enabled = false;
+                    else
+                        events.Enabled = true;
+                }
+                else {
+                    events.ButtonType = "Ready";
+                    events.Enabled = true;
                 }
             });
         }
