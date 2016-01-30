@@ -29,9 +29,9 @@ public class SoldierEventController : LandUnitEventController {
 			StructureUnit building = structure.GetComponent<StructureUnit> ();
 			Player owner = GetComponent<BaseUnit> ().Owner;
 			if ( building.GetCost (thisTile.Environment, owner) > owner.MoneyAmount || owner.Moves <= 0) {
-				actionBar.AddButton (structure.name, CreateStructure, false);
+				actionBar.AddButton (structure.name, CreateStructure, false, building.GetCost(thisTile.Environment), owner.MoneyAmount);
 			} else {
-				actionBar.AddButton (structure.name, CreateStructure, true);
+				actionBar.AddButton (structure.name, CreateStructure, true, building.GetCost(thisTile.Environment), owner.MoneyAmount);
 			}
 		}
         

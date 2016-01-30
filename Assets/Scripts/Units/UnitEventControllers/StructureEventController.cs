@@ -24,9 +24,9 @@ public class StructureEventController : EventControllerBase {
 			BaseUnit unitComponent = unit.GetComponent<BaseUnit> ();
 			Player unitOwner = gameObject.GetComponent<BaseUnit> ().Owner;
 			if (unitComponent.GetCost(thisTile.Environment) > unitOwner.MoneyAmount || unitOwner.Moves <= 0)
-				actionBar.AddButton(unit.name, CreateUnit, false);
+				actionBar.AddButton(unit.name, CreateUnit, false, unitComponent.GetCost(thisTile.Environment), unitOwner.MoneyAmount);
 			else
-				actionBar.AddButton(unit.name, CreateUnit, true);
+				actionBar.AddButton(unit.name, CreateUnit, true, unitComponent.GetCost(thisTile.Environment), unitOwner.MoneyAmount);
 		}
             
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
