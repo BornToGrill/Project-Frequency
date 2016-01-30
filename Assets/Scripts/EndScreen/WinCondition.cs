@@ -7,8 +7,8 @@ using System.Linq;
 public class WinCondition : MonoBehaviour {
 
     private Player _baseOwner;
-    public static Player Winner;
-    public static Player[] Losers;
+    public Player Winner;
+    public Player[] Losers;
 
     void Start() {
         BaseUnit unit = gameObject.GetComponent<BaseUnit>();
@@ -23,8 +23,14 @@ public class WinCondition : MonoBehaviour {
             gc.RemovePlayer(_baseOwner);
             if (mpController == null) {
                 if (gc.Players.Count <= 1) {
-                    Winner = gc.Players[0];
-                    Losers = gc.AllPlayers.Where(x => x != Winner).ToArray();
+                    GameObject endData = GameObject.Find("EndGameData");
+                    if (endData != null)
+                        Destroy(endData);
+                    endData = new GameObject("EndGameData");
+                    WinCondition cond = endData.AddComponent<WinCondition>();
+                    cond.Winner = gc.Players[0];
+                    cond.Losers = gc.AllPlayers.Where(x => x != Winner).ToArray();
+                    DontDestroyOnLoad(cond);
                     SceneManager.LoadScene("WinScreen");
                 }
             }

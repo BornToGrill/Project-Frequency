@@ -13,7 +13,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     internal int CornerId;
 
     void OnDestroy() {
-        if(WinCondition.Winner == null)
+        if (GameObject.Find("EndGameData") == null)
             ServerComs.Dispose();
     }
 
@@ -123,10 +123,16 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     }
 
     public void GameWon(int winner, int[] losers) {
-        WinCondition.Winner = _gameController.AllPlayers.Find(x => x.PlayerId == winner);
-        if(losers != null)
-            WinCondition.Losers = _gameController.AllPlayers.Where(x => losers.Any(c => c == x.PlayerId)).ToArray();
         _gameController.QueueMultiplayerAction(() => {
+            GameObject go = GameObject.Find("EndGameData");
+            if (go != null)
+                Destroy(go);
+            go = new GameObject("EndGameData");
+            WinCondition cond = go.AddComponent<WinCondition>();
+            cond.Winner = _gameController.AllPlayers.Find(x => x.PlayerId == winner);
+            if (losers != null)
+                cond.Losers = _gameController.AllPlayers.Where(x => losers.Any(c => c == x.PlayerId)).ToArray();
+            DontDestroyOnLoad(go);
             SceneManager.LoadScene("WinScreen");
         });
 
@@ -145,7 +151,6 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     public void PlayerLeft(int id, string name) {
         _gameController.MultiplayerActionQueue.Enqueue(() => {
             Player player = _gameController.Players.Find(x => x.PlayerId == id);
-            //player.IsAlive = false; //TODO: Destroy all units.
             player.DestroyPlayer();
         });
     }

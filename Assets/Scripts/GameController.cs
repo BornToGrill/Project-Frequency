@@ -18,8 +18,9 @@ public class GameController : MonoBehaviour {
     public Queue<Action> MultiplayerActionQueue = new Queue<Action>(); 
 
 	void Awake() {
-	    WinCondition.Losers = null;
-	    WinCondition.Winner = null;
+	    GameObject endGame = GameObject.Find("EndGameData");
+	    if (endGame != null)
+	        Destroy(endGame);
 		Players = new List<Player> ();
 		AllPlayers = new List<Player> ();
 	    if (GetComponent<StateController>() == null) {

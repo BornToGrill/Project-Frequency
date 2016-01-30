@@ -67,9 +67,14 @@ public class Player {
             GenerateMoney();
 
             if (MoneyAmount >= gc.CashWinCondition) {
-                WinCondition.Winner = this;
-                WinCondition.Losers = gc.AllPlayers.Where(x => x != this).ToArray();
-
+                GameObject go = GameObject.Find("EndGameData");
+                if (go != null)
+                    GameObject.Destroy(go);
+                go = new GameObject("EndGameData");
+                WinCondition cond = go.AddComponent<WinCondition>();
+                cond.Winner = this;
+                cond.Losers = gc.AllPlayers.Where(x => x != this).ToArray();
+                GameObject.DontDestroyOnLoad(go);
                 SceneManager.LoadScene("WinScreen");   
             }
         }
