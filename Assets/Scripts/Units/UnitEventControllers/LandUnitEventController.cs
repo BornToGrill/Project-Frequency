@@ -196,14 +196,12 @@ public class LandUnitEventController : EventControllerBase {
 		BaseUnit unit = GetComponent<BaseUnit> ();
 
 		if (direction.x - position.x < 0)
-			unit.Direction = "Left";
+			anim.SetInteger ("Direction", 3); // Left
 		else if (direction.x - position.x > 0)
-			unit.Direction = "Right";
+			anim.SetInteger ("Direction", 1); // Right
 		else if (direction.y - position.y > 0)
-			unit.Direction = "Up";
+			anim.SetInteger ("Direction", 0); // Up
 		else if (direction.y - position.y < 0)
-			unit.Direction = "Down";
-		
-		anim.Play (unit.StackSize.ToString() + unit.Direction);
+			anim.SetInteger ("Direction", 2); // Down
 	}
 }

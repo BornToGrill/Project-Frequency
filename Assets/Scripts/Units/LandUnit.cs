@@ -26,8 +26,7 @@ public class LandUnit : BaseUnit {
     public virtual void Merge(BaseUnit unit) {
 		StackSize += unit.StackSize;
 		Animator anim = GetComponent<Animator> ();
-		anim.Play (StackSize.ToString () + Direction);
-        
+		anim.SetInteger ("StackSize", StackSize);
         GameObject.Destroy(unit.gameObject);
     }
 
