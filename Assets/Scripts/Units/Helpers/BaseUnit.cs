@@ -16,7 +16,6 @@ public abstract class BaseUnit : MonoBehaviour {
 
     public Environment[] TraversableEnvironments;
 	public int MaxUnitStack;
-	internal String Direction = "Down";
 
     public virtual void Awake() {
         StackSize = 1;
