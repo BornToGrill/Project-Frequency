@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.IO;
 using System.Net;
 using System.Xml;
@@ -48,10 +49,18 @@ public static class GlobalSettings {
     }
 
     static SettingsContainer Download() {
-        using (WebClient client = new WebClient()) {
+        using (QuickWebClient client = new QuickWebClient()) {
             client.DownloadFile("http://daniel-molenaar.com/FrequencySettings/Settings.xml", "Settings.xml");
             return Load();
         }
+    }
+}
+
+public class QuickWebClient : WebClient {
+    protected override WebRequest GetWebRequest(Uri address) {
+        WebRequest request = base.GetWebRequest(address);
+        request.Timeout = 3000;
+        return request;
     }
 }
 

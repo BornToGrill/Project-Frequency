@@ -52,9 +52,15 @@ class CommunicationHandler : IDisposable {
     }
 
     private void TcpClient_DataReceived(TcpDataReceivedEventArgs e) {
-        Debug.Log(e.ReceivedString);
-        if (e.ReceivedString.Length > 0)
-            _processor.ProcessData(e.Sender, e.ReceivedString);
+        try {
+            Debug.Log(e.ReceivedString);
+            if (e.ReceivedString.Length > 0)
+                _processor.ProcessData(e.Sender, e.ReceivedString);
+        }
+        catch (Exception ex) {
+            Debug.LogError("Error in com handler : " + ex.Message);
+            throw;
+        }
     }
 
 
