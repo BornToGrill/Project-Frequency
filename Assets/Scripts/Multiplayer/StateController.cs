@@ -47,7 +47,18 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
             Board board = _gameController.GetComponent<Board>();
             TileController target = board._tiles[targetX, targetY].GetComponent<TileController>();
             if (target.Unit != null) {
-                target.Unit.StackSize++;
+                if (target.Unit is WaterUnit) {
+                    WaterUnit targetUnit = (WaterUnit) target.Unit;
+                        GameObject carry =
+                            (GameObject)
+                                Instantiate(Units.Single(x => x.name == unitType), new Vector3(targetX, targetY),
+                                    Quaternion.identity);
+                    targetUnit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
+                    targetUnit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
+                    targetUnit.Merge(carry.GetComponent<BaseUnit>());
+                }
+                else 
+                    target.Unit.StackSize++;
                 return;
             }
             GameObject go =
