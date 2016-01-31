@@ -27,9 +27,10 @@ public class EndTurnButton : MonoBehaviour, IPointerClickHandler {
 	}
 
 	void Update() {
-		if (gameController.CurrentPlayer.Moves == 0)
-			_animator.Play ("Shining");
-		else
-			_animator.Play ("Default");
+        if(gameController.CurrentPlayer != null)
+		    if (gameController.CurrentPlayer.Moves == 0)
+		    	_animator.Play ("Shining");
+		    else
+		    	_animator.Play ("Default");
 	}
 }
