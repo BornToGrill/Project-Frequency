@@ -59,7 +59,7 @@ public static class GlobalSettings {
 public class QuickWebClient : WebClient {
     protected override WebRequest GetWebRequest(Uri address) {
         WebRequest request = base.GetWebRequest(address);
-        request.Timeout = 3000;
+        request.Timeout = 7000;
         return request;
     }
 }
