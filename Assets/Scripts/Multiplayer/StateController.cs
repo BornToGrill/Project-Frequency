@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class StateController : MonoBehaviour, IInvokable, INotifiable {
+public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHandler {
 
     public GameObject[] Units;
+    public GameObject EndTurnButton;
 
     internal CommunicationHandler ServerComs;
     private GameController _gameController;
@@ -24,6 +26,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
 	    Guid = session.Guid;
 	    CornerId = session.OwnId;
 	    ServerComs.SetGuid(Guid);
+	    ServerComs.SetErrorHandler(this);
 	    ServerComs.SetProcessor(new DataProcessor(this, this, null));
 	}
 
@@ -119,7 +122,14 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
     #region INotifiable Implementation Members
 
     public void EndTurn(string name, int id) {
-        _gameController.QueueMultiplayerAction(() => _gameController.NextTurn(id));
+        _gameController.QueueMultiplayerAction(() => {
+            if (id == CornerId)
+                EndTurnButton.SetActive(true);
+            else
+                EndTurnButton.SetActive(false);
+            _gameController.NextTurn(id);
+            
+        });
     }
 
     public void GameWon(int winner, int[] losers) {
@@ -144,6 +154,10 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
             if (overlay != null)
                 overlay.SetActive(false);
             _gameController.CurrentPlayer = _gameController.Players[0];
+            if (_gameController.CurrentPlayer.PlayerId == CornerId)
+                EndTurnButton.SetActive(true);
+            else
+                EndTurnButton.SetActive(false);
             _gameController.CurrentPlayer.StartTurn(_gameController);
         });
     }
@@ -152,6 +166,20 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable {
         _gameController.MultiplayerActionQueue.Enqueue(() => {
             Player player = _gameController.Players.Find(x => x.PlayerId == id);
             player.DestroyPlayer();
+        });
+    }
+    #endregion
+
+    #region IErrorHandler Implementation Members
+    public void ServerDisconnected() {
+        _gameController.MultiplayerActionQueue.Enqueue(() => {
+            GameObject error = GameObject.Find("ErrorMessage");
+            if (error != null)
+                Destroy(error);
+            error = new GameObject("ErrorMessage");
+            error.AddComponent<ErrorData>().ErrorMessage = "You were disconnected from the server.";
+            DontDestroyOnLoad(error);
+            SceneManager.LoadScene("MainMenu");
         });
     }
     #endregion

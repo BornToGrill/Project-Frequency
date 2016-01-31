@@ -1,0 +1,5 @@
+﻿interface IErrorHandler {
+
+    void ServerDisconnected();
+
+}

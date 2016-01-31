@@ -11,13 +11,17 @@ class CommunicationHandler : IDisposable {
 
     private readonly TcpClient _tcpClient;
     private readonly UdpClient _udpClient;
+    private IErrorHandler _errorHandler;
 
     private DataProcessor _processor;
 
     public Invoke Invoke { get; private set; }
     public Notify Notify { get; private set; }
 
-    public CommunicationHandler(TcpClient serverCon, IInvokable invoke, INotifiable notify, ILobby lobby) {
+
+
+    public CommunicationHandler(TcpClient serverCon, IErrorHandler error, IInvokable invoke, INotifiable notify, ILobby lobby) {
+        _errorHandler = error;
         _tcpClient = serverCon;
         _tcpClient.DataReceived += TcpClient_DataReceived;
         _tcpClient.Disconnected += TcpClient_Disconnnected; 
@@ -27,7 +31,7 @@ class CommunicationHandler : IDisposable {
     }
 
     private void TcpClient_Disconnnected(TcpClient sender) {
-        Debug.LogError("Server was disconnected : TODO");
+        _errorHandler.ServerDisconnected();
     }
 
     public void SetGuid(string guid) {
@@ -39,19 +43,18 @@ class CommunicationHandler : IDisposable {
         _processor = processor;
     }
 
+    public void SetErrorHandler(IErrorHandler errorHandler) {
+        _errorHandler = errorHandler;
+    }
+
     public void SendTcp(string message) {
         _tcpClient.Send(message);
     }
 
     private void TcpClient_DataReceived(TcpDataReceivedEventArgs e) {
-        try { //TODO: REMOVE
-            Debug.Log(e.ReceivedString);
-            if (e.ReceivedString.Length > 0)
-                _processor.ProcessData(e.Sender, e.ReceivedString);
-        }
-        catch (Exception ex) {
-            Debug.LogError(ex.Message);
-        }
+        Debug.Log(e.ReceivedString);
+        if (e.ReceivedString.Length > 0)
+            _processor.ProcessData(e.Sender, e.ReceivedString);
     }
 
 
