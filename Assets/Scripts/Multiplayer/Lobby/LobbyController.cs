@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LobbyController : MonoBehaviour, ILobby {
+public class LobbyController : MonoBehaviour, ILobby, IErrorHandler {
 
     private Queue<Action> _lobbyActions = new Queue<Action>();
 
@@ -25,7 +25,7 @@ public class LobbyController : MonoBehaviour, ILobby {
         LobbyId.text = session.LobbyId;
         SetPlayers(session.Players);
 
-        ComHandler = new CommunicationHandler(session.LobbyConnection, null, null, this);
+        ComHandler = new CommunicationHandler(session.LobbyConnection, this, null, null, this);
         ComHandler.SetGuid(session.Guid);
         ComHandler.SendTcp("[Request:PlayerList]");
     }
@@ -88,5 +88,21 @@ public class LobbyController : MonoBehaviour, ILobby {
             });
     }
 
+    #endregion
+
+    #region IErrorHandler Implementation Members
+    public void ServerDisconnected() {
+        lock(_lobbyActions)
+            _lobbyActions.Enqueue(() => {
+                GameObject error = GameObject.Find("ErrorMessage");
+                if (error != null)
+                    Destroy(error);
+                error = new GameObject("ErrorMessage");
+                error.AddComponent<ErrorData>().ErrorMessage = "You were disconnected from the server.";
+                DontDestroyOnLoad(error);
+                SceneManager.LoadScene("GameSelection");
+            });
+
+    }
     #endregion
 }
