@@ -147,8 +147,14 @@ public class OnlinePlay : MonoBehaviour {
 
     public SessionData GetSession() {
         GameObject lobbySettings = GameObject.Find("Lobby Settings");
-        if (lobbySettings != null)
-            Destroy(lobbySettings);
+        if (lobbySettings != null) {
+            SessionData disp = lobbySettings.GetComponent<SessionData>();
+            if (disp.ServerCom != null)
+                disp.ServerCom.Dispose();
+            if (disp.LobbyConnection != null)
+                disp.LobbyConnection.Dispose();
+            DestroyImmediate(lobbySettings);
+        }
         lobbySettings = new GameObject("Lobby Settings");
         SessionData session = lobbySettings.AddComponent<SessionData>();
         DontDestroyOnLoad(lobbySettings);
