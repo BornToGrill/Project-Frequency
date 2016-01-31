@@ -1,9 +1,62 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.IO;
+using System.Net;
+using System.Xml;
+using System.Xml.Serialization;
 
-public class GlobalSettings {
+public static class GlobalSettings {
 
-    public static string ServerIp = "84.106.110.245";
-    public static int ServerPort = 9500;
+    public static SettingsContainer Instance;
 
+    static GlobalSettings() {
+        try {
+            Instance = Download();
+            Debug.Log("Settings file loaded from remote website");
+        }
+        catch {
+            try {
+                Instance = Load();
+                Debug.LogWarning("Settings file loaded from local backup");
+            }
+            catch {
+                Instance = new SettingsContainer();
+                Save();
+                Debug.LogError("New settings file created");
+            }
+        }
+    }
+
+    static void Save() {
+        using (FileStream stream = new FileStream("Settings.xml", FileMode.Create)) {
+            SettingsContainer container = new SettingsContainer();
+            XmlWriterSettings writerSettings = new XmlWriterSettings() {
+                OmitXmlDeclaration = true,
+                Indent = true
+            };
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add("", "");
+            using (XmlWriter writer = XmlWriter.Create(stream, writerSettings)) {
+                new XmlSerializer(typeof (SettingsContainer)).Serialize(writer, container, namespaces);
+            }
+        }
+    }
+
+    static SettingsContainer Load() {
+        using (FileStream stream = new FileStream("Settings.xml", FileMode.Open)) {
+            return (SettingsContainer)new XmlSerializer(typeof (SettingsContainer)).Deserialize(stream);
+        }
+    }
+
+    static SettingsContainer Download() {
+        using (WebClient client = new WebClient()) {
+            client.DownloadFile("http://daniel-molenaar.com/FrequencySettings/Settings.xml", "Settings.xml");
+            return Load();
+        }
+    }
+}
+
+public class SettingsContainer {
+
+    public string ServerIp = "84.106.110.245";
+    public int ServerPort = 9500;
 }

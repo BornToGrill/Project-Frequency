@@ -28,8 +28,8 @@ public class OnlinePlay : MonoBehaviour {
         SessionData session = GetSession();
 
         UdpClient client = new UdpClient();
-        client.Connect(new IPEndPoint(IPAddress.Parse(GlobalSettings.ServerIp),
-            GlobalSettings.ServerPort));
+        client.Connect(new IPEndPoint(IPAddress.Parse(GlobalSettings.Instance.ServerIp),
+            GlobalSettings.Instance.ServerPort));
 
         string response = GetResponse(client.Socket, "Request:CreateLobby");
         if (response == null) {
@@ -50,7 +50,7 @@ public class OnlinePlay : MonoBehaviour {
         }
 
         UdpClient client = new UdpClient();
-        client.Connect(new IPEndPoint(IPAddress.Parse(GlobalSettings.ServerIp), GlobalSettings.ServerPort));
+        client.Connect(new IPEndPoint(IPAddress.Parse(GlobalSettings.Instance.ServerIp), GlobalSettings.Instance.ServerPort));
         string response = GetResponse(client.Socket, string.Format("Request:JoinLobby:{0}", input.text));
         if (response == null) {
             EndSession();

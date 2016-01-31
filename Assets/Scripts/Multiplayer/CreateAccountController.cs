@@ -17,7 +17,7 @@ class CreateAccountController : MonoBehaviour {
 
     public void CreateAccount() {
         Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        s.Connect(GlobalSettings.ServerIp, GlobalSettings.ServerPort);
+        s.Connect(GlobalSettings.Instance.ServerIp, GlobalSettings.Instance.ServerPort);
         SecurePassword pass = Cryptography.GetSaltHash(Password.text);
         string response = GetResponse(s,
             string.Format("Request:CreateAccount:{0}|{1}|{2}|{3}", Username.text, DisplayName.text, pass.Hash, pass.Salt));
