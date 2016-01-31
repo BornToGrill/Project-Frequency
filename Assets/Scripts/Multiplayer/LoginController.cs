@@ -16,7 +16,7 @@ class LoginController : MonoBehaviour {
     public void Login() {
         
         Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        s.Connect("127.0.0.1", 9500);
+        s.Connect(GlobalSettings.ServerIp, GlobalSettings.ServerPort);
         GameObject login = GameObject.Find("LoginStatus");
         if (login != null)
             Destroy(login);
