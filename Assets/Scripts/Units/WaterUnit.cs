@@ -57,6 +57,7 @@ public class WaterUnit : LandUnit {
 
     public void UnloadUnit(GameObject tile) {
         CarryUnit.SetActive(true);
+		CarryUnit.GetComponent<LandUnit> ().ReloadAnimation ();
         CarryUnit.transform.position = gameObject.transform.position;
         CarryUnit = null;
         TraversableEnvironments = _defaultEnvironments;
