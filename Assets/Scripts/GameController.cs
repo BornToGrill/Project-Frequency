@@ -5,7 +5,6 @@ using System.Linq;
 
 public class GameController : MonoBehaviour {
     public GameObject BasePrefab;
-	public int AmountOfPlayers;
 	public int MovesPerTurn;
     public int CashWinCondition;
 	public Player CurrentPlayer { get; set; }
@@ -63,8 +62,9 @@ public class GameController : MonoBehaviour {
 
 	    List<int> spawns = new List<int>() { 1, 2, 3, 4 };
 
-
-	    for (int i = 0; i < AmountOfPlayers; i++) {
+	    GameObject settings = GameObject.Find("LocalGameSettings");
+	    GameData data = settings.GetComponent<GameData>();
+        for (int i = 0; i < data.AmountOfPlayers; i++) {
 	        int random = rnd.Next(0, spawns.Count);
             int id = spawns[random];
 	        Player player = CreatePlayer(id);

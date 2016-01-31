@@ -16,8 +16,11 @@ public class OnlinePlay : MonoBehaviour {
     public void ShowJoinScreen(GameObject panel) {
         if (!LoginStatus())
             return;
-
         panel.SetActive(true);
+    }
+
+    public void HideJoinScreen(GameObject panel) {
+        panel.SetActive(false);
     }
 
     public void CreateLobby() {
