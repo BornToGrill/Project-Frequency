@@ -7,6 +7,23 @@ using UnityEngine;
 public class WaterUnitEventController : LandUnitEventController {
 
 
+	public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
+		base.OnMouseEnter (ownTile, hoveredTile);
+		GameObject carryUnit = GetComponent<WaterUnit>().CarryUnit;
+		TileController tileOne = ownTile.GetComponent<TileController>();
+		TileController tileTwo = hoveredTile.GetComponent<TileController>();
+		List<TileController> path = Pathfinding.FindPath (tileOne, tileTwo).Path;
+		int index = -1;
+
+		if (carryUnit != null) {
+			index = path.FindIndex(x => x.IsTraversable(carryUnit));
+		}
+		if (!(index < 0))
+			if (!path.Last ().IsTraversable (carryUnit))
+				foreach (var element in path)
+					element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+	}
+
     #region Movement
     public override DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
 
@@ -51,6 +68,10 @@ public class WaterUnitEventController : LandUnitEventController {
             path.Last().Unit = GetComponent<BaseUnit>();
         }
         else {
+			if (!path.Last ().IsTraversable (carryUnit)) {
+				carryUnit.GetComponent<BaseUnit> ().Owner.Moves += path.Count;
+				return;
+			}
             TileController[] boatPath = path.Take(index).ToArray();
             TileController[] unitPath = path.Skip(index).ToArray();
 			if (boatPath.Length > 0) {
