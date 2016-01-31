@@ -41,7 +41,7 @@ public class LobbyController : MonoBehaviour, ILobby, IErrorHandler {
 
     public void SetPlayers(TempPlayer[] players) {
         //TODO: Set host & ready status
-        lock (_lobbyActions) {
+        lock (_lobbyActions)
             _lobbyActions.Enqueue(() => {
                 SessionData session = GameObject.Find("Lobby Settings").GetComponent<SessionData>();
                 TempPlayer host = players.FirstOrDefault(x => x.IsHost);
@@ -73,7 +73,6 @@ public class LobbyController : MonoBehaviour, ILobby, IErrorHandler {
                     events.Enabled = true;
                 }
             });
-        }
     }
 
     public void GameStart(TempPlayer[] players) {

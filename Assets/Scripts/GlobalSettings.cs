@@ -7,20 +7,33 @@ using System.Xml.Serialization;
 
 public static class GlobalSettings {
 
-    public static SettingsContainer Instance;
+    private static SettingsContainer _instance;
+
+    public static SettingsContainer Instance {
+        get {
+            try {
+                SettingsContainer container = Load();
+                _instance = container;
+                return _instance;
+            }
+            catch {
+                return _instance;
+            }
+        }
+    }
 
     static GlobalSettings() {
         try {
-            Instance = Download();
+            _instance = Download();
             Debug.Log("Settings file loaded from remote website");
         }
         catch {
             try {
-                Instance = Load();
+                _instance = Load();
                 Debug.LogWarning("Settings file loaded from local backup");
             }
             catch {
-                Instance = new SettingsContainer();
+                _instance = new SettingsContainer();
                 Save();
                 Debug.LogError("New settings file created");
             }
