@@ -29,9 +29,10 @@ public static class GlobalSettings {
             if (!_latestVersion) {
                 try {
                     _instance = Download();
+                    _latestVersion = true;
                 }
                 catch {
-                    return false;
+                    return _latestVersion;
                 }
             }
             return _latestVersion; 
