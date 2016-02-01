@@ -6,6 +6,12 @@ public class LobbyButtonEvents : MonoBehaviour {
 
     private string _buttonType;
     private bool _enabled;
+
+    public Sprite DefaultStart;
+    public Sprite GrayStart;
+    public Sprite DefaultReady;
+    public Sprite GrayReady;
+
     public string ButtonType {
         get { return _buttonType; }
         set {
