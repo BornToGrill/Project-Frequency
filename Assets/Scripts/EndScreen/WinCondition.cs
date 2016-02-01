@@ -2,56 +2,42 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Linq;
 
 public class WinCondition : MonoBehaviour {
+    
+    private Player _baseOwner;
+    public Player Winner;
+    public Player[] Losers;
 
-	private Player _baseOwner;
-	static public Player winner;
-	static public List<Player> losers;
-	public int moneyWinAmount;
+    void Start() {
+        BaseUnit unit = gameObject.GetComponent<BaseUnit>();
+        _baseOwner = unit.Owner;
+    }
 
-	void Start () {
-		BaseUnit unit = gameObject.GetComponent<BaseUnit> ();
-		_baseOwner = unit.Owner;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		moneyCondition (_baseOwner);
-	}
-
-
-	void OnDestroy() {
-		GameObject boardGo = GameObject.Find ("Board");
-		if (boardGo != null) {
-			GameController gc = boardGo.GetComponent<GameController> ();
-			gc.RemovePlayer (_baseOwner);
-
-			if (gc.Players.Count == 1) {
-				gc.AllPlayers.Remove (gc.Players[0]);
-				winner = gc.Players[0];
-				losers = gc.AllPlayers;
-
-				SceneManager.LoadScene ("WinScreen"); 
-			}
-		}
-	}
-
-	public bool moneyCondition(Player player) {
-		if (player.MoneyAmount >= moneyWinAmount) {
-			GameObject boardGo = GameObject.Find ("Board");
-			if (boardGo != null) {
-				GameController gc = boardGo.GetComponent<GameController> ();
-				gc.AllPlayers.Remove (player);
-
-				winner = player;
-				losers = gc.AllPlayers;
-
-				SceneManager.LoadScene ("WinScreen"); 
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
+    public void BaseDestroyed() {
+        GameObject board = GameObject.Find("Board");
+        if (board != null) {
+            GameController gc = board.GetComponent<GameController>();
+            StateController mpController = board.GetComponent<StateController>();
+            gc.RemovePlayer(_baseOwner);
+            if (mpController == null) {
+                if (gc.Players.Count <= 1) {
+                    GameObject endData = GameObject.Find("EndGameData");
+                    if (endData != null)
+                        Destroy(endData);
+                    endData = new GameObject("EndGameData");
+                    WinCondition cond = endData.AddComponent<WinCondition>();
+                    cond.Winner = gc.Players[0];
+                    cond.Losers = gc.AllPlayers.Where(x => x != Winner).ToArray();
+                    DontDestroyOnLoad(cond);
+                    SceneManager.LoadScene("WinScreen");
+                }
+            }
+            else {
+                if(gc.Players.Count <= 1)
+                    mpController.ServerComs.Notify.GameWon();
+            }
+        }
+    }
 }

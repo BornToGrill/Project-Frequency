@@ -27,11 +27,13 @@ public class LandUnitEventController : EventControllerBase {
             ResetModifiedTiles(ownTile.GetComponent<TileController>());
             return DeselectStatus.Both;
         }
-			
+
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = clickedTile.GetComponent<TileController>();
-        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return DeselectStatus.Both;
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
@@ -46,6 +48,8 @@ public class LandUnitEventController : EventControllerBase {
 				return DeselectStatus.Both;
 			else {
 				owner.Moves -= path.Path.Count;
+			    if (multiplayerController != null)
+			        multiplayerController.ServerComs.Notify.Move(MoveType.Empty, tileOne, tileTwo);
 				return MoveToEmpty (tileOne, path.Path);
 			}
 		}
@@ -55,6 +59,8 @@ public class LandUnitEventController : EventControllerBase {
 					return DeselectStatus.Both;
 				else {
 					owner.Moves -= (path.Path.Count - GetComponent<LandUnit> ().Range + 1);
+				    if (multiplayerController != null)
+				        multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
 					return MoveToAttack (tileOne, path.Path);
 				}
 			}
@@ -62,6 +68,8 @@ public class LandUnitEventController : EventControllerBase {
                 if (tileTwo.IsTraversable(gameObject))
                     if (path.Path.Count <= owner.Moves) {
                         owner.Moves -= path.Path.Count;
+                        if (multiplayerController != null)
+                            multiplayerController.ServerComs.Notify.Move(MoveType.Merge, tileOne, tileTwo);
                         return MoveToMerge(tileOne, path.Path);
                     }
 			    return DeselectStatus.Both;
@@ -71,11 +79,13 @@ public class LandUnitEventController : EventControllerBase {
 
     public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
         if (ownTile == hoveredTile)
-            return;      
+            return;
+        
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
-        if (!tileOne.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return;
+        BaseUnit test = GetComponent<BaseUnit>();
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         ModifiedTiles = path.Path;
@@ -152,9 +162,10 @@ public class LandUnitEventController : EventControllerBase {
 
     public virtual DeselectStatus MoveToMerge(TileController start, List<TileController> path) {
         start.Unit = null;
+        LandUnit mergeTarget = (LandUnit) path.Last().Unit;
 
         StartCoroutine(AnimateToTile(path, () => {
-            ((LandUnit) path.Last().Unit).Merge(GetComponent<BaseUnit>());
+            mergeTarget.Merge(GetComponent<BaseUnit>());
         }));
 
         return DeselectStatus.Both;
@@ -167,40 +178,30 @@ public class LandUnitEventController : EventControllerBase {
     internal IEnumerator AnimateToTile(IEnumerable<TileController> path, Action endAction) {
 		
         foreach (TileController tile in path) {
-			StartSpriteAnimation (tile.transform.position, transform.position, true);
+			StartSpriteAnimation (tile.transform.position, transform.position);
             Vector3 startPosition = transform.position;
             for (float i = 0.1f; i <= 1f * MovementSpeed; i += 0.1f) {
                 transform.position = Vector3.Lerp(startPosition, tile.transform.position, i);
                 yield return null;
             }
-			StartSpriteAnimation (tile.transform.position, startPosition, false);
+			StartSpriteAnimation (tile.transform.position, transform.position);
             transform.position = tile.transform.position;
         }
         if (endAction != null)
             endAction.Invoke();
     }
 
-	private void StartSpriteAnimation(Vector3 direction, Vector3 position, bool moving) {
+	private void StartSpriteAnimation(Vector3 direction, Vector3 position) {
 		Animator anim = GetComponent<Animator> ();
-		if (moving) {
-			if (direction.x - position.x < 0)
-				anim.Play ("MoveLeft");
-			else if (direction.x - position.x > 0)
-				anim.Play ("MoveRight");
-			else if (direction.y - position.y > 0)
-				anim.Play ("MoveUp");
-			else if (direction.y - position.y < 0)
-				anim.Play ("MoveDown");
-			
-		} else {
-			if (direction.x - position.x < 0)
-				anim.Play ("FaceLeft");
-			else if (direction.x - position.x > 0)
-				anim.Play ("FaceRight");
-			else if (direction.y - position.y > 0)
-				anim.Play ("FaceUp");
-			else if (direction.y - position.y < 0)
-				anim.Play ("FaceDown");
-		}
+		BaseUnit unit = GetComponent<BaseUnit> ();
+
+		if (direction.x - position.x < 0)
+			anim.SetInteger ("Direction", 3); // Left
+		else if (direction.x - position.x > 0)
+			anim.SetInteger ("Direction", 1); // Right
+		else if (direction.y - position.y > 0)
+			anim.SetInteger ("Direction", 0); // Up
+		else if (direction.y - position.y < 0)
+			anim.SetInteger ("Direction", 2); // Down
 	}
 }

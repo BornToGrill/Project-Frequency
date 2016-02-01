@@ -21,17 +21,18 @@ public class SoldierEventController : LandUnitEventController {
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         TileController thisTile = ownTile.GetComponent<TileController>();
-        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(thisTile))
             return base.OnSelected(ownTile);
 
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
 		foreach (GameObject structure in GetComponent<SoldierUnit>().BuildableStructures) {
 			StructureUnit building = structure.GetComponent<StructureUnit> ();
 			Player owner = GetComponent<BaseUnit> ().Owner;
+			building.Owner = owner;
 			if ( building.GetCost (thisTile.Environment, owner) > owner.MoneyAmount || owner.Moves <= 0) {
-				actionBar.AddButton (structure.name, CreateStructure, false);
+				actionBar.AddButton (structure.name, CreateStructure, false, building.GetCost(thisTile.Environment), owner.MoneyAmount);
 			} else {
-				actionBar.AddButton (structure.name, CreateStructure, true);
+				actionBar.AddButton (structure.name, CreateStructure, true, building.GetCost(thisTile.Environment), owner.MoneyAmount);
 			}
 		}
         
@@ -49,6 +50,8 @@ public class SoldierEventController : LandUnitEventController {
             _surroundingTiles.Clear();
             return base.OnClicked(ownTile, clickedTile);
         }
+
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
         _isBuilding = false;
         ResetModifiedTiles(_surroundingTiles.ToArray());
         ownTile.GetComponent<TileController>().ResetSprite();
@@ -70,6 +73,10 @@ public class SoldierEventController : LandUnitEventController {
         structBase.Owner = GetComponent<BaseUnit>().Owner;
 		structBase.Owner.MoneyAmount -= structBase.GetCost (ownTile.GetComponent<TileController>().Environment);
 		structBase.Owner.Moves -= 1;
+
+        if (multiplayerController != null)
+            multiplayerController.ServerComs.Notify.CreateUnit(tileTwo, _buildType.name);
+            
 		structBase.GetComponent<SpriteRenderer> ().sprite = structBase.Owner.BarrackSprite;
 
         _buildType = null;

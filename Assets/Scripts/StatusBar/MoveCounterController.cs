@@ -9,11 +9,13 @@ public class MoveCounterController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		MovesAmount.text = gameController.CurrentPlayer.Moves.ToString();
+        if(gameController.CurrentPlayer != null)
+		    MovesAmount.text = gameController.CurrentPlayer.Moves.ToString();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		MovesAmount.text = gameController.CurrentPlayer.Moves.ToString();
+        if(gameController.CurrentPlayer != null)
+		    MovesAmount.text = gameController.CurrentPlayer.Moves.ToString();
 	}
 }

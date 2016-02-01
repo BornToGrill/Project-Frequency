@@ -7,10 +7,6 @@ using System.Collections.Generic;
 public class Pause : MonoBehaviour {
 
     public GameObject PauseMenu;
-    void Start()
-    {
-        PauseMenu.SetActive(false);
-    }
 
     public void PauseMenuTrigger()
     {
