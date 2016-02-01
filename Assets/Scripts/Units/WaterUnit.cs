@@ -18,21 +18,8 @@ public class WaterUnit : LandUnit {
     internal GameObject CarryUnit;
 
     public override void Awake() {
-        //StackSize = 1;
         base.Awake();
         _defaultEnvironments = TraversableEnvironments;
-
-        //if ((GameObject.Find("Board").GetComponent<StateController>() == null)) {
-        //    CurrentPlayerPredicate = (x) => { return x.Unit.Owner.IsCurrentPlayer; };
-        //}
-        //else {
-        //    GameObject board = GameObject.Find("Board");
-        //    StateController state = board.GetComponent<StateController>();
-        //    GameController game = board.GetComponent<GameController>();
-        //    CurrentPlayerPredicate = (x) => {
-        //        return x.Unit.Owner.IsCurrentPlayer && x.Unit.Owner.PlayerId == state.CornerId;
-        //    };
-        //}
     }
 
     public override bool CanMerge(BaseUnit unit) {

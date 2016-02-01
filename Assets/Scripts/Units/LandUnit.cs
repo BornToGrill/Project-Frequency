@@ -50,6 +50,7 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
+        ReloadAnimation();
         if (attacker != null)
         {
             attacker.DamageUnit(_stackDamage, null);
