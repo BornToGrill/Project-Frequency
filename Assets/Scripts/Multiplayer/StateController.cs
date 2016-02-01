@@ -67,8 +67,10 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
                         Quaternion.identity);
             target.Unit = go.GetComponent<BaseUnit>();
             target.Unit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
-            if(!(target.Unit is StructureUnit))
+            if (!(target.Unit is StructureUnit))
                 target.Unit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
+            else
+                target.Unit.GetComponent<SpriteRenderer>().sprite = target.Unit.Owner.BarrackSprite;
         });
     }
 
