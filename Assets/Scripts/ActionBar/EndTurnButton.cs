@@ -11,13 +11,12 @@ public class EndTurnButton : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         GameObject go = GameObject.Find("Board");
+        gameController.GetComponent<Board>().DeselectTile(DeselectStatus.Both, null);
         if (go.GetComponent<StateController>() == null) {
             gameController.NextTurn();
-            gameController.GetComponent<Board>().DeselectTile(DeselectStatus.Both, null);
         }
         else {
             StateController state = go.GetComponent<StateController>();
-            gameController.GetComponent<Board>().DeselectTile(DeselectStatus.Both, null);
             state.ServerComs.Invoke.TurnEnd();
         }
     }
