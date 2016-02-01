@@ -23,6 +23,16 @@ public class MenuSound : MonoBehaviour {
 		}
 	}
 
+	public void pauseMusic() {
+		AudioSource audio = gameObject.GetComponent<AudioSource> ();
+		audio.Pause ();
+	}
+
+	public void unPauseMusic() {
+		AudioSource audio = gameObject.GetComponent<AudioSource> ();
+		audio.UnPause ();
+	}
+
 	void OnApplicationQuit() {
 		instance = null;
 	}
