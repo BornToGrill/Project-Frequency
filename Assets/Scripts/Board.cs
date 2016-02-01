@@ -114,20 +114,21 @@ public class Board : MonoBehaviour {
 	}
 
 	internal void OnTileEnter(GameObject tile) {
-		if (SelectedTile == null) {
-
-		}
-		else {
+		if (SelectedTile != null) { 
+		    if (SelectedTile.GetComponent<TileController>().Unit == null) {
+		        DeselectTile(DeselectStatus.Both, tile);
+		        return;
+		    }
 			SelectedTile.GetComponent<TileController>().Unit.GetComponent<EventControllerBase>().OnMouseEnter(SelectedTile, tile);
 		}
 	}
 
 	internal void OnTileLeave(GameObject tile) {
-		if (SelectedTile == null) {
-			// Checking if null in case the tile has been selected.
-			//tile.GetComponent<TileController>().OnMouseLeave();
-		}
-		else {
+		if (SelectedTile != null) {
+		    if (SelectedTile.GetComponent<TileController>().Unit == null) {
+		        DeselectTile(DeselectStatus.Both, tile);
+		        return;
+		    }
 			SelectedTile.GetComponent<TileController>().Unit.GetComponent<EventControllerBase>().OnMouseLeave(SelectedTile, tile);
 		}
 	}
@@ -141,8 +142,9 @@ public class Board : MonoBehaviour {
 			}
 			break;
 		case DeselectStatus.Second:
-			lastSelected.GetComponent<SelectionController>().OnObjectDeselect();
-			break;
+		    if (lastSelected != null)
+		        lastSelected.GetComponent<SelectionController>().OnObjectDeselect();
+		    break;
 		case DeselectStatus.Both:
 			if(lastSelected != null)
 				lastSelected.GetComponent<SelectionController>().OnObjectDeselect();

@@ -32,6 +32,9 @@ public class StructureUnit : BaseUnit {
 	public override void DamageUnit(int damage, BaseUnit attacker) {
 	    Health -= damage;
 		if (Health <= 0) {
+		    WinCondition cond = GetComponent<WinCondition>();
+            if(cond != null)
+                cond.BaseDestroyed();
 			GameObject.Destroy(gameObject);
 			return;
 		}
