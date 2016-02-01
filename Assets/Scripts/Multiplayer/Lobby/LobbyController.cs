@@ -16,8 +16,10 @@ public class LobbyController : MonoBehaviour, ILobby, IErrorHandler {
     public GameObject[] PlayerReadyObjects;
 
     public Text LobbyId;
-
     public Button ReadyStartButton;
+
+    public Sprite ReadyImage;
+    public Sprite NotReadyImage;
 
     void Start() {
         GameObject go = GameObject.Find("Lobby Settings");
@@ -51,12 +53,14 @@ public class LobbyController : MonoBehaviour, ILobby, IErrorHandler {
                 for (int i = 0; i < PlayerFields.Length; i++) {
                     if (i < nonHosts.Length) {
                         PlayerFields[i].text = nonHosts[i].Name;
-                        PlayerReadyObjects[i].GetComponent<Image>().color = nonHosts[i].Ready
-                            ? Color.green
-                            : Color.red;
+                        PlayerReadyObjects[i].GetComponent<Image>().color = Color.white;
+                        PlayerReadyObjects[i].GetComponent<Image>().sprite = nonHosts[i].Ready
+                            ? ReadyImage
+                            : NotReadyImage;
                     }
                     else {
                         PlayerFields[i].text = "";
+                        PlayerReadyObjects[i].GetComponent<Image>().sprite = NotReadyImage;
                         PlayerReadyObjects[i].GetComponent<Image>().color = Color.clear;
                     }
                 }
