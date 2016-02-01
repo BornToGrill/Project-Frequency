@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 public static class GlobalSettings {
 
     private static SettingsContainer _instance;
+    private static bool _latestVersion;
 
 
     public static SettingsContainer Instance {
@@ -22,12 +23,25 @@ public static class GlobalSettings {
             }
         }
     }
-    public static bool LatestVersion { get; set; }
+
+    public static bool LatestVersion {
+        get {
+            if (!_latestVersion) {
+                try {
+                    _instance = Download();
+                }
+                catch {
+                    return false;
+                }
+            }
+            return _latestVersion; 
+        }
+    }
 
     static GlobalSettings() {
         try {
             _instance = Download();
-            LatestVersion = true;
+            _latestVersion = true;
             Debug.Log("Settings file loaded from remote website");
         }
         catch {

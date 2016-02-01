@@ -96,10 +96,18 @@ public class OnlinePlay : MonoBehaviour {
             EndSession();
             return;
         }
+
         string[] messages =
-            auth.Split(new string[] { "]" }, StringSplitOptions.RemoveEmptyEntries)
+            auth.Split(new [] { "]" }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.TrimStart('['))
                 .ToArray();
+
+        SplitData first = messages[0].GetFirst();
+        if (first.CommandType == "Error") {
+            ShowError(first.Values.Split(':').Last());
+            return;
+        }
+
         string[] authData = messages[0].GetFirst().Values.GetFirst().Values.Split(new [] {"|",}, StringSplitOptions.RemoveEmptyEntries);
         session.Guid = authData[0];
         session.OwnId = Int32.Parse(authData[1]);
