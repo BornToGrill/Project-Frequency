@@ -9,6 +9,7 @@ public static class GlobalSettings {
 
     private static SettingsContainer _instance;
 
+
     public static SettingsContainer Instance {
         get {
             try {
@@ -21,10 +22,12 @@ public static class GlobalSettings {
             }
         }
     }
+    public static bool LatestVersion { get; set; }
 
     static GlobalSettings() {
         try {
             _instance = Download();
+            LatestVersion = true;
             Debug.Log("Settings file loaded from remote website");
         }
         catch {
@@ -79,6 +82,6 @@ public class QuickWebClient : WebClient {
 
 public class SettingsContainer {
 
-    public string ServerIp = "84.106.110.245";
-    public int ServerPort = 9500;
+    public string ServerIp;
+    public int ServerPort;
 }
