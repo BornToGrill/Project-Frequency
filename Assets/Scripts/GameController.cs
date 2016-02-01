@@ -73,11 +73,6 @@ public class GameController : MonoBehaviour {
 			AllPlayers.Add(player);
             
             player.Name = "P" + (i + 1);
-
-
-
-
-
 	    }
 	}
 
@@ -86,16 +81,16 @@ public class GameController : MonoBehaviour {
         Player player = new Player(id);
         switch (id) {
             case 1:
-                CreateBase(player, board, 0, 0, Bases[id - 1]);
+                CreateBase(player, board, 0, 0, id);
                 break;
             case 2:
-                CreateBase(player, board, board.BoardDimensions - 1, 0, Bases[id - 1]); ;
+                CreateBase(player, board, board.BoardDimensions - 1, 0, id); ;
                 break;
             case 3:
-                CreateBase(player, board, 0, board.BoardDimensions - 1, Bases[id - 1]);
+                CreateBase(player, board, 0, board.BoardDimensions - 1, id);
                 break;
             case 4:
-                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, Bases[id - 1]);
+                CreateBase(player, board, board.BoardDimensions - 1, board.BoardDimensions - 1, id);
                 break;
             default:
                 Debug.LogError("Only 4 players allowed.");
@@ -106,12 +101,13 @@ public class GameController : MonoBehaviour {
         return player;
     }
 
-	void CreateBase(Player owner, Board board, int x, int y, Sprite sprite) {
+	void CreateBase(Player owner, Board board, int x, int y, int id) {
         GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
         owner.StartEnvironment = tile.Environment;
         GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
-		baseObject.GetComponent<SpriteRenderer> ().sprite = sprite;
+		baseObject.GetComponent<Animator> ().SetInteger ("Color", id);
+		baseObject.GetComponent<Animator> ().SetInteger ("Type", 1);
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }

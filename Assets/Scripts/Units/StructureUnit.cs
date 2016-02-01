@@ -32,11 +32,20 @@ public class StructureUnit : BaseUnit {
 	public override void DamageUnit(int damage, BaseUnit attacker) {
 	    Health -= damage;
 		if (Health <= 0) {
+			Animator a = GetComponent<Animator> ();	
+			a.SetBool ("Alive", false);
+
 		    WinCondition cond = GetComponent<WinCondition>();
             if(cond != null)
                 cond.BaseDestroyed();
-			GameObject.Destroy(gameObject);
 			return;
 		}
+
+		Animator anim = GetComponent<Animator> ();
+		anim.Play ("Damage", 1);
+	}
+
+	public void DestroyStructure() {
+		GameObject.Destroy (gameObject);
 	}
 }

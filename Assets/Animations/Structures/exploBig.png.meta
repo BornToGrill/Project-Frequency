@@ -1,0 +1,380 @@
+fileFormatVersion: 2
+guid: 40cb96b77b5b14fe3a735a1821c84557
+timeCreated: 1454363209
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: exploBig_0
+    21300002: exploBig_1
+    21300004: exploBig_2
+    21300006: exploBig_3
+    21300008: exploBig_4
+    21300010: exploBig_5
+    21300012: exploBig_6
+    21300014: exploBig_7
+    21300016: exploBig_8
+    21300018: exploBig_9
+    21300020: exploBig_10
+    21300022: exploBig_11
+    21300024: exploBig_12
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: exploBig_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -4, y: 8}
+        - {x: -7, y: 3}
+        - {x: -8, y: -2}
+        - {x: -3, y: -7}
+        - {x: 6, y: -7}
+        - {x: 9, y: -3}
+        - {x: 9, y: 7}
+        - {x: 4, y: 8}
+    - name: exploBig_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11, y: 12}
+        - {x: -14, y: 8}
+        - {x: -14, y: -5}
+        - {x: -12, y: -11}
+        - {x: 11, y: -11}
+        - {x: 11, y: 11}
+        - {x: 8, y: 12}
+    - name: exploBig_2
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8, y: 14}
+        - {x: -16, y: 7}
+        - {x: -16, y: -9}
+        - {x: -15, y: -14}
+        - {x: 12, y: -14}
+        - {x: 14, y: -12}
+        - {x: 14, y: 5}
+        - {x: 10, y: 14}
+    - name: exploBig_3
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -18, y: 17}
+        - {x: -18, y: -16}
+        - {x: 14, y: -16}
+        - {x: 17, y: -7}
+        - {x: 17, y: 12}
+        - {x: 14, y: 17}
+    - name: exploBig_4
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -17, y: 20}
+        - {x: -20, y: 15}
+        - {x: -20, y: -8}
+        - {x: -18, y: -14}
+        - {x: -10, y: -20}
+        - {x: 16, y: -20}
+        - {x: 20, y: -15}
+        - {x: 20, y: 15}
+        - {x: 14, y: 20}
+    - name: exploBig_5
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 14, y: 20}
+        - {x: -19, y: 20}
+        - {x: -20, y: 15}
+        - {x: -20, y: -11}
+        - {x: -11, y: -20}
+        - {x: 8, y: -20}
+        - {x: 13, y: -19}
+        - {x: 18, y: -16}
+        - {x: 20, y: -11}
+        - {x: 20, y: 18}
+    - name: exploBig_6
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -7, y: 19}
+        - {x: -13, y: 18}
+        - {x: -20, y: 12}
+        - {x: -20, y: -6}
+        - {x: -18, y: -14}
+        - {x: -12, y: -19}
+        - {x: 12, y: -19}
+        - {x: 20, y: -16}
+        - {x: 20, y: 11}
+        - {x: 17, y: 19}
+    - name: exploBig_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -9, y: 20}
+        - {x: -15, y: 19}
+        - {x: -20, y: 9}
+        - {x: -20, y: -5}
+        - {x: -9, y: -17}
+        - {x: -6, y: -18}
+        - {x: 11, y: -18}
+        - {x: 19, y: -8}
+        - {x: 19, y: 16}
+        - {x: 7, y: 20}
+    - name: exploBig_8
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 14, y: 19}
+        - {x: -8, y: 19}
+        - {x: -13, y: 18}
+        - {x: -18, y: 5}
+        - {x: -18, y: -4}
+        - {x: -8, y: -17}
+        - {x: 11, y: -17}
+        - {x: 16, y: -14}
+        - {x: 19, y: -2}
+        - {x: 19, y: 11}
+    - name: exploBig_9
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 1, y: 17}
+        - {x: -3, y: 13}
+        - {x: -3, y: 12}
+        - {x: -1, y: 10}
+        - {x: 2, y: 9}
+        - {x: 10, y: 1}
+        - {x: 4, y: 2}
+        - {x: 3, y: 7}
+        - {x: -3, y: 10}
+        - {x: -3, y: 17}
+        - {x: -17, y: 13}
+        - {x: -17, y: -8}
+        - {x: -7, y: -15}
+        - {x: -3, y: -17}
+        - {x: 12, y: -17}
+        - {x: 18, y: -7}
+        - {x: 18, y: 12}
+        - {x: 10, y: 17}
+    - name: exploBig_10
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -4, y: 16}
+        - {x: -14, y: 9}
+        - {x: -13, y: 5}
+        - {x: -11, y: 3}
+        - {x: -7, y: 4}
+        - {x: 2, y: -9}
+        - {x: -13, y: 4}
+        - {x: -16, y: 4}
+        - {x: -16, y: -4}
+        - {x: -13, y: -14}
+        - {x: -10, y: -16}
+        - {x: 11, y: -16}
+        - {x: 17, y: -10}
+        - {x: 17, y: 12}
+        - {x: 7, y: 16}
+    - name: exploBig_11
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -2, y: 12}
+        - {x: -9, y: 12}
+        - {x: -15, y: 5}
+        - {x: -15, y: -4}
+        - {x: -5, y: -15}
+        - {x: 7, y: -15}
+        - {x: 12, y: -11}
+        - {x: 12, y: -7}
+        - {x: 11, y: -5}
+      - - {x: 10, y: -1}
+        - {x: 12, y: -3}
+        - {x: 15, y: -2}
+        - {x: 15, y: 2}
+        - {x: 13, y: 4}
+        - {x: 10, y: 3}
+      - - {x: 1, y: 9}
+        - {x: 7, y: 5}
+        - {x: 13, y: 5}
+        - {x: 13, y: 8}
+        - {x: 8, y: 14}
+        - {x: 2, y: 14}
+        - {x: 0, y: 12}
+    - name: exploBig_12
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 9, y: -7}
+        - {x: 0, y: -12}
+        - {x: 2, y: -15}
+        - {x: 7, y: -15}
+        - {x: 12, y: -11}
+        - {x: 12, y: -8}
+      - - {x: -10, y: -4}
+        - {x: -11, y: -6}
+        - {x: -11, y: -8}
+        - {x: -6, y: -12}
+        - {x: -4, y: -12}
+        - {x: -2, y: -11}
+        - {x: -2, y: -8}
+        - {x: -8, y: -4}
+      - - {x: 9, y: -1}
+        - {x: 11, y: -3}
+        - {x: 14, y: -2}
+        - {x: 14, y: 1}
+        - {x: 12, y: 3}
+        - {x: 9, y: 2}
+      - - {x: -11, y: 6}
+        - {x: -11, y: 5}
+        - {x: -9, y: 3}
+        - {x: -8, y: 3}
+        - {x: -5, y: 6}
+        - {x: -5, y: 8}
+        - {x: -8, y: 9}
+      - - {x: 3, y: 11}
+        - {x: 4, y: 8}
+        - {x: 9, y: 5}
+        - {x: 12, y: 6}
+        - {x: 12, y: 8}
+        - {x: 7, y: 13}
+        - {x: 5, y: 13}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
