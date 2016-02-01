@@ -33,6 +33,7 @@ class LoginController : MonoBehaviour {
         HideLoginDialog();
     }
 
+
     public void ShowCreateAccountDialog() {
         ErrorText.text = "";
         Username.text = "";
@@ -47,6 +48,17 @@ class LoginController : MonoBehaviour {
         Password.text = "";
         LoginDialog.SetActive(false);
         CreateAccountDialog.SetActive(false);
+    }
+
+    public void ShowLoginStatusOverlay(GameObject overlay) {
+        GameObject status = GameObject.Find("LoginStatus");
+        if (status != null) {
+            overlay.SetActive(true);
+            overlay.GetComponentsInChildren<Text>()[1].text = status.GetComponent<LoginStatus>().Name;
+        }
+        else {
+            overlay.SetActive(false);
+        }
     }
 
     public void ClearError() {
