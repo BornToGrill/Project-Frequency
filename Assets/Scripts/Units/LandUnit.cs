@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections;
 
 public class LandUnit : BaseUnit {
 
@@ -42,10 +44,12 @@ public class LandUnit : BaseUnit {
     }
 
     public override void DamageUnit(int damage, BaseUnit attacker) {
-
         _stackHealth -= damage;
+		Animator anim = GetComponent<Animator> ();
+		anim.Play ("Damage", 1);
         if (_stackHealth <= 0) {
-            GameObject.Destroy(gameObject);
+			StackSize = 0;
+			GameObject.Destroy (gameObject, 2f); // Insurance in case it's not destroyed by explosion animation.
             return;
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
@@ -55,6 +59,11 @@ public class LandUnit : BaseUnit {
         {
             attacker.DamageUnit(_stackDamage, null);
         }
-        
     }
+
+	public void DestroyUnit() {
+		GameObject.Destroy (gameObject);
+	}
+
+
 }
