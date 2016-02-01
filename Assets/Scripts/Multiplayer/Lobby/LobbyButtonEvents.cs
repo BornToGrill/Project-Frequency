@@ -17,10 +17,11 @@ public class LobbyButtonEvents : MonoBehaviour {
         set {
             _buttonType = value;
             //TODO: Make sprites instead of text
-            if (value == "Ready")
-                GetComponentInChildren<Text>().text = "Ready";
+            if (value == "Ready") {
+                SetPlayer();
+            }
             else {
-                GetComponentInChildren<Text>().text = "";
+
                 Ready = false;
             }
         }
@@ -62,5 +63,21 @@ public class LobbyButtonEvents : MonoBehaviour {
 
         }
         SceneManager.LoadScene("GameSelection");
+    }
+
+    private void SetPlayer() {
+        GetComponent<Image>().sprite = GrayReady;
+        SpriteState states = new SpriteState() {
+            highlightedSprite = DefaultReady
+        };
+        GetComponent<Button>().spriteState = states;
+    }
+
+    private void SetHost() {
+        GetComponent<Image>().sprite = Enabled ? DefaultStart : GrayStart;
+        SpriteState states = new SpriteState() {
+            highlightedSprite = DefaultStart
+        };
+        GetComponent<Button>().spriteState = states;
     }
 }
