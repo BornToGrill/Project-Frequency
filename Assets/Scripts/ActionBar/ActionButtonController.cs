@@ -7,11 +7,6 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
     private Text _buttonText;
     private Callback _callback;
 	private string _id;
-	public Sprite TankButton;
-	public Sprite SoldierButton;
-	public Sprite RobotButton;
-	public Sprite BarracksButton;
-
 
     void Awake()
     {
@@ -32,7 +27,6 @@ public class ActionButtonController : MonoBehaviour, IPointerClickHandler {
 		if (_buttonText != null)
         	_buttonText.text = text;
         RectTransform rectTransform = transform as RectTransform;
-        //rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.localScale = new Vector3(1, 1, 0);
         rectTransform.anchoredPosition = new Vector2(offset + 20, 0);
 		if (!clickable) {

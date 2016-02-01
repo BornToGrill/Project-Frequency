@@ -17,7 +17,8 @@ public class WaterUnit : LandUnit {
 
     internal GameObject CarryUnit;
 
-    void Awake() {
+    public override void Awake() {
+        base.Awake();
         _defaultEnvironments = TraversableEnvironments;
     }
 
@@ -25,7 +26,7 @@ public class WaterUnit : LandUnit {
         if (CarryUnit == null)
             return true;
         BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
-        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize < internalUnit.MaxUnitStack;
+        return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize <= internalUnit.MaxUnitStack;
     }
 
     public override void Merge(BaseUnit unit) {
@@ -43,6 +44,7 @@ public class WaterUnit : LandUnit {
 
     public void UnloadUnit(GameObject tile) {
         CarryUnit.SetActive(true);
+		CarryUnit.GetComponent<LandUnit> ().ReloadAnimation ();
         CarryUnit.transform.position = gameObject.transform.position;
         CarryUnit = null;
         TraversableEnvironments = _defaultEnvironments;

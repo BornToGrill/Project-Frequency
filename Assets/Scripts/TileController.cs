@@ -11,7 +11,19 @@ public class TileController : MonoBehaviour {
 
 	public Color DefaultColor;
 
-    public BaseUnit Unit;
+    private BaseUnit _unit;
+
+    public BaseUnit Unit {
+        get {
+            if (_unit == null)
+                _unit = null;
+            return _unit; 
+            
+        }
+        set {
+            _unit = value;
+        }
+    }
 	internal TileController Up, Down, Left, Right;
 	internal Vector2 Position;
 

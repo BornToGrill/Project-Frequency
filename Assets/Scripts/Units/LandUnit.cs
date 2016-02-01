@@ -16,6 +16,8 @@ public class LandUnit : BaseUnit {
             _stackHealth += diff * Health;
             _stackDamage += diff * Damage;
             _stackSize = value;
+			Animator anim = GetComponent<Animator> ();
+			anim.SetInteger ("StackSize", _stackSize);
         }
     }
 
@@ -24,9 +26,15 @@ public class LandUnit : BaseUnit {
     }
 
     public virtual void Merge(BaseUnit unit) {
-        StackSize += unit.StackSize;
+		StackSize += unit.StackSize;
         GameObject.Destroy(unit.gameObject);
     }
+
+	public virtual void ReloadAnimation() {
+		Animator anim = GetComponent<Animator> ();
+		anim.SetInteger ("StackSize", _stackSize);
+		anim.Update (Time.deltaTime);
+	}
 
     public void Attack(BaseUnit unit) {
         if (unit.Owner != this.Owner)
@@ -42,6 +50,7 @@ public class LandUnit : BaseUnit {
         }
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
+        ReloadAnimation();
         if (attacker != null)
         {
             attacker.DamageUnit(_stackDamage, null);

@@ -17,16 +17,17 @@ public class StructureEventController : EventControllerBase {
 
         TileController thisTile = ownTile.GetComponent<TileController>();
         thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
-        if (!thisTile.Unit.Owner.IsCurrentPlayer)
+        var tst = GetComponent<BaseUnit>();
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(thisTile))
             return DeselectStatus.None;
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
 		foreach (GameObject unit in GetComponent<StructureUnit>().BuildableUnits){
 			BaseUnit unitComponent = unit.GetComponent<BaseUnit> ();
 			Player unitOwner = gameObject.GetComponent<BaseUnit> ().Owner;
 			if (unitComponent.GetCost(thisTile.Environment) > unitOwner.MoneyAmount || unitOwner.Moves <= 0)
-				actionBar.AddButton(unit.name, CreateUnit, false);
+				actionBar.AddButton(unit.name, CreateUnit, false, unitComponent.GetCost(thisTile.Environment), unitOwner.MoneyAmount);
 			else
-				actionBar.AddButton(unit.name, CreateUnit, true);
+				actionBar.AddButton(unit.name, CreateUnit, true, unitComponent.GetCost(thisTile.Environment), unitOwner.MoneyAmount);
 		}
             
         TileController[] directions = { thisTile.Left, thisTile.Up, thisTile.Right, thisTile.Down };
@@ -39,8 +40,10 @@ public class StructureEventController : EventControllerBase {
     public override DeselectStatus OnClicked(GameObject ownTile, GameObject clickedTile) {
         // TODO: Refactor
         ownTile.GetComponent<TileController>().ResetSprite();
-        if (!_isBuilding)
+        if (!_isBuilding) {
+            ModifiedTiles.Clear();
             return DeselectStatus.Both;
+        }
         _isBuilding = false;
         foreach (TileController tile in ModifiedTiles)
             tile.ResetSprite();
@@ -56,15 +59,20 @@ public class StructureEventController : EventControllerBase {
         ModifiedTiles.Clear();
 
         GameObject unit = (GameObject)Instantiate(_buildType, clickedTile.transform.position, Quaternion.identity);
-		if (!second.IsTraversable (unit)) {
+        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
+        unitBase.Owner = GetComponent<BaseUnit>().Owner;
+        if (!second.IsTraversable (unit)) {
 			GameObject.Destroy (unit);
 			return DeselectStatus.Both;
 		}
-        BaseUnit unitBase = unit.GetComponent<BaseUnit>();
-        unitBase.Owner = GetComponent<BaseUnit>().Owner;
 		unitBase.GetComponent<SpriteRenderer> ().color = unitBase.Owner.Color;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
 		unitBase.Owner.Moves -= 1;
+
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+        if (multiplayerController != null)
+            multiplayerController.ServerComs.Notify.CreateUnit(second, _buildType.name);
+
         _buildType = null;
         if (second.Unit != null) {
 			if (second.IsTraversable (unit)) {
