@@ -53,8 +53,11 @@ class LoginController : MonoBehaviour {
     public void ShowLoginStatusOverlay(GameObject overlay) {
         GameObject status = GameObject.Find("LoginStatus");
         if (status != null) {
-            overlay.SetActive(true);
-            overlay.GetComponentsInChildren<Text>()[1].text = status.GetComponent<LoginStatus>().Name;
+            LoginStatus login = status.GetComponent<LoginStatus>();
+            if (login != null && !string.IsNullOrEmpty(login.Name)) {
+                overlay.SetActive(true);
+                overlay.GetComponentsInChildren<Text>()[1].text = status.GetComponent<LoginStatus>().Name;
+            }
         }
         else {
             overlay.SetActive(false);
