@@ -51,10 +51,28 @@ public class WaterUnit : LandUnit {
     }
 
     public override void DamageUnit(int damage, BaseUnit attacker) {
-        Health -= damage;
-        if (Health > 0)
-            return;
+		Health -= damage;
+		if (Health > 0){
+			_attackedBy = attacker;
+			Animator anim = GetComponent<Animator> ();
+			anim.Play ("Damage", 1);
+			return;
+		}
         Health = 0;
-        GameObject.Destroy(gameObject);
+		GetComponent<SpriteRenderer> ().color = Color.white;
+		Animator a = GetComponent<Animator> ();
+		a.SetInteger ("StackSize", 0);
+
+		if (CarryUnit != null) {
+			GameObject.Destroy (CarryUnit);
+			CarryUnit = null;
+		}
+        GameObject.Destroy(gameObject, 2f);
     }
+
+	public override void Retaliate() {
+		if (_attackedBy != null && CarryUnit != null)
+			_attackedBy.DamageUnit (CarryUnit.GetComponent<LandUnit>()._stackDamage, null);
+		_attackedBy = null;
+	}
 }

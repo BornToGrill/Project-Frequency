@@ -10,6 +10,7 @@ public class LandUnit : BaseUnit {
     private int _stackSize;
     internal int _stackHealth;
     internal int _stackDamage;
+	internal BaseUnit _attackedBy;
 
     internal override int StackSize {
         get { return _stackSize; }
@@ -44,26 +45,30 @@ public class LandUnit : BaseUnit {
     }
 
     public override void DamageUnit(int damage, BaseUnit attacker) {
+		_attackedBy = attacker;
         _stackHealth -= damage;
-		Animator anim = GetComponent<Animator> ();
-		anim.Play ("Damage", 1);
         if (_stackHealth <= 0) {
+			GetComponent<SpriteRenderer> ().color = Color.white;
 			StackSize = 0;
 			GameObject.Destroy (gameObject, 2f); // Insurance in case it's not destroyed by explosion animation.
             return;
         }
+
+		Animator anim = GetComponent<Animator> ();
+		anim.Play ("Damage", 1);
+
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
         _stackDamage = Damage * _stackSize;
         ReloadAnimation();
-        if (attacker != null)
-        {
-            attacker.DamageUnit(_stackDamage, null);
-        }
     }
 
 	public void DestroyUnit() {
 		GameObject.Destroy (gameObject);
 	}
 
-
+	public virtual void Retaliate() {
+		if (_attackedBy != null)
+			_attackedBy.DamageUnit (_stackDamage, null);
+		_attackedBy = null;
+	}
 }
