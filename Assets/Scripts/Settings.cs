@@ -11,12 +11,11 @@ public class Settings : MonoBehaviour {
 	public bool isWindowed;
 	public bool setResolution;
 	public bool isGrid;
-	static public Color color;
+	static public Color color = new Color(1, 1, 1, .3f);
 
-    // Use this for initialization
-    void Start()
+	// Use this for initialization
+	void Start()
 	{
-		DontDestroyOnLoad(gameObject.GetComponent<Settings>());
 		if (setResolution) {
 			SetResolution ();
 		} else if (isWindowed) {
@@ -29,7 +28,8 @@ public class Settings : MonoBehaviour {
 			IsMute ();
 		} else {
 			Toggle toggle = GetComponent<Toggle> ();
-			toggle.isOn = Convert.ToBoolean(PlayerPrefs.GetInt("grid_activated"));
+			int p = PlayerPrefs.GetInt("grid_activated");
+			toggle.isOn = !Convert.ToBoolean(PlayerPrefs.GetInt("grid_activated"));
 			IsGrid ();
 		}
 	}
@@ -42,10 +42,18 @@ public class Settings : MonoBehaviour {
 			dropdown.options.Add (new Dropdown.OptionData () { text = res.width + " x " + res.height });
 		}
 
-		Resolution currentRes = new Resolution () {
-			width = Screen.width,
-			height = Screen.height
-		};
+		Resolution currentRes;
+		if(PlayerPrefs.GetInt("windowed_mode") == 1) {
+			currentRes = new Resolution () {
+				width = Screen.currentResolution.width,
+				height = Screen.currentResolution.height
+			};
+		} else {
+			currentRes = new Resolution () {
+				width = Screen.width,
+				height = Screen.height
+			};
+		}
 
 		dropdown.value = Array.IndexOf (PossibleResolutions, currentRes);
 		dropdown.onValueChanged.AddListener ((index) => {
@@ -88,11 +96,11 @@ public class Settings : MonoBehaviour {
 	{
 		Toggle grid = GetComponent<Toggle> ();
 		grid.onValueChanged.AddListener ((x) => {
-			if (x) {
-				PlayerPrefs.SetInt("grid_activated", 0);
+			if (!x) {
+				PlayerPrefs.SetInt("grid_activated", 1);
 				color = new Color(1, 1, 1, 0);
 			} else {
-				PlayerPrefs.SetInt("grid_activated", 1);
+				PlayerPrefs.SetInt("grid_activated", 0);
 				color = new Color(1, 1, 1, .3f);
 			}
 		});
