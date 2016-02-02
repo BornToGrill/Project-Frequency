@@ -77,6 +77,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void SplitUnit(int startX, int startY, int endX, int endY, int amount) {
         lock(_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -88,6 +89,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void MoveToEmpty(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -106,6 +108,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void MoveToMerge(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -124,6 +127,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void MoveToAttack(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();

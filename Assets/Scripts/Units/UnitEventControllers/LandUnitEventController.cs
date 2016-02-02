@@ -192,7 +192,7 @@ public class LandUnitEventController : EventControllerBase {
 
     #region Movement
     public virtual DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
-        StartCoroutine(AnimateToTile(path));
+        StartCoroutine(AnimateToTile(path, QueueNextItem));
         if(start != null)
             start.Unit = null;
         path.Last().Unit = GetComponent<BaseUnit>();
@@ -209,6 +209,7 @@ public class LandUnitEventController : EventControllerBase {
 
         StartCoroutine(AnimateToTile(movePath, () => {
             GetComponent<LandUnit>().Attack(path.Last().Unit);
+            QueueNextItem();
         }));
 
         return DeselectStatus.Both;
@@ -221,6 +222,7 @@ public class LandUnitEventController : EventControllerBase {
 
         StartCoroutine(AnimateToTile(path, () => {
             mergeTarget.Merge(GetComponent<BaseUnit>());
+            QueueNextItem();
         }));
 
         return DeselectStatus.Both;
@@ -317,4 +319,8 @@ public class LandUnitEventController : EventControllerBase {
 		else if (direction.y - position.y < 0)
 			anim.SetInteger ("Direction", 2); // Down
 	}
+
+    private void QueueNextItem() {
+        GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
+    }
 }
