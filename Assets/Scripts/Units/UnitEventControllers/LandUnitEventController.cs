@@ -14,9 +14,9 @@ public class LandUnitEventController : EventControllerBase {
 
     public float MovementSpeed;
 
-    private TileController[] _surrTiles;
-    private bool _isSplitting;
-    private int _splitAmount;
+    protected TileController[] _surrTiles;
+    protected bool IsSplitting;
+    protected int SplitAmount;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
@@ -40,7 +40,7 @@ public class LandUnitEventController : EventControllerBase {
             return DeselectStatus.Both;
         }
 
-        if (_isSplitting)
+        if (IsSplitting)
             return Split(ownTile.GetComponent<TileController>(), clickedTile.GetComponent<TileController>());
 
         StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
@@ -101,9 +101,9 @@ public class LandUnitEventController : EventControllerBase {
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return;
-        if (_isSplitting) {
+        if (IsSplitting) {
             GameObject temp = CreateSplitMock();
-            if (hoveredTile.GetComponent<TileController>().IsTraversable(temp))
+            if (_surrTiles.Contains(tileTwo) && temp.GetComponent<BaseUnit>().Owner.Moves > 0 && tileTwo.IsTraversable(temp))
                 hoveredTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
             else
                 hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -154,7 +154,7 @@ public class LandUnitEventController : EventControllerBase {
         ResetModifiedTiles();
         if (ownTile == hoveredTile)
             return;
-        if (_isSplitting) {
+        if (IsSplitting) {
             GameObject temp = CreateSplitMock();
             if (_surrTiles.Contains(hoveredTile.GetComponent<TileController>())) {
                 if (hoveredTile.GetComponent<TileController>().IsTraversable(temp))
@@ -223,8 +223,8 @@ public class LandUnitEventController : EventControllerBase {
     }
 
     public virtual void UnitSplitCallback(int amount) {
-        _isSplitting = true;
-        _splitAmount = amount;
+        IsSplitting = true;
+        SplitAmount = amount;
         GameObject mock = CreateSplitMock();
         foreach (TileController tile in _surrTiles) {
             if (tile.IsTraversable(mock))
@@ -236,35 +236,55 @@ public class LandUnitEventController : EventControllerBase {
     }
 
     public virtual DeselectStatus Split(TileController ownTile, TileController targetTile) {
-        _isSplitting = false;
+        IsSplitting = false;
+        if (!_surrTiles.Contains(targetTile)) {
+            ResetSplitTiles();
+            return DeselectStatus.Both;
+        }
         GameObject mock = CreateSplitMock();
         BaseUnit unit = mock.GetComponent<BaseUnit>();
+        if (unit.Owner.Moves < 1) {
+            Destroy(mock);
+            ResetSplitTiles();
+            return DeselectStatus.Both;
+        }
+
         if (!targetTile.IsTraversable(mock)) {
             Destroy(mock);
+            ResetSplitTiles();
             return DeselectStatus.Both;
         }
         if (GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
             ownTile.Unit = null;
-            Destroy(gameObject); //TODO: Test if this works.
+            Destroy(gameObject);
         }
         else
-            ownTile.Unit.StackSize -= _splitAmount;
+            ownTile.Unit.StackSize -= SplitAmount;
         LandUnitEventController landUnit = mock.GetComponent<LandUnitEventController>();
         if (targetTile.Unit == null)
             landUnit.MoveToEmpty(null, new List<TileController>() { targetTile });
         else
             landUnit.MoveToMerge(null, new List<TileController>() { targetTile });
         unit.Owner.Moves--;
+        ResetSplitTiles();
         return DeselectStatus.Both;
     }
 
-    private GameObject CreateSplitMock() {
+    protected virtual GameObject CreateSplitMock() {
         GameObject mock = Instantiate(gameObject);
         mock.name = gameObject.name;
         BaseUnit unit = mock.GetComponent<BaseUnit>();
-        unit.StackSize = _splitAmount;
+        unit.StackSize = SplitAmount;
         unit.Owner = GetComponent<BaseUnit>().Owner;
         return mock;
+    }
+
+    protected void ResetSplitTiles() {
+        if (_surrTiles == null)
+            return;
+        foreach (TileController tile in _surrTiles)
+            tile.ResetSprite();
+        _surrTiles = null;
     }
     #endregion
 

@@ -9,6 +9,9 @@ public class WaterUnitEventController : LandUnitEventController {
 
 	public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
 		base.OnMouseEnter (ownTile, hoveredTile);
+	    if (IsSplitting)
+	        return;
+
 		GameObject carryUnit = GetComponent<WaterUnit>().CarryUnit;
 		TileController tileOne = ownTile.GetComponent<TileController>();
 		TileController tileTwo = hoveredTile.GetComponent<TileController>();
@@ -95,6 +98,63 @@ public class WaterUnitEventController : LandUnitEventController {
     #endregion
 
     #region Unit Spliting
+
+    public override void ShowUnitStack(TileController ownTile) {
+        GameObject carry = GetComponent<WaterUnit>().CarryUnit;
+        if (carry == null)
+            return;
+        GameObject stackOverlay = GameObject.Find("UnitStack");
+        StackWindow window = stackOverlay.GetComponent<StackWindow>();
+        BaseUnit unit = carry.GetComponent<BaseUnit>();
+        window.Show(unit.GetComponent<LandUnitEventController>().StackSizeSprite, unit.Owner.Color, unit.StackSize, unit.CurrentPlayerPredicate(ownTile), UnitSplitCallback);
+    }
+
+    protected override GameObject CreateSplitMock() {
+        GameObject mock = Instantiate(GetComponent<WaterUnit>().CarryUnit);
+        mock.SetActive(true);
+        mock.name = GetComponent<WaterUnit>().CarryUnit.name;
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+        unit.StackSize = SplitAmount;
+        unit.Owner = GetComponent<BaseUnit>().Owner;
+        return mock;
+    }
+
+    public override DeselectStatus Split(TileController ownTile, TileController targetTile) {
+        IsSplitting = false;
+        if (!_surrTiles.Contains(targetTile)) {
+            ResetSplitTiles();
+            return DeselectStatus.Both;
+        }
+        GameObject mock = CreateSplitMock();
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+        if (unit.Owner.Moves < 1) {
+            Destroy(mock);
+            ResetSplitTiles();
+            return DeselectStatus.Both;
+        }
+        WaterUnit water = GetComponent<WaterUnit>();
+        if (!targetTile.IsTraversable(mock)) {
+            Destroy(mock);
+            ResetSplitTiles();
+            return DeselectStatus.Both;
+        }
+        if (water.CarryUnit.GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
+            Destroy(water.CarryUnit);
+            water.CarryUnit = null;
+        }
+        else
+            water.CarryUnit.GetComponent<BaseUnit>().StackSize -= SplitAmount;
+
+        LandUnitEventController landUnit = mock.GetComponent<LandUnitEventController>();
+        mock.SetActive(true);
+        if (targetTile.Unit == null)
+            landUnit.MoveToEmpty(null, new List<TileController>() { targetTile });
+        else
+            landUnit.MoveToMerge(null, new List<TileController>() { targetTile });
+        unit.Owner.Moves--;
+        ResetSplitTiles();
+        return DeselectStatus.Both;
+    }
 
     #endregion
 
