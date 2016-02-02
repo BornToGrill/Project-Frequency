@@ -109,7 +109,7 @@ public class WaterUnitEventController : LandUnitEventController {
         window.Show(unit.GetComponent<LandUnitEventController>().StackSizeSprite, unit.Owner.Color, unit.StackSize, unit.CurrentPlayerPredicate(ownTile), UnitSplitCallback);
     }
 
-    protected override GameObject CreateSplitMock() {
+    public override GameObject CreateSplitMock() {
         GameObject mock = Instantiate(GetComponent<WaterUnit>().CarryUnit);
         mock.SetActive(true);
         mock.name = GetComponent<WaterUnit>().CarryUnit.name;
@@ -119,25 +119,13 @@ public class WaterUnitEventController : LandUnitEventController {
         return mock;
     }
 
-    public override DeselectStatus Split(TileController ownTile, TileController targetTile) {
+    public override DeselectStatus Split(GameObject mock, TileController ownTile, TileController targetTile) {
         IsSplitting = false;
-        if (!_surrTiles.Contains(targetTile)) {
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
-        GameObject mock = CreateSplitMock();
+
         BaseUnit unit = mock.GetComponent<BaseUnit>();
-        if (unit.Owner.Moves < 1) {
-            Destroy(mock);
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
+
         WaterUnit water = GetComponent<WaterUnit>();
-        if (!targetTile.IsTraversable(mock)) {
-            Destroy(mock);
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
+
         if (water.CarryUnit.GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
             Destroy(water.CarryUnit);
             water.CarryUnit = null;

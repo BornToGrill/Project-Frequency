@@ -16,7 +16,7 @@ public class LandUnitEventController : EventControllerBase {
 
     protected TileController[] _surrTiles;
     protected bool IsSplitting;
-    protected int SplitAmount;
+    public int SplitAmount;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
@@ -40,14 +40,28 @@ public class LandUnitEventController : EventControllerBase {
             return DeselectStatus.Both;
         }
 
-        if (IsSplitting)
-            return Split(ownTile.GetComponent<TileController>(), clickedTile.GetComponent<TileController>());
-
-        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
-
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
         TileController tileOne = ownTile.GetComponent<TileController>();
         TileController tileTwo = clickedTile.GetComponent<TileController>();
+        StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
+
+        if (IsSplitting) {
+            GameObject mock = CreateSplitMock();
+            if (mock.GetComponent<BaseUnit>().Owner.Moves < 1 ||
+                !clickedTile.GetComponent<TileController>().IsTraversable(mock) ||
+                !_surrTiles.Contains(clickedTile.GetComponent<TileController>())) {
+                ResetSplitTiles();
+                Destroy(mock);
+                return DeselectStatus.Both;
+            }
+            if (multiplayerController != null)
+                multiplayerController.ServerComs.Notify.SplitUnit(tileOne, tileTwo, SplitAmount);
+
+            return Split(mock, tileOne, tileTwo);
+        }
+
+
+
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return DeselectStatus.Both;
 
@@ -235,25 +249,10 @@ public class LandUnitEventController : EventControllerBase {
         Destroy(mock);
     }
 
-    public virtual DeselectStatus Split(TileController ownTile, TileController targetTile) {
+    public virtual DeselectStatus Split(GameObject mock, TileController ownTile, TileController targetTile) {
         IsSplitting = false;
-        if (!_surrTiles.Contains(targetTile)) {
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
-        GameObject mock = CreateSplitMock();
         BaseUnit unit = mock.GetComponent<BaseUnit>();
-        if (unit.Owner.Moves < 1) {
-            Destroy(mock);
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
 
-        if (!targetTile.IsTraversable(mock)) {
-            Destroy(mock);
-            ResetSplitTiles();
-            return DeselectStatus.Both;
-        }
         if (GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
             ownTile.Unit = null;
             Destroy(gameObject);
@@ -270,7 +269,7 @@ public class LandUnitEventController : EventControllerBase {
         return DeselectStatus.Both;
     }
 
-    protected virtual GameObject CreateSplitMock() {
+    public virtual GameObject CreateSplitMock() {
         GameObject mock = Instantiate(gameObject);
         mock.name = gameObject.name;
         BaseUnit unit = mock.GetComponent<BaseUnit>();
