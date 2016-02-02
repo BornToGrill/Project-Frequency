@@ -22,6 +22,21 @@ public static class GlobalSettings {
         }
     }
 
+    public static bool LatestVersion {
+        get {
+            if (!_latestVersion) {
+                try {
+                    _instance = Download();
+                    _latestVersion = true;
+                }
+                catch {
+                    return _latestVersion;
+                }
+            }
+            return _latestVersion; 
+        }
+    }
+
     static GlobalSettings() {
         try {
             _instance = Download();
