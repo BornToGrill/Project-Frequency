@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 public static class GlobalSettings {
 
     private static SettingsContainer _instance;
+    private static bool _latestVersion;
 
     public static SettingsContainer Instance {
         get {
