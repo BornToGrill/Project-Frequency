@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 public static class GlobalSettings {
 
     private static SettingsContainer _instance;
+    private static bool _latestVersion;
 
     public static SettingsContainer Instance {
         get {
@@ -87,13 +88,13 @@ public static class GlobalSettings {
 public class QuickWebClient : WebClient {
     protected override WebRequest GetWebRequest(Uri address) {
         WebRequest request = base.GetWebRequest(address);
-        request.Timeout = 7000;
+        request.Timeout = 4500;
         return request;
     }
 }
 
 public class SettingsContainer {
 
-    public string ServerIp = "84.106.110.245";
-    public int ServerPort = 9500;
+    public string ServerIp;
+    public int ServerPort;
 }
