@@ -194,6 +194,9 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
                 else
                     EndTurnButton.SetActive(false);
                 _gameController.CurrentPlayer.StartTurn(_gameController);
+                GameObject go = GameObject.Find("TurnText");
+                Animator ani = go.GetComponent<Animator>();
+                ani.Play("Fade");
             });
     }
 
