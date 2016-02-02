@@ -41,12 +41,16 @@ public class LandUnit : BaseUnit {
 
     public void Attack(BaseUnit unit) {
         if (unit.Owner != this.Owner)
+        {
             unit.DamageUnit(_stackDamage, this);
+        }
     }
 
     public override void DamageUnit(int damage, BaseUnit attacker) {
 		_attackedBy = attacker;
         _stackHealth -= damage;
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
         if (_stackHealth <= 0) {
 			GetComponent<SpriteRenderer> ().color = Color.white;
 			StackSize = 0;
