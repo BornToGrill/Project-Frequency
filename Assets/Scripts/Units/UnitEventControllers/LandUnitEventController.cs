@@ -157,7 +157,7 @@ public class LandUnitEventController : EventControllerBase {
         if (IsSplitting) {
             GameObject temp = CreateSplitMock();
             if (_surrTiles.Contains(hoveredTile.GetComponent<TileController>())) {
-                if (hoveredTile.GetComponent<TileController>().IsTraversable(temp))
+                if (temp.GetComponent<BaseUnit>().Owner.Moves > 0 && hoveredTile.GetComponent<TileController>().IsTraversable(temp))
                     hoveredTile.GetComponent<SpriteRenderer>().color = MoveColor;
                 else
                     hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -227,7 +227,7 @@ public class LandUnitEventController : EventControllerBase {
         SplitAmount = amount;
         GameObject mock = CreateSplitMock();
         foreach (TileController tile in _surrTiles) {
-            if (tile.IsTraversable(mock))
+            if (mock.GetComponent<BaseUnit>().Owner.Moves > 0 && tile.IsTraversable(mock))
                 tile.GetComponent<SpriteRenderer>().color = MoveColor;
             else
                 tile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -309,8 +309,6 @@ public class LandUnitEventController : EventControllerBase {
 
 	private void StartSpriteAnimation(Vector3 direction, Vector3 position) {
 		Animator anim = GetComponent<Animator> ();
-		BaseUnit unit = GetComponent<BaseUnit> ();
-
 		if (direction.x - position.x < 0)
 			anim.SetInteger ("Direction", 3); // Left
 		else if (direction.x - position.x > 0)
