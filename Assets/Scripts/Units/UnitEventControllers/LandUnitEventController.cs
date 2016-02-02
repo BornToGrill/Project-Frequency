@@ -10,7 +10,13 @@ public class LandUnitEventController : EventControllerBase {
     public Color InvalidMoveColor;
     public Color AttackColor;
 
+    public Sprite StackSizeSprite;
+
     public float MovementSpeed;
+
+    private TileController[] _surrTiles;
+    private bool _isSplitting;
+    private int _splitAmount;
 
     public override DeselectStatus OnSelected(GameObject ownTile) {
         ownTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
@@ -19,6 +25,12 @@ public class LandUnitEventController : EventControllerBase {
 			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ().Health);
 		else
 			unitStats.Set (GetComponent<LandUnit> ()._stackDamage, GetComponent<LandUnit> ()._stackHealth);
+
+        ShowUnitStack(ownTile.GetComponent<TileController>());
+
+        TileController own = ownTile.GetComponent<TileController>();
+        _surrTiles = new[] { own.Left, own.Up, own.Right, own.Down }.Where(x => x != null).ToArray();
+
         return DeselectStatus.None;
     }
 
@@ -28,6 +40,9 @@ public class LandUnitEventController : EventControllerBase {
             return DeselectStatus.Both;
         }
 
+        if (_isSplitting)
+            return Split(ownTile.GetComponent<TileController>(), clickedTile.GetComponent<TileController>());
+
         StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
 
         ResetModifiedTiles(ownTile.GetComponent<TileController>());
@@ -35,6 +50,7 @@ public class LandUnitEventController : EventControllerBase {
         TileController tileTwo = clickedTile.GetComponent<TileController>();
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return DeselectStatus.Both;
+
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
 
@@ -85,7 +101,15 @@ public class LandUnitEventController : EventControllerBase {
         TileController tileTwo = hoveredTile.GetComponent<TileController>();
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(tileOne))
             return;
-        BaseUnit test = GetComponent<BaseUnit>();
+        if (_isSplitting) {
+            GameObject temp = CreateSplitMock();
+            if (hoveredTile.GetComponent<TileController>().IsTraversable(temp))
+                hoveredTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
+            else
+                hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+            GameObject.Destroy(temp);
+            return;
+        }
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         ModifiedTiles = path.Path;
@@ -128,6 +152,20 @@ public class LandUnitEventController : EventControllerBase {
 
     public override void OnMouseLeave(GameObject ownTile, GameObject hoveredTile) {
         ResetModifiedTiles();
+        if (ownTile == hoveredTile)
+            return;
+        if (_isSplitting) {
+            GameObject temp = CreateSplitMock();
+            if (_surrTiles.Contains(hoveredTile.GetComponent<TileController>())) {
+                if (hoveredTile.GetComponent<TileController>().IsTraversable(temp))
+                    hoveredTile.GetComponent<SpriteRenderer>().color = MoveColor;
+                else
+                    hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+            }
+            else
+                hoveredTile.GetComponent<TileController>().ResetSprite();
+            Destroy(temp);
+        }
     }
 
     protected void ResetModifiedTiles(params TileController[] additionalTiles) {
@@ -141,7 +179,8 @@ public class LandUnitEventController : EventControllerBase {
     #region Movement
     public virtual DeselectStatus MoveToEmpty(TileController start, List<TileController> path) {
         StartCoroutine(AnimateToTile(path));
-        start.Unit = null;
+        if(start != null)
+            start.Unit = null;
         path.Last().Unit = GetComponent<BaseUnit>();
         return DeselectStatus.Both;
     }
@@ -149,7 +188,8 @@ public class LandUnitEventController : EventControllerBase {
     public virtual DeselectStatus MoveToAttack(TileController start, List<TileController> path) {
         List<TileController> movePath = path.Take(path.Count - GetComponent<LandUnit>().Range).ToList();
         if (movePath.Count > 0) {
-            start.Unit = null;
+            if(start != null)
+                start.Unit = null;
             movePath.Last().Unit = GetComponent<BaseUnit>();
         }
 
@@ -161,7 +201,8 @@ public class LandUnitEventController : EventControllerBase {
     }
 
     public virtual DeselectStatus MoveToMerge(TileController start, List<TileController> path) {
-        start.Unit = null;
+        if(start != null)
+            start.Unit = null;
         LandUnit mergeTarget = (LandUnit) path.Last().Unit;
 
         StartCoroutine(AnimateToTile(path, () => {
@@ -169,6 +210,60 @@ public class LandUnitEventController : EventControllerBase {
         }));
 
         return DeselectStatus.Both;
+    }
+    #endregion
+
+    #region Unit Splitting
+
+    public virtual void ShowUnitStack(TileController ownTile) {
+        GameObject stackOverlay = GameObject.Find("UnitStack");
+        StackWindow window = stackOverlay.GetComponent<StackWindow>();
+        BaseUnit unit = GetComponent<BaseUnit>();
+        window.Show(StackSizeSprite, unit.Owner.Color, unit.StackSize, unit.CurrentPlayerPredicate(ownTile), UnitSplitCallback);
+    }
+
+    public virtual void UnitSplitCallback(int amount) {
+        _isSplitting = true;
+        _splitAmount = amount;
+        GameObject mock = CreateSplitMock();
+        foreach (TileController tile in _surrTiles) {
+            if (tile.IsTraversable(mock))
+                tile.GetComponent<SpriteRenderer>().color = MoveColor;
+            else
+                tile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+        }
+        Destroy(mock);
+    }
+
+    public virtual DeselectStatus Split(TileController ownTile, TileController targetTile) {
+        _isSplitting = false;
+        GameObject mock = CreateSplitMock();
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+        if (!targetTile.IsTraversable(mock)) {
+            Destroy(mock);
+            return DeselectStatus.Both;
+        }
+        if (GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
+            ownTile.Unit = null;
+            Destroy(gameObject); //TODO: Test if this works.
+        }
+        else
+            ownTile.Unit.StackSize -= _splitAmount;
+        LandUnitEventController landUnit = mock.GetComponent<LandUnitEventController>();
+        if (targetTile.Unit == null)
+            landUnit.MoveToEmpty(null, new List<TileController>() { targetTile });
+        else
+            landUnit.MoveToMerge(null, new List<TileController>() { targetTile });
+        return DeselectStatus.Both;
+    }
+
+    private GameObject CreateSplitMock() {
+        GameObject mock = Instantiate(gameObject);
+        mock.name = gameObject.name;
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+        unit.StackSize = _splitAmount;
+        unit.Owner = GetComponent<BaseUnit>().Owner;
+        return mock;
     }
     #endregion
 
