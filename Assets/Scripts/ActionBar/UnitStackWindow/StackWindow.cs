@@ -8,11 +8,13 @@ public class StackWindow : MonoBehaviour {
 	public Sprite[] Sprites;
 	private Image _image;
 
-	void Start() {
+	void Start()
+	{
 		_image = GetComponent<Image> ();
 	}
 
-	void Show(int amount, string unitName) {
+	void Show(string unitName, int amount)
+	{
 		Sprite sprite = new Sprite ();
 
 		switch (unitName) {
@@ -33,7 +35,8 @@ public class StackWindow : MonoBehaviour {
 		}
 	}
 
-	void Hide() {
+	void Hide()
+	{
 		_image.enabled = false;
 		foreach (StackField stackField in StackFields) {
 			stackField.Hide ();
