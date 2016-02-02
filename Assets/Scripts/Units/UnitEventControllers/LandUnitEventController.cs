@@ -254,6 +254,7 @@ public class LandUnitEventController : EventControllerBase {
             landUnit.MoveToEmpty(null, new List<TileController>() { targetTile });
         else
             landUnit.MoveToMerge(null, new List<TileController>() { targetTile });
+        unit.Owner.Moves--;
         return DeselectStatus.Both;
     }
 
