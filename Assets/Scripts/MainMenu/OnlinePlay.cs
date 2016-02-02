@@ -12,8 +12,14 @@ using UdpClient = NetworkLibrary.UdpClient;
 public class OnlinePlay : MonoBehaviour {
 
     public GameObject LoginOverlay;
+    public GameObject ErrorOverlay;
 
     public void ShowJoinScreen(GameObject panel) {
+        if (!GlobalSettings.LatestVersion) {
+            ShowError("Failed to retrieve the server settings.\n" +
+                "Make sure you have a working internet connection.");
+            return;
+        }
         if (!LoginStatus())
             return;
         panel.SetActive(true);
@@ -24,11 +30,14 @@ public class OnlinePlay : MonoBehaviour {
     }
 
     public void CreateLobby() {
+        if (!GlobalSettings.LatestVersion) {
+            ShowError("Failed to retrieve the server settings.\n" +
+                "Make sure you have a working internet connection.");
+            return;
+        }
 
         if (!LoginStatus())
             return;
-
-        SessionData session = GetSession();
 
         UdpClient client = new UdpClient();
         client.Connect(new IPEndPoint(IPAddress.Parse(GlobalSettings.Instance.ServerIp),
@@ -62,6 +71,11 @@ public class OnlinePlay : MonoBehaviour {
         SetNameHandshake(response);
     }
 
+    private void ShowError(string error) {
+        ErrorOverlay.GetComponentInChildren<Text>().text = error;
+        ErrorOverlay.SetActive(true);
+    }
+
     public void SetNameHandshake(string response) {
         LoginStatus login = GetLoginStatus();
         SessionData session = GetSession();
@@ -82,10 +96,18 @@ public class OnlinePlay : MonoBehaviour {
             EndSession();
             return;
         }
+
         string[] messages =
-            auth.Split(new string[] { "]" }, StringSplitOptions.RemoveEmptyEntries)
+            auth.Split(new [] { "]" }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.TrimStart('['))
                 .ToArray();
+
+        SplitData first = messages[0].GetFirst();
+        if (first.CommandType == "Error") {
+            ShowError(first.Values.Split(':').Last());
+            return;
+        }
+
         string[] authData = messages[0].GetFirst().Values.GetFirst().Values.Split(new [] {"|",}, StringSplitOptions.RemoveEmptyEntries);
         session.Guid = authData[0];
         session.OwnId = Int32.Parse(authData[1]);
