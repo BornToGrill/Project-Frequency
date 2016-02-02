@@ -31,7 +31,9 @@ public class StructureUnit : BaseUnit {
 
 	public override void DamageUnit(int damage, BaseUnit attacker) {
 	    Health -= damage;
-		if (Health <= 0) {
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
+        if (Health <= 0) {
 			Animator a = GetComponent<Animator> ();	
 			a.SetBool ("Alive", false);
 

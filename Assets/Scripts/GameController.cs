@@ -136,5 +136,13 @@ public class GameController : MonoBehaviour {
                 CurrentPlayer.StartTurn(this);
             }
         }
+
+        if (CurrentPlayer.PlayerId != GetComponent<StateController>().CornerId)
+            return;
+
+        GameObject go = GameObject.Find("TurnText");
+        Animator ani = go.GetComponent<Animator>();
+        ani.Play("Fade");
+		Debug.Log ("We are awesome");
     }
 }
