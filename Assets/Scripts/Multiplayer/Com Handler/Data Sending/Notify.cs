@@ -36,8 +36,8 @@ class Notify {
     }
 
     internal void SplitUnit(TileController start, TileController stop, int amount) {
-        _tcpClient.Send(string.Format("[Notify:Split:({0}:{1})|({2}:{3})|{4}]", start.Position.x, start.Position.y,
-            stop.Position.x, stop.Position.y, amount));
+        _tcpClient.Send(string.Format("[Notify:SplitUnit:{0}|({1}:{2})|({3}:{4})|{5}]", _guid, start.Position.x,
+            start.Position.y, stop.Position.x, stop.Position.y, amount));
     }
 
     internal void CashChanged(int newValue) {

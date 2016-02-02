@@ -11,6 +11,8 @@ public class WaterUnitEventController : LandUnitEventController {
 		base.OnMouseEnter (ownTile, hoveredTile);
 	    if (IsSplitting)
 	        return;
+	    if (GetComponent<BaseUnit>().CurrentPlayerPredicate(ownTile.GetComponent<TileController>()))
+	        return;
 
 		GameObject carryUnit = GetComponent<WaterUnit>().CarryUnit;
 		TileController tileOne = ownTile.GetComponent<TileController>();

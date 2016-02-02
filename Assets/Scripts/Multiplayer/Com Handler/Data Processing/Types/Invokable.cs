@@ -23,6 +23,9 @@ class Invokable {
             case "CreateUnit":
                 CreateUnit(data.Values);
                 break;
+            case "SplitUnit":
+                SplitUnit(data.Values);
+                break;
             case "MoveToEmpty":
                 Move(_invoke.MoveToEmpty, data.Values);
                 break;
@@ -57,6 +60,13 @@ class Invokable {
     private void CashChanged(string values) {
         int[] data = values.Split(ValueDelimiter).Select(x => Int32.Parse(x)).ToArray();
         _invoke.CashChanged(data[0], data[1]);
+    }
+
+    private void SplitUnit(string values) {
+        string[] positions = values.Split(ValueDelimiter).Select(x => x.Trim('(', ')')).ToArray();
+        int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        _invoke.SplitUnit(start[0], start[1], stop[0], stop[1], Int32.Parse(positions[2]));
     }
 
 }
