@@ -15,7 +15,7 @@ public class LandUnit : BaseUnit {
     internal override int StackSize {
         get { return _stackSize; }
         set {
-            int diff = Mathf.Abs(value - _stackSize);
+            int diff = value - _stackSize;
             _stackHealth += diff * Health;
             _stackDamage += diff * Damage;
             _stackSize = value;
