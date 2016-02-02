@@ -11,39 +11,37 @@ public class CameraScrollingController : MonoBehaviour {
 
 	private float _widthBounds;
 	private float _heightBounds;
-	private Camera camera;
+	private Camera _camera;
 
 	void Start()
 	{
 		_widthBounds = Tile.bounds.size.x * 17;
 		_heightBounds = Tile.bounds.size.y * 17;
-		camera = gameObject.GetComponent<Camera> ();
+		_camera = gameObject.GetComponent<Camera> ();
 	}
 
 	void Update ()
 	{
 		Zoom ();
-		float mousePosX = Input.mousePosition.x;
-		float mousePosY = Input.mousePosition.y;
 
-		if (mousePosX < EdgeDistance || Input.GetKey ("left"))
+		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
 			if (transform.position.x > 0)
 				Scroll (Vector3.left);
 		}
 
-		if (mousePosX >= Screen.width - EdgeDistance || Input.GetKey ("right"))
+		if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
 		{
 			if (transform.position.x < _widthBounds)
 				Scroll (Vector3.right);
 		}
 
-		if (mousePosY < EdgeDistance || Input.GetKey ("down"))
+		if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
 		{
 			if (transform.position.y > 0)
 				Scroll (Vector3.down);
 		}
-		if (mousePosY >= Screen.height - EdgeDistance || Input.GetKey ("up"))
+		if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
 		{
 			if (transform.position.y < _heightBounds)
 				Scroll (Vector3.up);
@@ -51,23 +49,16 @@ public class CameraScrollingController : MonoBehaviour {
 	}
 
 	void Zoom() {
-		float mouseScroll = Input.GetAxis ("Mouse ScrollWheel");
-		float zoom = camera.orthographicSize;
+		float mouseScroll = -Input.GetAxis ("Mouse ScrollWheel") * 3;
+		float zoom = _camera.orthographicSize;
 
-		if (zoom > maxZoom) {
-			camera.orthographicSize = maxZoom;
-		} else if (zoom < minZoom) {
-			camera.orthographicSize = minZoom;
-		}
+		if (zoom > maxZoom)
+			_camera.orthographicSize = maxZoom;
+		else if (zoom < minZoom)
+			_camera.orthographicSize = minZoom;
 
-		if (zoom < maxZoom && -mouseScroll > 0)
-		{
-			camera.orthographicSize += -mouseScroll;
-		}
-		else if (zoom > minZoom && -mouseScroll < 0)
-		{
-			camera.orthographicSize += -mouseScroll;
-		}
+	    if ((zoom + mouseScroll < maxZoom && mouseScroll > 0) || (zoom + mouseScroll > minZoom && mouseScroll < 0))
+	        _camera.orthographicSize += mouseScroll;
 	}
 
 	void Scroll(Vector3 direction)
