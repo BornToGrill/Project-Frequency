@@ -145,6 +145,5 @@ public class GameController : MonoBehaviour {
         GameObject go = GameObject.Find("TurnText");
         Animator ani = go.GetComponent<Animator>();
         ani.Play("Fade");
-		Debug.Log ("We are awesome");
     }
 }
