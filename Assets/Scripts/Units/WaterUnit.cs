@@ -62,6 +62,7 @@ public class WaterUnit : LandUnit {
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
         Animator anim = GetComponent<Animator>();
+        _attackedBy = attacker;
         if (CarryUnit != null) {
             CarryUnit.GetComponent<BaseUnit>().DamageUnit(damage, null);
             anim.Play("Damage", 1);
@@ -73,7 +74,6 @@ public class WaterUnit : LandUnit {
         }
 		Health -= damage;
 		if (Health > 0) {
-			_attackedBy = attacker;
 			anim.Play ("Damage", 1);
             if (attacker != null)
                 GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = false;
