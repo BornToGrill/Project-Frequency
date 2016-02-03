@@ -9,6 +9,7 @@ public class WinCondition : MonoBehaviour {
     private Player _baseOwner;
     public Player Winner;
     public Player[] Losers;
+    private bool _lost;
 
     void Start() {
         BaseUnit unit = gameObject.GetComponent<BaseUnit>();
@@ -21,7 +22,10 @@ public class WinCondition : MonoBehaviour {
             GameController gc = board.GetComponent<GameController>();
             StateController mpController = board.GetComponent<StateController>();
             gc.RemovePlayer(_baseOwner);
-            _baseOwner.DestroyPlayer();
+            if (!_lost) {
+                _lost = true;
+                _baseOwner.DestroyPlayer();
+            }
             if (mpController == null) {
                 if (gc.Players.Count <= 1) {
                     GameObject endData = GameObject.Find("EndGameData");

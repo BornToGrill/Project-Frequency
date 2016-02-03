@@ -50,7 +50,8 @@ public class LandUnit : BaseUnit {
 		_attackedBy = attacker;
         _stackHealth -= damage;
         AudioSource audio = GetComponent<AudioSource>();
-        audio.Play();
+        if(damage < 1000)
+            audio.Play();
         if (_stackHealth <= 0) {
 			GetComponent<SpriteRenderer> ().color = Color.white;
 			StackSize = 0;
