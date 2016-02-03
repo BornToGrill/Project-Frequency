@@ -53,8 +53,8 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
                             (GameObject)
                                 Instantiate(Units.Single(x => x.name == unitType), new Vector3(targetX, targetY),
                                     Quaternion.identity);
-                        targetUnit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
-                        targetUnit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
+                        carry.GetComponent<BaseUnit>().Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
+                        carry.GetComponent<BaseUnit>().GetComponent<SpriteRenderer>().color = carry.GetComponent<BaseUnit>().Unit.Owner.Color;
                         targetUnit.Merge(carry.GetComponent<BaseUnit>());
                     }
                     else
