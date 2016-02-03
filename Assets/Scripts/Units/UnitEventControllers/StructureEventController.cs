@@ -65,6 +65,10 @@ public class StructureEventController : EventControllerBase {
 			GameObject.Destroy (unit);
 			return DeselectStatus.Both;
 		}
+		Animator anim = unitBase.GetComponent<Animator> ();
+		if (anim != null)
+			anim.Play ("Spawn", 1);
+
 		unitBase.GetComponent<SpriteRenderer> ().color = unitBase.Owner.Color;
 		unitBase.Owner.MoneyAmount -= unitBase.GetCost (ownTile.GetComponent<TileController> ().Environment);
 		unitBase.Owner.Moves -= 1;
