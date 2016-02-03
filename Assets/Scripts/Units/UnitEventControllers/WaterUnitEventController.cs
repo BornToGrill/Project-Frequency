@@ -61,13 +61,13 @@ public class WaterUnitEventController : LandUnitEventController {
                     MoveToMerge(tileOne, path.Path);
                 }
                 else if (tileTwo.Unit.Owner != boat.Owner && boat.Owner.Moves >= path.Path.Count) {
-                    if (path.Path.Count - GetComponent<LandUnit>().Range < 0) {
+                    if (path.Path.Count - carryUnit.GetComponent<LandUnit>().Range < 0) {
                         if (GetComponent<BaseUnit>().Owner.Moves < 1)
                             return DeselectStatus.Both;
                         boat.Owner.Moves -= 1;
                     }
                     else
-                        boat.Owner.Moves -= path.Path.Count - GetComponent<LandUnit>().Range + 1;
+                        boat.Owner.Moves -= path.Path.Count - carryUnit.GetComponent<LandUnit>().Range + 1;
 
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
@@ -196,7 +196,8 @@ public class WaterUnitEventController : LandUnitEventController {
         List<TileController> movePath = path.Take(path.Count - carry.Range).ToList();
         MoveWaterUnit(start, movePath,
             () => {
-                carry.Attack(path.Last().Unit);
+                path.Last().Unit.DamageUnit(carry._stackDamage, GetComponent<BaseUnit>());
+                //carry.Attack(path.Last().Unit);
                 QueueNextItem();
             });
 

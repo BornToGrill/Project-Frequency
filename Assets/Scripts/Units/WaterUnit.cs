@@ -59,10 +59,17 @@ public class WaterUnit : LandUnit {
     }
 
     public override void DamageUnit(int damage, BaseUnit attacker) {
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
+        Animator anim = GetComponent<Animator>();
+        if (CarryUnit != null) {
+            CarryUnit.GetComponent<BaseUnit>().DamageUnit(damage, null);
+            anim.Play("Damage", 1);
+            return;
+        }
 		Health -= damage;
-		if (Health > 0){
+		if (Health > 0) {
 			_attackedBy = attacker;
-			Animator anim = GetComponent<Animator> ();
 			anim.Play ("Damage", 1);
 			return;
 		}
