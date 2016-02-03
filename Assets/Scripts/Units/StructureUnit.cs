@@ -25,15 +25,25 @@ public class StructureUnit : BaseUnit {
 		return Cost;
 	}
 
-    public void CreateUnit(GameObject unit) {
-        throw new NotImplementedException();
-    }
-
 	public override void DamageUnit(int damage, BaseUnit attacker) {
 	    Health -= damage;
-		if (Health <= 0) {
-			GameObject.Destroy(gameObject);
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
+        if (Health <= 0) {
+			Animator a = GetComponent<Animator> ();	
+			a.SetBool ("Alive", false);
+
+		    WinCondition cond = GetComponent<WinCondition>();
+            if(cond != null)
+                cond.BaseDestroyed();
 			return;
 		}
+
+		Animator anim = GetComponent<Animator> ();
+		anim.Play ("Damage", 1);
+	}
+
+	public void DestroyStructure() {
+		GameObject.Destroy (gameObject);
 	}
 }

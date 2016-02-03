@@ -13,7 +13,7 @@ public class StatusBarController : MonoBehaviour {
 		_gameController = board.GetComponent<GameController> ();
 		_playerFields = new List<StatusBarPlayerField> ();
 
-		for (int i = 0; i < _gameController.AmountOfPlayers; i++) {
+		for (int i = 0; i < _gameController.Players.Count; i++) {
 			AddPlayer(_gameController.Players [i]);
 		}
 	}
@@ -26,7 +26,7 @@ public class StatusBarController : MonoBehaviour {
 		float offset = 0f;
 		foreach (StatusBarPlayerField existingField in _playerFields) {
 			RectTransform rt = existingField.transform as RectTransform;
-			offset += rt.rect.width;
+			offset += rt.rect.width + 15f;
 		}
 
 		GameObject fieldGo = Instantiate (StatusBarPlayerPrefab, new Vector3 (0, 0), new Quaternion ()) as GameObject;
@@ -50,8 +50,8 @@ public class StatusBarController : MonoBehaviour {
 		float offset = 0;
 		foreach (StatusBarPlayerField existingField in _playerFields) {
 			RectTransform rt = existingField.transform as RectTransform;
-			rt.anchoredPosition = new Vector2 (offset, -10.0f);
-			offset += rt.rect.width;
+			rt.anchoredPosition = new Vector2 (5.0f + offset, 0f);
+			offset += rt.rect.width + 15f;
 		}
 	}
 

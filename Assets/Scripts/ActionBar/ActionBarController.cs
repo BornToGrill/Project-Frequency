@@ -19,7 +19,7 @@ public class ActionBarController : MonoBehaviour {
         _buttons = new List<GameObject>();
     }
     	
-	public void AddButton(string text, Callback callback, bool clickable) {
+	public void AddButton(string text, Callback callback, bool clickable, int cost, int money) {
         float offset = 0;
         foreach ( GameObject currentButton in _buttons)
         {
@@ -53,6 +53,17 @@ public class ActionBarController : MonoBehaviour {
 
 		button.transform.SetParent(transform);
 		button.GetComponent<ActionButtonController>().Initialize(text, callback, offset, clickable);
+		ToolTip tooltip = button.GetComponent<ToolTip> ();
+		tooltip.SetCost (cost, money >= cost);
+
+		if (!clickable) {
+			tooltip.SetWarning ("No moves left");
+		}
+
+		if (money < cost) {
+			tooltip.SetWarning ("Not enough money");
+		}
+			
         _buttons.Add(button);
     }
 
