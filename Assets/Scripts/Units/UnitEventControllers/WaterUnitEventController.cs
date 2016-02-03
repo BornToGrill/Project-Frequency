@@ -61,7 +61,6 @@ public class WaterUnitEventController : LandUnitEventController {
                     MoveToMerge(tileOne, path.Path);
                 }
                 else if (tileTwo.Unit.Owner != boat.Owner && boat.Owner.Moves >= path.Path.Count) {
-                    boat.Owner.Moves -= path.Path.Count;
                     if (path.Path.Count - GetComponent<LandUnit>().Range < 0) {
                         if (GetComponent<BaseUnit>().Owner.Moves < 1)
                             return DeselectStatus.Both;
