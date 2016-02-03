@@ -5,7 +5,8 @@ using UnityEngine;
 public class WaterUnit : LandUnit {
 
 
-    private Environment[] _defaultEnvironments;
+    private GameObject _carryUnit;
+    internal Environment[] _defaultEnvironments;
 
     internal override int StackSize {
         get { return 1; }
@@ -15,7 +16,14 @@ public class WaterUnit : LandUnit {
         }
     }
 
-    internal GameObject CarryUnit;
+    internal GameObject CarryUnit {
+        get {
+            if (_carryUnit == null)
+                _carryUnit = null;
+            return _carryUnit;
+        }
+        set { _carryUnit = value; }
+    }
 
     public override void Awake() {
         base.Awake();
@@ -24,7 +32,7 @@ public class WaterUnit : LandUnit {
 
     public override bool CanMerge(BaseUnit unit) {
         if (CarryUnit == null)
-            return true;
+            return unit.Owner == Owner;
         BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
         return internalUnit.Owner == unit.Owner && CarryUnit.gameObject.name == unit.gameObject.name && internalUnit.StackSize + unit.StackSize <= internalUnit.MaxUnitStack;
     }
