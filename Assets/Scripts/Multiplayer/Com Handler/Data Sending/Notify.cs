@@ -48,6 +48,10 @@ class Notify {
         _tcpClient.Send(string.Format("[Notify:GameWon:{0}]", _guid));
     }
 
+    internal void GameLost() {
+        _tcpClient.Send(string.Format("[Notify:GameLost:{0}]", _guid));
+    }
+
     internal void GameLoaded() {
         _tcpClient.Send(string.Format("[Notify:GameLoaded:{0}]", _guid));
     }

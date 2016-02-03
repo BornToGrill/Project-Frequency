@@ -37,6 +37,8 @@ public class WinCondition : MonoBehaviour {
             else {
                 if(gc.Players.Count <= 1)
                     mpController.ServerComs.Notify.GameWon();
+                else if (GetComponent<BaseUnit>().Owner.PlayerId == mpController.CornerId)
+                    mpController.ServerComs.Notify.GameLost();
             }
         }
     }
