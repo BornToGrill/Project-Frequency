@@ -68,10 +68,18 @@ public class LandUnitEventController : EventControllerBase {
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
 
-		if (path.FoundEndPoint == false || !path.ValidPath)
-			return DeselectStatus.Both;
+        if (path.FoundEndPoint == false || !path.ValidPath) {
+            if (path.Path.Count <= GetComponent<LandUnit>().Range && path.Path.Last().Unit != null &&
+                path.Path.Last().Unit.Owner != GetComponent<BaseUnit>().Owner) {
+                owner.Moves--;
+                if (multiplayerController != null)
+                    multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
+                MoveToAttack(tileOne, path.Path);
+            }
+                return DeselectStatus.Both;
+        }
 
-		if (tileTwo.Unit == null) {
+        if (tileTwo.Unit == null) {
 			if (!tileTwo.IsTraversable(gameObject))
 				return DeselectStatus.Both;
 			if (path.Path.Count > owner.Moves)
@@ -134,35 +142,42 @@ public class LandUnitEventController : EventControllerBase {
 
         ModifiedTiles = path.Path;
 
-        if (path.FoundEndPoint == false || !path.ValidPath)
-            foreach (var element in ModifiedTiles)
-                element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+        if (path.FoundEndPoint == false || !path.ValidPath) {
+            if (path.Path.Count <= GetComponent<LandUnit>().Range && path.Path.Last().Unit != null && path.Path.Last().Unit.Owner != GetComponent<BaseUnit>().Owner)
+                path.Path.Last().GetComponent<SpriteRenderer>().color = AttackColor;
+            else 
+                foreach (var element in ModifiedTiles)
+                    element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+        }
         else {
             if (tileTwo.Unit == null) {
-				if (tileTwo.IsTraversable (gameObject)) {
-					Color result = path.Path.Count > GetComponent<BaseUnit> ().Owner.Moves ? InvalidMoveColor : MoveColor;
-					foreach (var element in ModifiedTiles)
-						element.GetComponent<SpriteRenderer> ().color = result;
-				}
+                if (tileTwo.IsTraversable(gameObject)) {
+                    Color result = path.Path.Count > GetComponent<BaseUnit>().Owner.Moves ? InvalidMoveColor : MoveColor;
+                    foreach (var element in ModifiedTiles)
+                        element.GetComponent<SpriteRenderer>().color = result;
+                }
                 else
                     foreach (var element in ModifiedTiles)
                         element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
             }
             else {
-				if (tileTwo.Unit.Owner != GetComponent<BaseUnit> ().Owner) {
-					if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > GetComponent<BaseUnit> ().Owner.Moves || (path.Path.Count - GetComponent<LandUnit>().Range < 0 && GetComponent<BaseUnit>().Owner.Moves < 1))
-						foreach (var element in ModifiedTiles)
-							element.GetComponent<SpriteRenderer> ().color = InvalidMoveColor;
-					else {
-						for (int i = 0; i < ModifiedTiles.Count - GetComponent<LandUnit> ().Range; i++)
-							ModifiedTiles [i].GetComponent<SpriteRenderer> ().color = MoveColor;
-						ModifiedTiles.Last ().GetComponent<SpriteRenderer> ().color = AttackColor;
-					}
-				} else if (tileTwo.IsTraversable (gameObject)) {
-					Color result = path.Path.Count > GetComponent<BaseUnit> ().Owner.Moves ? InvalidMoveColor : MoveColor;
-					foreach (var element in ModifiedTiles)
-						element.GetComponent<SpriteRenderer> ().color = result;
-				}
+                if (tileTwo.Unit.Owner != GetComponent<BaseUnit>().Owner) {
+                    if (path.Path.Count - GetComponent<LandUnit>().Range + 1 > GetComponent<BaseUnit>().Owner.Moves ||
+                        (path.Path.Count - GetComponent<LandUnit>().Range < 0 &&
+                         GetComponent<BaseUnit>().Owner.Moves < 1))
+                        foreach (var element in ModifiedTiles)
+                            element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+                    else {
+                        for (int i = 0; i < ModifiedTiles.Count - GetComponent<LandUnit>().Range; i++)
+                            ModifiedTiles[i].GetComponent<SpriteRenderer>().color = MoveColor;
+                        ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
+                    }
+                }
+                else if (tileTwo.IsTraversable(gameObject)) {
+                    Color result = path.Path.Count > GetComponent<BaseUnit>().Owner.Moves ? InvalidMoveColor : MoveColor;
+                    foreach (var element in ModifiedTiles)
+                        element.GetComponent<SpriteRenderer>().color = result;
+                }
                 else
                     foreach (var element in ModifiedTiles)
                         element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;

@@ -275,6 +275,7 @@ public class WaterUnitEventController : LandUnitEventController {
     public override GameObject CreateSplitMock() {
         GameObject mock = Instantiate(GetComponent<WaterUnit>().CarryUnit);
         mock.SetActive(true);
+        mock.transform.position = transform.position;
         mock.name = GetComponent<WaterUnit>().CarryUnit.name;
         BaseUnit unit = mock.GetComponent<BaseUnit>();
         unit.StackSize = SplitAmount;

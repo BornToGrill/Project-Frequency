@@ -17,7 +17,7 @@ public class StructureEventController : EventControllerBase {
 
         TileController thisTile = ownTile.GetComponent<TileController>();
         thisTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
-        var tst = GetComponent<BaseUnit>();
+
         if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(thisTile))
             return DeselectStatus.None;
         ActionBarController actionBar = GameObject.Find("ActionBar").GetComponent<ActionBarController>();
@@ -50,7 +50,6 @@ public class StructureEventController : EventControllerBase {
         if (_hoveredTile != null)
             _hoveredTile.ResetSprite();
 
-        // TODO: Check if you've got enough moves remaining.
         TileController second = clickedTile.GetComponent<TileController>();
         if (!ModifiedTiles.Contains(second)) {
             ModifiedTiles.Clear();
