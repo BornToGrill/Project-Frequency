@@ -97,6 +97,8 @@ public class SoldierEventController : LandUnitEventController {
             base.OnMouseEnter(ownTile, hoveredTile);
             return;
         }
+        if (!GetComponent<BaseUnit>().CurrentPlayerPredicate(ownTile.GetComponent<TileController>()))
+            return;
 
         TileController hoverTile = hoveredTile.GetComponent<TileController>();
         if (!_surroundingTiles.Contains(hoverTile)) {

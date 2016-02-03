@@ -9,6 +9,11 @@ public class WaterUnitEventController : LandUnitEventController {
 
 	public override void OnMouseEnter(GameObject ownTile, GameObject hoveredTile) {
 		base.OnMouseEnter (ownTile, hoveredTile);
+	    if (IsSplitting)
+	        return;
+	    if (GetComponent<BaseUnit>().CurrentPlayerPredicate(ownTile.GetComponent<TileController>()))
+	        return;
+
 		GameObject carryUnit = GetComponent<WaterUnit>().CarryUnit;
 		TileController tileOne = ownTile.GetComponent<TileController>();
 		TileController tileTwo = hoveredTile.GetComponent<TileController>();
@@ -90,6 +95,55 @@ public class WaterUnitEventController : LandUnitEventController {
 
 		if(index != 0) // If boat also moves.
         	startTile.Unit = null;
+    }
+
+    #endregion
+
+    #region Unit Spliting
+
+    public override void ShowUnitStack(TileController ownTile) {
+        GameObject carry = GetComponent<WaterUnit>().CarryUnit;
+        if (carry == null)
+            return;
+        GameObject stackOverlay = GameObject.Find("UnitStack");
+        StackWindow window = stackOverlay.GetComponent<StackWindow>();
+        BaseUnit unit = carry.GetComponent<BaseUnit>();
+        window.Show(unit.GetComponent<LandUnitEventController>().StackSizeSprite, unit.Owner.Color, unit.StackSize, unit.CurrentPlayerPredicate(ownTile), UnitSplitCallback);
+    }
+
+    public override GameObject CreateSplitMock() {
+        GameObject mock = Instantiate(GetComponent<WaterUnit>().CarryUnit);
+        mock.SetActive(true);
+        mock.name = GetComponent<WaterUnit>().CarryUnit.name;
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+        unit.StackSize = SplitAmount;
+        unit.Owner = GetComponent<BaseUnit>().Owner;
+        return mock;
+    }
+
+    public override DeselectStatus Split(GameObject mock, TileController ownTile, TileController targetTile) {
+        IsSplitting = false;
+
+        BaseUnit unit = mock.GetComponent<BaseUnit>();
+
+        WaterUnit water = GetComponent<WaterUnit>();
+
+        if (water.CarryUnit.GetComponent<BaseUnit>().StackSize <= unit.StackSize) {
+            Destroy(water.CarryUnit);
+            water.CarryUnit = null;
+        }
+        else
+            water.CarryUnit.GetComponent<BaseUnit>().StackSize -= SplitAmount;
+
+        LandUnitEventController landUnit = mock.GetComponent<LandUnitEventController>();
+        mock.SetActive(true);
+        if (targetTile.Unit == null)
+            landUnit.MoveToEmpty(null, new List<TileController>() { targetTile });
+        else
+            landUnit.MoveToMerge(null, new List<TileController>() { targetTile });
+        unit.Owner.Moves--;
+        ResetSplitTiles();
+        return DeselectStatus.Both;
     }
 
     #endregion

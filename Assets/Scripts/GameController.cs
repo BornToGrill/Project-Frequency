@@ -14,9 +14,10 @@ public class GameController : MonoBehaviour {
 	public List<Sprite> Bases;
 	public List<Sprite> Barracks;
 
-    public Queue<Action> MultiplayerActionQueue = new Queue<Action>(); 
+    public Queue<Action> MultiplayerActionQueue = new Queue<Action>();
+    public bool NextQueueItem = true;
 
-	void Awake() {
+    void Awake() {
 	    GameObject endGame = GameObject.Find("EndGameData");
 	    if (endGame != null)
 	        Destroy(endGame);
@@ -45,11 +46,12 @@ public class GameController : MonoBehaviour {
     }
 
     void Update() {
-        lock (MultiplayerActionQueue) {
-            while (MultiplayerActionQueue.Count > 0) {
-                MultiplayerActionQueue.Dequeue().Invoke();
+        if(NextQueueItem)
+            lock (MultiplayerActionQueue) {
+                while (MultiplayerActionQueue.Count > 0) {
+                    MultiplayerActionQueue.Dequeue().Invoke();
+                }
             }
-        }
     }
 
     public void QueueMultiplayerAction(Action action) {
@@ -136,5 +138,13 @@ public class GameController : MonoBehaviour {
                 CurrentPlayer.StartTurn(this);
             }
         }
+
+        if (CurrentPlayer.PlayerId != GetComponent<StateController>().CornerId)
+            return;
+
+        GameObject go = GameObject.Find("TurnText");
+        Animator ani = go.GetComponent<Animator>();
+        ani.Play("Fade");
+		Debug.Log ("We are awesome");
     }
 }

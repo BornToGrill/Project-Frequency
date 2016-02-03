@@ -33,6 +33,8 @@ public class SelectionController : MonoBehaviour, IPointerClickHandler, IPointer
 		UnitStats unitStats = GameObject.Find("UnitStats").GetComponent<UnitStats>();
 		unitStats.Hide ();
         GameObject.Find("ActionBar").GetComponent<ActionBarController>().Clear();
+
+        GameObject.Find("UnitStack").GetComponent<StackWindow>().Hide();
     }
 
     private void ThrowErrorIfNecessary() {

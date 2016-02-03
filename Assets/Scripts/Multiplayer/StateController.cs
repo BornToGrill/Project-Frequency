@@ -74,9 +74,22 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
             });
     }
 
+    public void SplitUnit(int startX, int startY, int endX, int endY, int amount) {
+        lock(_gameController.MultiplayerActionQueue)
+            _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
+                Board board = _gameController.GetComponent<Board>();
+                TileController start = board._tiles[startX, startY].GetComponent<TileController>();
+                TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
+                LandUnitEventController unitEvent = start.Unit.GetComponent<LandUnitEventController>();
+                unitEvent.SplitAmount = amount;
+                unitEvent.Split(unitEvent.CreateSplitMock(), start, stop);
+            });
+    }
     public void MoveToEmpty(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -95,6 +108,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void MoveToMerge(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -113,6 +127,7 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
     public void MoveToAttack(int startX, int startY, int endX, int endY) {
         lock (_gameController.MultiplayerActionQueue)
             _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
                 Board board = _gameController.GetComponent<Board>();
                 TileController start = board._tiles[startX, startY].GetComponent<TileController>();
                 TileController stop = board._tiles[endX, endY].GetComponent<TileController>();
@@ -179,6 +194,9 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
                 else
                     EndTurnButton.SetActive(false);
                 _gameController.CurrentPlayer.StartTurn(_gameController);
+                GameObject go = GameObject.Find("TurnText");
+                Animator ani = go.GetComponent<Animator>();
+                ani.Play("Fade");
             });
     }
 
