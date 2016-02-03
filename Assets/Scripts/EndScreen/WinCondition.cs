@@ -21,6 +21,7 @@ public class WinCondition : MonoBehaviour {
             GameController gc = board.GetComponent<GameController>();
             StateController mpController = board.GetComponent<StateController>();
             gc.RemovePlayer(_baseOwner);
+            _baseOwner.DestroyPlayer();
             if (mpController == null) {
                 if (gc.Players.Count <= 1) {
                     GameObject endData = GameObject.Find("EndGameData");
