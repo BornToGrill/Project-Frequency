@@ -50,8 +50,8 @@ public class StatusBarController : MonoBehaviour {
 		float offset = 0;
 		foreach (StatusBarPlayerField existingField in _playerFields) {
 			RectTransform rt = existingField.transform as RectTransform;
-			rt.anchoredPosition = new Vector2 (offset, -10.0f);
-			offset += rt.rect.width;
+			rt.anchoredPosition = new Vector2 (5.0f + offset, 0f);
+			offset += rt.rect.width + 15f;
 		}
 	}
 
