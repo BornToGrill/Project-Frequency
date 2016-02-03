@@ -57,8 +57,12 @@ public class LandUnit : BaseUnit {
 			GameObject.Destroy (gameObject, 2f); // Insurance in case it's not destroyed by explosion animation.
             return;
         }
+        if(attacker != null)
+            GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = false;
+        else
+            GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
 
-		Animator anim = GetComponent<Animator> ();
+        Animator anim = GetComponent<Animator> ();
 		anim.Play ("Damage", 1);
 
         _stackSize = Mathf.CeilToInt((float)_stackHealth / Health);
