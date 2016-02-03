@@ -66,9 +66,17 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
                         Instantiate(Units.Single(x => x.name == unitType), new Vector3(targetX, targetY),
                             Quaternion.identity);
                 target.Unit = go.GetComponent<BaseUnit>();
+
+				Animator anim = target.Unit.GetComponent<Animator>();
+
+
+
                 target.Unit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
-                if (!(target.Unit is StructureUnit))
+				if (!(target.Unit is StructureUnit)){
+					if (anim != null)
+						anim.Play("Spawn", 1);
                     target.Unit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
+				}
                 else
                     target.Unit.GetComponent<Animator>().SetInteger("Color", ownerId);
             });
