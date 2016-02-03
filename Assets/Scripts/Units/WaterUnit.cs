@@ -22,7 +22,12 @@ public class WaterUnit : LandUnit {
                 _carryUnit = null;
             return _carryUnit;
         }
-        set { _carryUnit = value; }
+        set {
+            if (value == null)
+                _carryUnit = null;
+            else
+                _carryUnit = value;
+        }
     }
 
     public override void Awake() {
