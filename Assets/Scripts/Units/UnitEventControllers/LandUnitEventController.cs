@@ -88,7 +88,13 @@ public class LandUnitEventController : EventControllerBase {
 				if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > owner.Moves)
 					return DeselectStatus.Both;
 				else {
-					owner.Moves -= (path.Path.Count - GetComponent<LandUnit> ().Range + 1);
+				    if (path.Path.Count - GetComponent<LandUnit>().Range < 0) {
+				        if (GetComponent<BaseUnit>().Owner.Moves < 1)
+				            return DeselectStatus.Both;
+				        owner.Moves -= 1;
+				    }
+				    else
+				        owner.Moves -= path.Path.Count - GetComponent<LandUnit>().Range + 1;
 				    if (multiplayerController != null)
 				        multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
 					return MoveToAttack (tileOne, path.Path);
@@ -144,7 +150,7 @@ public class LandUnitEventController : EventControllerBase {
             }
             else {
 				if (tileTwo.Unit.Owner != GetComponent<BaseUnit> ().Owner) {
-					if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > GetComponent<BaseUnit> ().Owner.Moves)
+					if (path.Path.Count - GetComponent<LandUnit> ().Range + 1 > GetComponent<BaseUnit> ().Owner.Moves || (path.Path.Count - GetComponent<LandUnit>().Range < 0 && GetComponent<BaseUnit>().Owner.Moves < 1))
 						foreach (var element in ModifiedTiles)
 							element.GetComponent<SpriteRenderer> ().color = InvalidMoveColor;
 					else {
