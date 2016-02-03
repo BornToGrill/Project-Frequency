@@ -72,13 +72,15 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
 
 
                 target.Unit.Owner = _gameController.Players.Find(x => x.PlayerId == ownerId);
-				if (!(target.Unit is StructureUnit)){
-					if (anim != null)
-						anim.Play("Spawn", 1);
+                if (!(target.Unit is StructureUnit)) {
+                    if (anim != null)
+                        anim.Play("Spawn", 1);
                     target.Unit.GetComponent<SpriteRenderer>().color = target.Unit.Owner.Color;
-				}
-                else
+                }
+                else {
+                    target.Unit.GetComponent<Animator>().SetInteger("Type", 2);
                     target.Unit.GetComponent<Animator>().SetInteger("Color", ownerId);
+                }
             });
     }
 
