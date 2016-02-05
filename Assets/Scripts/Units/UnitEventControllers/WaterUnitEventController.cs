@@ -63,6 +63,7 @@ public class WaterUnitEventController : LandUnitEventController {
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Attack(tileOne, tileTwo);
                     tileTwo.Unit.DamageUnit(carry._stackDamage, GetComponent<BaseUnit>());
+                    carry.Owner.Moves--;
                     return DeselectStatus.Both;
                 }
                 if (tileTwo.IsTraversable(carryUnit) && boat.Owner.Moves >= path.Path.Count) {
@@ -217,7 +218,7 @@ public class WaterUnitEventController : LandUnitEventController {
             () => {
                 path.Last().Unit.DamageUnit(carry._stackDamage, GetComponent<BaseUnit>());
                 //carry.Attack(path.Last().Unit);
-                QueueNextItem();
+                //QueueNextItem();
             });
 
         return DeselectStatus.Both;

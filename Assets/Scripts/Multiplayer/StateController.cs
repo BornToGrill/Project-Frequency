@@ -156,20 +156,20 @@ public class StateController : MonoBehaviour, IInvokable, INotifiable, IErrorHan
 
     public void Attack(int startX, int startY, int targetX, int targetY) {
         lock (_gameController.MultiplayerActionQueue)
-    _gameController.MultiplayerActionQueue.Enqueue(() => {
-        _gameController.NextQueueItem = false;
-        Board board = _gameController.GetComponent<Board>();
-        TileController start = board._tiles[startX, startY].GetComponent<TileController>();
-        TileController stop = board._tiles[targetX, targetY].GetComponent<TileController>();
-        WaterUnit boat = start.Unit.GetComponent<WaterUnit>();
-        if (boat != null) {
-            stop.Unit.DamageUnit(boat.CarryUnit.GetComponent<LandUnit>()._stackDamage, boat);
-        }
-        else {
-            LandUnit land = start.Unit.GetComponent<LandUnit>();
-            land.Attack(stop.Unit);
-        }
-    });
+            _gameController.MultiplayerActionQueue.Enqueue(() => {
+                _gameController.NextQueueItem = false;
+                Board board = _gameController.GetComponent<Board>();
+                TileController start = board._tiles[startX, startY].GetComponent<TileController>();
+                TileController stop = board._tiles[targetX, targetY].GetComponent<TileController>();
+                WaterUnit boat = start.Unit.GetComponent<WaterUnit>();
+                if (boat != null) {
+                    stop.Unit.DamageUnit(boat.CarryUnit.GetComponent<LandUnit>()._stackDamage, boat);
+                }
+                else {
+                    LandUnit land = start.Unit.GetComponent<LandUnit>();
+                    land.Attack(stop.Unit);
+                }
+            });
     }
 
     public void CashChanged(int id, int newValue) {

@@ -101,8 +101,11 @@ public class WaterUnit : LandUnit {
 	public override void Retaliate() {
 	    if (_attackedBy != null && CarryUnit != null) {
 	        LandUnit carry = CarryUnit.GetComponent<LandUnit>();
-            if(carry != null)
+	        if (carry != null)
 	            _attackedBy.DamageUnit(CarryUnit.GetComponent<LandUnit>()._stackDamage, null);
+	    }
+	    else {
+	        GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
 	    }
 	    _attackedBy = null;
 	}

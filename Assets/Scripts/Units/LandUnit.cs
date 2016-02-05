@@ -73,11 +73,14 @@ public class LandUnit : BaseUnit {
 
 	public void DestroyUnit() {
 		GameObject.Destroy (gameObject);
+	    GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
 	}
 
 	public virtual void Retaliate() {
-		if (_attackedBy != null)
-			_attackedBy.DamageUnit (_stackDamage, null);
+	    if (_attackedBy != null && gameObject != null)
+	        _attackedBy.DamageUnit(_stackDamage, null);
+	    else
+	        GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
 		_attackedBy = null;
 	}
 }

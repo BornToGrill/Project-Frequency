@@ -41,9 +41,11 @@ public class StructureUnit : BaseUnit {
 
 		Animator anim = GetComponent<Animator> ();
 		anim.Play ("Damage", 1);
-	}
+        GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
+    }
 
 	public void DestroyStructure() {
 		GameObject.Destroy (gameObject);
+	    GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = true;
 	}
 }

@@ -239,7 +239,7 @@ public class LandUnitEventController : EventControllerBase {
 
         StartCoroutine(AnimateToTile(movePath, () => {
             GetComponent<LandUnit>().Attack(path.Last().Unit);
-            QueueNextItem();
+            //QueueNextItem();
         }));
 
         return DeselectStatus.Both;
