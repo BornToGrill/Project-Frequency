@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Settings : MonoBehaviour {
 	Resolution[] PossibleResolutions;
@@ -28,8 +29,8 @@ public class Settings : MonoBehaviour {
 			IsMute ();
 		} else {
 			Toggle toggle = GetComponent<Toggle> ();
-			int p = PlayerPrefs.GetInt("grid_activated");
-			toggle.isOn = !Convert.ToBoolean(PlayerPrefs.GetInt("grid_activated"));
+			int p = PlayerPrefs.GetInt("grid_deactivated");
+			toggle.isOn = Convert.ToBoolean(PlayerPrefs.GetInt("grid_deactivated"));
 			IsGrid ();
 		}
 	}
@@ -55,7 +56,9 @@ public class Settings : MonoBehaviour {
 			};
 		}
 
-		dropdown.value = Array.IndexOf (PossibleResolutions, currentRes);
+	    dropdown.value = Array.FindIndex(PossibleResolutions, 0,
+	        x => x.height == currentRes.height && x.width == currentRes.width);
+
 		dropdown.onValueChanged.AddListener ((index) => {
 			PlayerPrefs.SetInt("screen_width", PossibleResolutions[index].width);
 			PlayerPrefs.SetInt("screen_height", PossibleResolutions[index].height);
@@ -75,6 +78,7 @@ public class Settings : MonoBehaviour {
 
 			Screen.fullScreen = !Convert.ToBoolean(PlayerPrefs.GetInt("windowed_mode"));
 		});
+	    toggle.onValueChanged.Invoke(toggle.isOn);
 	}
 
 	private void IsMute()
@@ -90,19 +94,21 @@ public class Settings : MonoBehaviour {
 			}
 			AudioListener.volume = PlayerPrefs.GetFloat("game_volume");
 		});
+	    mute.onValueChanged.Invoke(mute.isOn);
 	}
 
 	private void IsGrid()
 	{
 		Toggle grid = GetComponent<Toggle> ();
 		grid.onValueChanged.AddListener ((x) => {
-			if (!x) {
-				PlayerPrefs.SetInt("grid_activated", 1);
+			if (x) {
+				PlayerPrefs.SetInt("grid_deactivated", 1);
 				color = new Color(1, 1, 1, 0);
 			} else {
-				PlayerPrefs.SetInt("grid_activated", 0);
+				PlayerPrefs.SetInt("grid_deactivated", 0);
 				color = new Color(1, 1, 1, .3f);
 			}
 		});
+	    grid.onValueChanged.Invoke(grid.isOn);
 	}
 }
