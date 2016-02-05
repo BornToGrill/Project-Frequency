@@ -35,6 +35,9 @@ class Invokable {
             case "MoveToAttack":
                 Move(_invoke.MoveToAttack, data.Values);
                 break;
+            case "Attack":
+                Attack(data.Values);
+                break;
             case "CashChanged":
                 CashChanged(data.Values);
                 break;
@@ -67,6 +70,13 @@ class Invokable {
         int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
         int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
         _invoke.SplitUnit(start[0], start[1], stop[0], stop[1], Int32.Parse(positions[2]));
+    }
+
+    private void Attack(string values) {
+        string[] positions = values.Split(ValueDelimiter).Select(x => x.Trim('(', ')')).ToArray();
+        int[] start = positions[0].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        int[] stop = positions[1].Split(':').Select(x => Int32.Parse(x)).ToArray();
+        _invoke.Attack(start[0], start[1], stop[0], stop[1]);
     }
 
 }

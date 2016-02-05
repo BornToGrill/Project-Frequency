@@ -6,6 +6,7 @@ interface IInvokable {
     void MoveToEmpty(int startX, int startY, int endX, int endY);
     void MoveToMerge(int startX, int startY, int endX, int endY);
     void MoveToAttack(int startX, int startY, int endX, int endY);
+    void Attack(int startX, int startY, int targetX, int targeyY);
 
     void CashChanged(int playerId, int newValue);
 

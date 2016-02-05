@@ -99,8 +99,11 @@ public class WaterUnit : LandUnit {
     }
 
 	public override void Retaliate() {
-		if (_attackedBy != null && CarryUnit != null)
-			_attackedBy.DamageUnit (CarryUnit.GetComponent<LandUnit>()._stackDamage, null);
-		_attackedBy = null;
+	    if (_attackedBy != null && CarryUnit != null) {
+	        LandUnit carry = CarryUnit.GetComponent<LandUnit>();
+            if(carry != null)
+	            _attackedBy.DamageUnit(CarryUnit.GetComponent<LandUnit>()._stackDamage, null);
+	    }
+	    _attackedBy = null;
 	}
 }

@@ -68,17 +68,21 @@ public class LandUnitEventController : EventControllerBase {
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 		Player owner = GetComponent<BaseUnit> ().Owner;
 
-        if (path.FoundEndPoint == false || !path.ValidPath) {
-            if (path.Path.Count <= GetComponent<LandUnit>().Range && path.Path.Last().Unit != null &&
-                path.Path.Last().Unit.Owner != GetComponent<BaseUnit>().Owner) {
+        if (tileTwo.Unit != null && tileTwo.Unit.Owner != tileOne.Unit.Owner) {
+            int distanceToTarget = (int)(Mathf.Abs(tileOne.Position.x - tileTwo.Position.x) +
+                                   Mathf.Abs(tileOne.Position.y - tileTwo.Position.y));
+            if (distanceToTarget <= GetComponent<LandUnit>().Range && tileOne.Unit.Owner.Moves >= 1) { // Stationary attack.
                 owner.Moves--;
-                if (multiplayerController != null)
-                    multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
-                MoveToAttack(tileOne, path.Path);
-            }
+                if(multiplayerController != null)
+                    multiplayerController.ServerComs.Notify.Attack(tileOne, tileTwo);
+                ((LandUnit) tileOne.Unit).Attack(tileTwo.Unit);
                 return DeselectStatus.Both;
+            }
         }
 
+
+        if (path.FoundEndPoint == false || !path.ValidPath)
+                return DeselectStatus.Both;
         if (tileTwo.Unit == null) {
 			if (!tileTwo.IsTraversable(gameObject))
 				return DeselectStatus.Both;
@@ -131,7 +135,7 @@ public class LandUnitEventController : EventControllerBase {
             return;
         if (IsSplitting) {
             GameObject temp = CreateSplitMock();
-            if (_surrTiles.Contains(tileTwo) && temp.GetComponent<BaseUnit>().Owner.Moves > 0 && tileTwo.IsTraversable(temp))
+            if (_surrTiles.Contains(tileTwo) && temp.GetComponent<BaseUnit>().Owner.Moves >= 1 && tileTwo.IsTraversable(temp))
                 hoveredTile.GetComponent<SpriteRenderer>().color = SelfSelectedColor;
             else
                 hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
@@ -141,11 +145,16 @@ public class LandUnitEventController : EventControllerBase {
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
         ModifiedTiles = path.Path;
+        if (tileTwo.Unit != null && tileTwo.Unit.Owner != tileOne.Unit.Owner) {
+            int distanceToTarget = (int)(Mathf.Abs(tileOne.Position.x - tileTwo.Position.x) +
+                                   Mathf.Abs(tileOne.Position.y - tileTwo.Position.y));
+            if (distanceToTarget <= GetComponent<LandUnit>().Range && tileOne.Unit.Owner.Moves >= 1) { // Stationary attack.
+                path.Path.Last().GetComponent<SpriteRenderer>().color = AttackColor; 
+                return;
+            }
+        }
 
         if (path.FoundEndPoint == false || !path.ValidPath) {
-            if (path.Path.Count <= GetComponent<LandUnit>().Range && path.Path.Last().Unit != null && path.Path.Last().Unit.Owner != GetComponent<BaseUnit>().Owner)
-                path.Path.Last().GetComponent<SpriteRenderer>().color = AttackColor;
-            else 
                 foreach (var element in ModifiedTiles)
                     element.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
         }
@@ -192,7 +201,7 @@ public class LandUnitEventController : EventControllerBase {
         if (IsSplitting) {
             GameObject temp = CreateSplitMock();
             if (_surrTiles.Contains(hoveredTile.GetComponent<TileController>())) {
-                if (temp.GetComponent<BaseUnit>().Owner.Moves > 0 && hoveredTile.GetComponent<TileController>().IsTraversable(temp))
+                if (temp.GetComponent<BaseUnit>().Owner.Moves >= 1 && hoveredTile.GetComponent<TileController>().IsTraversable(temp))
                     hoveredTile.GetComponent<SpriteRenderer>().color = MoveColor;
                 else
                     hoveredTile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;

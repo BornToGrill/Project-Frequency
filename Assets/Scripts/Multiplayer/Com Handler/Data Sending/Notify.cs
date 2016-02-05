@@ -30,6 +30,11 @@ class Notify {
             start.Position.y, stop.Position.x, stop.Position.y));
     }
 
+    internal void Attack(TileController start, TileController target) {
+        _tcpClient.Send(string.Format("[Notify:Attack:{0}|({1}:{2})|({3}:{4})]", _guid, start.Position.x,
+            start.Position.y, target.Position.x, target.Position.y));
+    }
+
     internal void CreateUnit(TileController target, string unitType) {
         _tcpClient.Send(string.Format("[Notify:UnitCreated:{0}|({1}:{2})|{3}]", _guid, target.Position.x,
             target.Position.y, unitType));

@@ -49,19 +49,30 @@ public class WaterUnitEventController : LandUnitEventController {
                 boat.Owner.Moves -= path.Path.Count;
                 if (multiplayerController != null)
                     multiplayerController.ServerComs.Notify.Move(MoveType.Empty, tileOne, tileTwo);
-                MoveToEmpty(tileOne, path.Path);
+                return MoveToEmpty(tileOne, path.Path);
             }
         }
         else {
             if (tileTwo.Unit != null) {
+                LandUnit carry = carryUnit.GetComponent<LandUnit>();
+                int distanceToTarget =
+                    (int)
+                        (Mathf.Abs(tileOne.Position.x - tileTwo.Position.x) +
+                         Mathf.Abs(tileOne.Position.y - tileTwo.Position.y));
+                if (carry.Range >= distanceToTarget && carry.Owner.Moves >= 1) {
+                    if (multiplayerController != null)
+                        multiplayerController.ServerComs.Notify.Attack(tileOne, tileTwo);
+                    tileTwo.Unit.DamageUnit(carry._stackDamage, GetComponent<BaseUnit>());
+                    return DeselectStatus.Both;
+                }
                 if (tileTwo.IsTraversable(carryUnit) && boat.Owner.Moves >= path.Path.Count) {
                     boat.Owner.Moves -= path.Path.Count;
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Move(MoveType.Merge, tileOne, tileTwo);
-                    MoveToMerge(tileOne, path.Path);
+                    return MoveToMerge(tileOne, path.Path);
                 }
                 else if (tileTwo.Unit.Owner != boat.Owner && boat.Owner.Moves >= path.Path.Count) {
-                    if (path.Path.Count - carryUnit.GetComponent<LandUnit>().Range < 0) {
+                    if (path.Path.Count - carry.Range < 0) {
                         if (GetComponent<BaseUnit>().Owner.Moves < 1)
                             return DeselectStatus.Both;
                         boat.Owner.Moves -= 1;
@@ -71,7 +82,7 @@ public class WaterUnitEventController : LandUnitEventController {
 
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Move(MoveType.Attack, tileOne, tileTwo);
-                    MoveToAttack(tileOne, path.Path);
+                    return MoveToAttack(tileOne, path.Path);
                 }
             }
             else {
@@ -79,7 +90,7 @@ public class WaterUnitEventController : LandUnitEventController {
                     boat.Owner.Moves -= path.Path.Count;
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Move(MoveType.Empty, tileOne, tileTwo);
-                    MoveToEmpty(tileOne, path.Path);
+                    return MoveToEmpty(tileOne, path.Path);
                 }
             }
         }
@@ -117,7 +128,7 @@ public class WaterUnitEventController : LandUnitEventController {
                 return;
         }
 
-        //TODO: TEST
+
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 	    ModifiedTiles = path.Path;
         if (tileTwo.Unit != null && tileTwo.Unit is WaterUnit) {
@@ -139,23 +150,34 @@ public class WaterUnitEventController : LandUnitEventController {
 	                tile.GetComponent<SpriteRenderer>().color = MoveColor;
 	    }
 	    else {
-	        if (tileTwo.Unit != null) {
+            LandUnit carry = boat.CarryUnit.GetComponent<LandUnit>();
+            int distanceToTarget =
+                (int)
+                    (Mathf.Abs(tileOne.Position.x - tileTwo.Position.x) +
+                     Mathf.Abs(tileOne.Position.y - tileTwo.Position.y));
+
+            if (tileTwo.Unit != null) {
 	            if (tileTwo.IsTraversable(carryUnit) && boat.Owner.Moves >= path.Path.Count) {
 	                // Merge
 	                foreach (TileController tile in ModifiedTiles)
 	                    tile.GetComponent<SpriteRenderer>().color = MoveColor;
 	            }
+                else if (tileTwo.Unit.Owner != carry.Owner && carry.Range >= distanceToTarget && boat.Owner.Moves >= 1) { 
+                    // Only attack
+                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
+                }
 	            else if (tileTwo.Unit.Owner != boat.Owner && boat.Owner.Moves >= path.Path.Count) {
-	                if (path.Path.Count <= boat.CarryUnit.GetComponent<LandUnit>().Range && boat.Owner.Moves > 0)
-	                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor; // TODO: Tank checking ( range )
-	                else if (path.Path[path.Path.Count - 1 - boat.CarryUnit.GetComponent<LandUnit>().Range].IsTraversable(carryUnit)) { // TODO: Tank range
+	                if (path.Path.Count <= carry.Range && boat.Owner.Moves > 0)
+	                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
+	                else if (path.Path[path.Path.Count - 1 - carry.Range].IsTraversable(carryUnit)) {
 	                    // Attack on land
-	                    for (int i = 0; i < ModifiedTiles.Count - GetComponent<LandUnit>().Range; i++)
+	                    for (int i = 0; i < ModifiedTiles.Count - carry.Range; i++)
 	                        ModifiedTiles[i].GetComponent<SpriteRenderer>().color = MoveColor;
 	                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
 	                }
 	                else {
-	                    for (int i = 0; i < ModifiedTiles.Count - carryUnit.GetComponent<LandUnit>().Range; i++)
+                        // Attack from sea
+	                    for (int i = 0; i < ModifiedTiles.Count - carry.Range; i++)
 	                        ModifiedTiles[i].GetComponent<SpriteRenderer>().color = MoveColor;
 	                    ModifiedTiles.Last().GetComponent<SpriteRenderer>().color = AttackColor;
 	                }
@@ -176,12 +198,9 @@ public class WaterUnitEventController : LandUnitEventController {
 	        }
 	    }
 
-
-
 	    boat.TraversableEnvironments =
 	        boat._defaultEnvironments.Concat(carryUnit.GetComponent<BaseUnit>().TraversableEnvironments).ToArray();
 
-        //TODO: Test
 	}
 
     #region Movement

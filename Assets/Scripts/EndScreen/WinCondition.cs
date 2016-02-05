@@ -13,7 +13,8 @@ public class WinCondition : MonoBehaviour {
 
     void Start() {
         BaseUnit unit = gameObject.GetComponent<BaseUnit>();
-        _baseOwner = unit.Owner;
+        if(unit != null)
+            _baseOwner = unit.Owner;
     }
 
     public void BaseDestroyed() {
@@ -34,7 +35,7 @@ public class WinCondition : MonoBehaviour {
                     endData = new GameObject("EndGameData");
                     WinCondition cond = endData.AddComponent<WinCondition>();
                     cond.Winner = gc.Players[0];
-                    cond.Losers = gc.AllPlayers.Where(x => x != Winner).ToArray();
+                    cond.Losers = gc.AllPlayers.Where(x => x != cond.Winner).ToArray();
                     DontDestroyOnLoad(cond);
                     SceneManager.LoadScene("WinScreen");
                 }
