@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 
 public class WaterUnitEventController : LandUnitEventController {
@@ -38,6 +39,12 @@ public class WaterUnitEventController : LandUnitEventController {
 
         PathFindingResult path = Pathfinding.FindPath(tileOne, tileTwo);
 
+        int carryMoveIndex = path.Path.FindLastIndex(x => x.IsTraversable(carryUnit));
+        if (carryMoveIndex >= 0 &&
+            !carryUnit.GetComponent<BaseUnit>().TraversableEnvironments.Contains(path.Path[carryMoveIndex].Environment)) {
+            return DeselectStatus.Both;
+        }
+
         if (!carryUnit.GetComponent<BaseUnit>().TraversableEnvironments.Contains(path.Path.Last().Environment)) {
             boat.TraversableEnvironments = boat._defaultEnvironments;
             path = Pathfinding.FindPath(tileOne, tileTwo);
@@ -59,6 +66,7 @@ public class WaterUnitEventController : LandUnitEventController {
                     (int)
                         (Mathf.Abs(tileOne.Position.x - tileTwo.Position.x) +
                          Mathf.Abs(tileOne.Position.y - tileTwo.Position.y));
+
                 if (carry.Range >= distanceToTarget && carry.Owner.Moves >= 1) {
                     if (multiplayerController != null)
                         multiplayerController.ServerComs.Notify.Attack(tileOne, tileTwo);
@@ -126,7 +134,7 @@ public class WaterUnitEventController : LandUnitEventController {
                 foreach (TileController tile in ModifiedTiles)
                     tile.GetComponent<SpriteRenderer>().color = MoveColor;
             }
-                return;
+            return;
         }
 
 
@@ -135,6 +143,13 @@ public class WaterUnitEventController : LandUnitEventController {
         if (tileTwo.Unit != null && tileTwo.Unit is WaterUnit) {
             foreach (TileController tile in ModifiedTiles)
                 tile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+        }
+        int carryMoveIndex = path.Path.FindLastIndex(x => x.IsTraversable(carryUnit));
+        if (carryMoveIndex >= 0 && !carryUnit.GetComponent<BaseUnit>().TraversableEnvironments.Contains(path.Path[carryMoveIndex].Environment)) {
+            // Moving over a boat into water.
+            foreach (TileController tile in ModifiedTiles)
+                tile.GetComponent<SpriteRenderer>().color = InvalidMoveColor;
+            return;
         }
         else if (!carryUnit.GetComponent<BaseUnit>().TraversableEnvironments.Contains(path.Path.Last().Environment)) {
 	        // Only boat moves
@@ -243,7 +258,7 @@ public class WaterUnitEventController : LandUnitEventController {
 
         if (carryUnit != null) {
             unit = carryUnit.GetComponent<BaseUnit>();
-            index = path.FindIndex(x => x.IsTraversable(carryUnit));
+            index = path.FindLastIndex(x => x.IsTraversable(carryUnit));
         }
 
         if (index < 0) {
@@ -252,10 +267,6 @@ public class WaterUnitEventController : LandUnitEventController {
                 path.Last().Unit = GetComponent<BaseUnit>();
         }
         else {
-			if (!path.Last ().IsTraversable (carryUnit)) {
-				carryUnit.GetComponent<BaseUnit> ().Owner.Moves += path.Count;
-				return;
-			}
             TileController[] boatPath = path.Take(index).ToArray();
             TileController[] unitPath = path.Skip(index).ToArray();
 			if (boatPath.Length > 0) {

@@ -36,6 +36,8 @@ public class WaterUnit : LandUnit {
     }
 
     public override bool CanMerge(BaseUnit unit) {
+        if (unit is WaterUnit)
+            return false;
         if (CarryUnit == null)
             return unit.Owner == Owner;
         BaseUnit internalUnit = CarryUnit.GetComponent<BaseUnit>();
