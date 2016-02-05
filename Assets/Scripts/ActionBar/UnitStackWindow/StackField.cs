@@ -28,6 +28,10 @@ public class StackField : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 	    _callback = callback;
 	}
 
+    public void Reset() {
+        _image.color = Color.white;
+    }
+
 	public void Hide() {
 		_image.sprite = null;
 		_image.color = Color.white;

@@ -69,7 +69,10 @@ public class WaterUnit : LandUnit {
         Animator anim = GetComponent<Animator>();
         _attackedBy = attacker;
         if (CarryUnit != null) {
-            CarryUnit.GetComponent<BaseUnit>().DamageUnit(damage, null);
+            LandUnit carry = CarryUnit.GetComponent<LandUnit>();
+            carry.DamageUnit(damage, null);
+            if (carry == null || carry._stackHealth <= 0)
+                TraversableEnvironments = _defaultEnvironments;
             anim.Play("Damage", 1);
             if (attacker != null)
                 GameObject.Find("Board").GetComponent<GameController>().NextQueueItem = false;

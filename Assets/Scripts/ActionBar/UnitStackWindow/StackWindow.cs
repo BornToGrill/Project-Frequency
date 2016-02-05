@@ -31,4 +31,10 @@ public class StackWindow : MonoBehaviour {
 			stackField.Hide ();
 		}
 	}
+
+    public void Reset() {
+        foreach (StackField field in StackFields) {
+            field.Reset();
+        }
+    }
 }

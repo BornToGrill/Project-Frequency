@@ -107,9 +107,9 @@ public class GameController : MonoBehaviour {
         GameObject go = board._tiles[x, y];
         TileController tile = go.GetComponent<TileController>();
         owner.StartEnvironment = tile.Environment;
-        GameObject baseObject = Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity) as GameObject;
-		baseObject.GetComponent<Animator> ().SetInteger ("Color", id);
-		baseObject.GetComponent<Animator> ().SetInteger ("Type", 1);
+        GameObject baseObject = (GameObject)Instantiate(BasePrefab, new Vector3(x,y), Quaternion.identity);
+        baseObject.GetComponent<Animator>().SetInteger("Type", 1);
+        baseObject.GetComponent<Animator> ().SetInteger ("Color", id);
         tile.Unit = baseObject.GetComponent<BaseUnit>();
         tile.Unit.Owner = owner;
     }

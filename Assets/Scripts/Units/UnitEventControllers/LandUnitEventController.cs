@@ -37,6 +37,8 @@ public class LandUnitEventController : EventControllerBase {
     public override DeselectStatus OnClicked(GameObject ownTile, GameObject clickedTile) {
         if (ownTile == clickedTile) {
             ResetModifiedTiles(ownTile.GetComponent<TileController>());
+            ResetSplitTiles();
+            IsSplitting = false;
             return DeselectStatus.Both;
         }
 
@@ -46,6 +48,8 @@ public class LandUnitEventController : EventControllerBase {
         StateController multiplayerController = GameObject.Find("Board").GetComponent<StateController>();
 
         if (IsSplitting) {
+            IsSplitting = false;
+            ResetStackWindow();
             GameObject mock = CreateSplitMock();
             if (mock.GetComponent<BaseUnit>().Owner.Moves < 1 ||
                 !clickedTile.GetComponent<TileController>().IsTraversable(mock) ||
@@ -266,6 +270,12 @@ public class LandUnitEventController : EventControllerBase {
         StackWindow window = stackOverlay.GetComponent<StackWindow>();
         BaseUnit unit = GetComponent<BaseUnit>();
         window.Show(StackSizeSprite, unit.Owner.Color, unit.StackSize, unit.CurrentPlayerPredicate(ownTile), UnitSplitCallback);
+    }
+
+    public virtual void ResetStackWindow() {
+        GameObject stackOverlay = GameObject.Find("UnitStack");
+        StackWindow window = stackOverlay.GetComponent<StackWindow>();
+        window.Reset();
     }
 
     public virtual void UnitSplitCallback(int amount) {

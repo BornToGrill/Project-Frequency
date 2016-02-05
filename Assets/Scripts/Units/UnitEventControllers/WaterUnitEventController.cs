@@ -217,8 +217,6 @@ public class WaterUnitEventController : LandUnitEventController {
         MoveWaterUnit(start, movePath,
             () => {
                 path.Last().Unit.DamageUnit(carry._stackDamage, GetComponent<BaseUnit>());
-                //carry.Attack(path.Last().Unit);
-                //QueueNextItem();
             });
 
         return DeselectStatus.Both;
