@@ -48,5 +48,6 @@ public class MenuSound : MonoBehaviour {
 		if (!audio.isPlaying) {
 			audio.Play ();
 		}
+	    AudioListener.volume = PlayerPrefs.GetFloat("game_volume");
 	}	
 }
