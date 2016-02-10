@@ -40,6 +40,6 @@ public class ToolTip : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler 
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-		//GameObject.Destroy (_tooltip.gameObject);
+		GameObject.Destroy (_tooltip.gameObject);
 	}
 }
