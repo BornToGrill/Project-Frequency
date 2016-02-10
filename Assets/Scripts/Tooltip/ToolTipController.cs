@@ -13,13 +13,20 @@ public class ToolTipController : MonoBehaviour {
 	private RectTransform rectTransform;
 
 	void Awake () {
-		rectTransform = transform as RectTransform;
-		rectTransform.anchoredPosition = Input.mousePosition;
+		rectTransform = (RectTransform)transform;
+		SetTooltipPosition();
 	}
 
 	void FixedUpdate() {
-		rectTransform.anchoredPosition = Input.mousePosition;
+        SetTooltipPosition();
 	}
+
+    private void SetTooltipPosition() {
+        Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out pos);
+        rectTransform.position = canvas.transform.TransformPoint(pos);
+    }
 
 	public void Initialize(string title, string subtitle, string main) {
 		Title.text = title;
