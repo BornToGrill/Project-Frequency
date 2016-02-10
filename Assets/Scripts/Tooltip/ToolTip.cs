@@ -37,6 +37,7 @@ public class ToolTip : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler 
 
 		if (_warning != "")
 			_tooltip.SetWarning (_warning);
+        _tooltip.SetTooltipPosition();
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {

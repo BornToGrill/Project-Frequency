@@ -21,7 +21,7 @@ public class ToolTipController : MonoBehaviour {
         SetTooltipPosition();
 	}
 
-    private void SetTooltipPosition() {
+    public void SetTooltipPosition() {
         Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out pos);
