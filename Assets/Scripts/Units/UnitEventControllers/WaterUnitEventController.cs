@@ -258,7 +258,14 @@ public class WaterUnitEventController : LandUnitEventController {
 
         if (carryUnit != null) {
             unit = carryUnit.GetComponent<BaseUnit>();
-            index = path.FindLastIndex(x => x.IsTraversable(carryUnit));
+            for (int i = path.Count - 1; i >= 0; i--) {
+                if (path[i].IsTraversable(carryUnit)) {
+                    index = i;
+                }
+                else {
+                    break;
+                }
+            }
         }
 
         if (index < 0) {
